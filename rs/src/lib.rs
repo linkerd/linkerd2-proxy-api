@@ -19,16 +19,16 @@ pub use self::gen::*;
 // The generated code requires two tiers of outer modules so that references between
 // modules resolve properly.
 mod gen {
-    pub mod common {
-        include!(concat!(env!("OUT_DIR"), "/conduit.common.rs"));
+    pub mod net {
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.net.rs"));
     }
 
     pub mod destination {
-        include!(concat!(env!("OUT_DIR"), "/conduit.proxy.destination.rs"));
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.destination.rs"));
     }
 
     pub mod tap {
-        include!(concat!(env!("OUT_DIR"), "/conduit.proxy.tap.rs"));
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.tap.rs"));
     }
 }
 
@@ -66,27 +66,27 @@ pub struct InvalidMethod;
 pub struct InvalidScheme;
 
 
-// ===== impl common::Eos =====
+// ===== impl tap::Eos =====
 
-impl From<h2::Reason> for common::Eos {
+impl From<h2::Reason> for tap::Eos {
     fn from(reason: h2::Reason) -> Self {
-        let end = common::eos::End::ResetErrorCode(reason.into());
-        common::Eos { end: Some(end) }
+        let end = tap::eos::End::ResetErrorCode(reason.into());
+        tap::Eos { end: Some(end) }
     }
 }
 
-impl common::Eos {
+impl tap::Eos {
     pub fn from_grpc_status(code: u32) -> Self {
-        let end = common::eos::End::GrpcStatusCode(code);
-        common::Eos { end: Some(end) }
+        let end = tap::eos::End::GrpcStatusCode(code);
+        tap::Eos { end: Some(end) }
     }
 }
 
-// ===== impl common::IpAddress =====
+// ===== impl net::IpAddress =====
 
-impl<T> From<T> for common::IpAddress
+impl<T> From<T> for net::IpAddress
 where
-    common::ip_address::Ip: From<T>,
+    net::ip_address::Ip: From<T>,
 {
     #[inline]
     fn from(ip: T) -> Self {
@@ -96,7 +96,7 @@ where
     }
 }
 
-impl From<::std::net::IpAddr> for common::IpAddress {
+impl From<::std::net::IpAddr> for net::IpAddress {
     fn from(ip: ::std::net::IpAddr) -> Self {
         match ip {
             ::std::net::IpAddr::V4(v4) => Self {
@@ -109,37 +109,37 @@ impl From<::std::net::IpAddr> for common::IpAddress {
     }
 }
 
-impl From<[u8; 4]> for common::ip_address::Ip {
+impl From<[u8; 4]> for net::ip_address::Ip {
     fn from(octets: [u8; 4]) -> Self {
-        common::ip_address::Ip::Ipv4(
+        net::ip_address::Ip::Ipv4(
             u32::from(octets[0]) << 24 | u32::from(octets[1]) << 16 | u32::from(octets[2]) << 8
                 | u32::from(octets[3]),
         )
     }
 }
 
-// ===== impl common::ip_address:Ip =====
+// ===== impl net::ip_address:Ip =====
 
-impl From<::std::net::Ipv4Addr> for common::ip_address::Ip {
+impl From<::std::net::Ipv4Addr> for net::ip_address::Ip {
     #[inline]
     fn from(v4: ::std::net::Ipv4Addr) -> Self {
         Self::from(v4.octets())
     }
 }
 
-impl<T> From<T> for common::ip_address::Ip
+impl<T> From<T> for net::ip_address::Ip
 where
-    common::IPv6: From<T>,
+    net::IPv6: From<T>,
 {
     #[inline]
     fn from(t: T) -> Self {
-        common::ip_address::Ip::Ipv6(common::IPv6::from(t))
+        net::ip_address::Ip::Ipv6(net::IPv6::from(t))
     }
 }
 
-// ===== impl common::IPv6 =====
+// ===== impl net::IPv6 =====
 
-impl From<[u8; 16]> for common::IPv6 {
+impl From<[u8; 16]> for net::IPv6 {
     fn from(octets: [u8; 16]) -> Self {
         let first = (u64::from(octets[0]) << 56) + (u64::from(octets[1]) << 48)
             + (u64::from(octets[2]) << 40) + (u64::from(octets[3]) << 32)
@@ -156,15 +156,15 @@ impl From<[u8; 16]> for common::IPv6 {
     }
 }
 
-impl From<::std::net::Ipv6Addr> for common::IPv6 {
+impl From<::std::net::Ipv6Addr> for net::IPv6 {
     #[inline]
     fn from(v6: ::std::net::Ipv6Addr) -> Self {
         Self::from(v6.octets())
     }
 }
 
-impl<'a> From<&'a common::IPv6> for ::std::net::Ipv6Addr {
-    fn from(ip: &'a common::IPv6) -> ::std::net::Ipv6Addr {
+impl<'a> From<&'a net::IPv6> for ::std::net::Ipv6Addr {
+    fn from(ip: &'a net::IPv6) -> ::std::net::Ipv6Addr {
         ::std::net::Ipv6Addr::new(
             (ip.first >> 48) as u16,
             (ip.first >> 32) as u16,
@@ -178,22 +178,22 @@ impl<'a> From<&'a common::IPv6> for ::std::net::Ipv6Addr {
     }
 }
 
-// ===== impl common::TcpAddress =====
+// ===== impl net::TcpAddress =====
 
-impl<'a> From<&'a ::std::net::SocketAddr> for common::TcpAddress {
-    fn from(sa: &::std::net::SocketAddr) -> common::TcpAddress {
-        common::TcpAddress {
+impl<'a> From<&'a ::std::net::SocketAddr> for net::TcpAddress {
+    fn from(sa: &::std::net::SocketAddr) -> net::TcpAddress {
+        net::TcpAddress {
             ip: Some(sa.ip().into()),
             port: u32::from(sa.port()),
         }
     }
 }
 
-// ===== impl common::scheme::Type =====
+// ===== impl tap::scheme::Type =====
 
-impl common::scheme::Type {
+impl tap::scheme::Type {
     pub fn try_to_string(&self) -> Result<String, InvalidScheme> {
-        use self::common::scheme::*;
+        use self::tap::scheme::*;
 
         match *self {
             Type::Registered(reg) => if reg == Registered::Http.into() {
@@ -208,11 +208,11 @@ impl common::scheme::Type {
     }
 }
 
-// ===== impl common::HttpMethod =====
+// ===== impl tap::HttpMethod =====
 
-impl common::http_method::Type {
+impl tap::http_method::Type {
     pub fn try_as_http(&self) -> Result<http::Method, InvalidMethod> {
-        use self::common::http_method::*;
+        use self::tap::http_method::*;
         use http::HttpTryFrom;
 
         match *self {
@@ -244,9 +244,9 @@ impl common::http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for common::http_method::Type {
+impl<'a> From<&'a http::Method> for tap::http_method::Type {
     fn from(m: &'a http::Method) -> Self {
-        use self::common::http_method::*;
+        use self::tap::http_method::*;
 
         match *m {
             http::Method::GET => Type::Registered(Registered::Get.into()),
@@ -262,9 +262,9 @@ impl<'a> From<&'a http::Method> for common::http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for common::HttpMethod {
+impl<'a> From<&'a http::Method> for tap::HttpMethod {
     fn from(m: &'a http::Method) -> Self {
-        common::HttpMethod {
+        tap::HttpMethod {
             type_: Some(m.into()),
         }
     }
@@ -285,17 +285,17 @@ impl Error for InvalidMethod {
     }
 }
 
-// ===== impl common::Scheme =====
+// ===== impl tap::Scheme =====
 
-impl<'a> From<&'a http::uri::Scheme> for common::Scheme {
+impl<'a> From<&'a http::uri::Scheme> for tap::Scheme {
     fn from(scheme: &'a http::uri::Scheme) -> Self {
         scheme.as_ref().into()
     }
 }
 
-impl<'a> From<&'a str> for common::scheme::Type {
+impl<'a> From<&'a str> for tap::scheme::Type {
     fn from(s: &'a str) -> Self {
-        use self::common::scheme::*;
+        use self::tap::scheme::*;
 
         match s {
             "http" => Type::Registered(Registered::Http.into()),
@@ -305,9 +305,9 @@ impl<'a> From<&'a str> for common::scheme::Type {
     }
 }
 
-impl<'a> From<&'a str> for common::Scheme {
+impl<'a> From<&'a str> for tap::Scheme {
     fn from(s: &'a str) -> Self {
-        common::Scheme {
+        tap::Scheme {
             type_: Some(s.into()),
         }
     }

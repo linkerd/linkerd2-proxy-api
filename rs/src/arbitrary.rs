@@ -4,7 +4,7 @@ use std::boxed::Box;
 
 use quickcheck::*;
 
-use super::common::*;
+use super::net::*;
 use super::tap::*;
 
 impl Arbitrary for ObserveRequest {

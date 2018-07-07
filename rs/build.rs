@@ -6,11 +6,11 @@ fn main() {
 
 fn build_control() {
     let iface_files = &[
-        "../../proto/common.proto",
-        "../../proto/proxy/destination.proto",
-        "../../proto/proxy/tap.proto"
+        "../proto/destination.proto",
+        "../proto/net.proto",
+        "../proto/tap.proto"
     ];
-    let dirs = &["../../proto"];
+    let dirs = &["../proto"];
 
     tower_grpc_build::Config::new()
         .enable_client(true)

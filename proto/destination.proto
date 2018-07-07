@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package conduit.proxy.destination;
+package io.linkerd.proxy.destination;
 
-import "common.proto";
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/destination";
 
-option go_package = "github.com/runconduit/conduit/controller/gen/proxy/destination";
+import "net.proto";
 
 /// Destination Service ///
 //
@@ -46,7 +46,12 @@ option go_package = "github.com/runconduit/conduit/controller/gen/proxy/destinat
 service Destination {
   // Given a destination, return all addresses in that destination as a long-
   // running stream of updates.
-  rpc Get(common.Destination) returns (stream Update) {}
+  rpc Get(GetDestination) returns (stream Update) {}
+}
+
+message GetDestination {
+  string scheme = 1;
+  string path = 2;
 }
 
 message Update {
@@ -68,7 +73,7 @@ message Update {
 }
 
 message AddrSet {
-  repeated common.TcpAddress addrs = 1;
+  repeated net.TcpAddress addrs = 1;
 }
 
 message WeightedAddrSet {
@@ -77,7 +82,7 @@ message WeightedAddrSet {
 }
 
 message WeightedAddr {
-  common.TcpAddress addr = 1;
+  net.TcpAddress addr = 1;
   uint32 weight = 3;
   map<string, string> metric_labels = 4;
   TlsIdentity tls_identity = 5;
