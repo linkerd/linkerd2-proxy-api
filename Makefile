@@ -14,7 +14,7 @@ ifndef TEST_FLAKEY
 endif
 CARGO_TEST = $(CARGO) test --frozen $(RELEASE) $(TEST_FLAGS)
 
-CURL = curl -v
+CURL = curl -s
 GIT = git
 UNZIP = unzip
 
