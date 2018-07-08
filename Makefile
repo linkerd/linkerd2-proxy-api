@@ -15,6 +15,7 @@ endif
 CARGO_TEST = $(CARGO) test --frozen $(RELEASE) $(TEST_FLAGS)
 
 CURL=curl
+GIT=git
 UNZIP=unzip
 
 GO=go
@@ -70,6 +71,10 @@ go: Gopkg.lock $(PROTOC)
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
+
+.PHONY: check-go
+check-go: go
+	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go |wc -l)
 
 .PHONY: all
 all: go rs

@@ -1,0 +1,27 @@
+---
+dist: trusty
+sudo: false
+
+branches:
+  only:
+    - master
+
+jobs:
+  include:
+    - language: rust
+      script: make rs
+      rust: stable
+      cache: cargo
+
+    - language: go
+      go: "1.10.2"
+      go_import_path: github.com/linkerd/linkerd2-proxy-api
+      cache:
+        directories:
+          - vendor
+      install: make Gopkg.lock
+      script: make check-go
+
+notifications:
+  email:
+    on_success: never
