@@ -14,19 +14,19 @@ ifndef TEST_FLAKEY
 endif
 CARGO_TEST = $(CARGO) test --frozen $(RELEASE) $(TEST_FLAGS)
 
-CURL=curl
-GIT=git
-UNZIP=unzip
+CURL = curl -v
+GIT = git
+UNZIP = unzip
 
-GO=go
-DEP_VERSION=0.4.1
-DEP_BASE_URL=https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
-DEP=target/dep-$(DEP_VERSION)
+GO = go
+DEP_VERSION = 0.4.1
+DEP_BASE_URL = https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
+DEP = target/dep-$(DEP_VERSION)
 
-PROTOC_VERSION=3.6.0
-PROTOC_BASE_URL=https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
-PROTOC=target/protoc-$(PROTOC_VERSION)
-PROTOC_GO=$(PROTOC) -I proto --go_out="plugins=grpc:$(GOPATH)/src"
+PROTOC_VERSION = 3.6.0
+PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
+PROTOC = target/protoc-$(PROTOC_VERSION)
+PROTOC_GO = $(PROTOC) -I proto --go_out="plugins=grpc:$(GOPATH)/src"
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -46,7 +46,7 @@ else
 endif
 
 $(PROTOC):
-	$(CURL) -Lso $(PROTOC).zip $(PROTOC_URL)
+	$(CURL) -Lo $(PROTOC).zip $(PROTOC_URL)
 	$(UNZIP) -p $(PROTOC).zip bin/protoc >$(PROTOC)
 	rm $(PROTOC).zip
 	chmod 755 $(PROTOC)
