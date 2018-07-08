@@ -18,8 +18,8 @@ jobs:
       go_import_path: github.com/linkerd/linkerd2-proxy-api
       cache:
         directories:
+          - target
           - vendor
-      install: make Gopkg.lock
       script: make check-go
 
 notifications:
