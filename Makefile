@@ -68,7 +68,7 @@ Gopkg.lock: Gopkg.toml $(DEP)
 .PHONY: go
 go: Gopkg.lock $(PROTOC)
 	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
-	cd go && rm -rf *
+	rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
