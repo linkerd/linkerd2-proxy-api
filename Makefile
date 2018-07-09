@@ -62,11 +62,12 @@ Cargo.lock: Cargo.toml rs/Cargo.toml
 rs: Cargo.lock
 	$(CARGO_TEST)
 
-Gopkg.lock: Gopkg.toml $(DEP)
+.PHONY: godep
+godep: Gopkg.toml $(DEP)
 	$(DEP) ensure
 
 .PHONY: go
-go: Gopkg.lock $(PROTOC)
+go: godep $(PROTOC)
 	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
 	rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
