@@ -1,35 +1,44 @@
-PROTOC_VERSION=3.6.0
-PROTOC_BASE_URL=https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
-PROTOC=./.protoc-$(PROTOC_VERSION)
-PROTOC_GO=$(PROTOC) -I proto --go_out="plugins=grpc:$(GOPATH)/src"
+TARGET = target/debug
+ifdef CARGO_RELEASE
+	RELEASE = --release
+	TARGET = target/release
+endif
 
-CARGO=cargo
+CARGO = cargo
+ifdef CARGO_VERBOSE
+	CARGO = cargo --verbose
+endif
 
-CURL=curl
+ifndef TEST_FLAKEY
+	TEST_FLAGS = --no-default-features
+endif
+CARGO_TEST = $(CARGO) test --frozen $(RELEASE) $(TEST_FLAGS)
 
-GO=go
-DEP_VERSION=0.4.1
-DEP_BASE_URL=https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
-DEP=./.dep-$(DEP_VERSION)
+CURL = curl -s
+GIT = git
+UNZIP = unzip
 
-UNZIP=unzip
-CHMOD=chmod
-RM=rm
+GO = go
+DEP_VERSION = 0.4.1
+DEP_BASE_URL = https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
+DEP = target/dep-$(DEP_VERSION)
+
+PROTOC_VERSION = 3.6.0
+PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
+PROTOC = target/protoc-$(PROTOC_VERSION)
+PROTOC_GO = $(PROTOC) -I proto --go_out="plugins=grpc:$(GOPATH)/src"
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
-	PROTOC_OS=linux
 	DEP_URL=$(DEP_BASE_URL)/dep-linux-amd64
 	PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-linux-x86_64.zip
 else
 	ifeq ($(UNAME_S), Darwin)
-		PROTOC_OS=osx
 		DEP_URL=$(DEP_BASE_URL)/dep-darwin-amd64
 		PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-osx-x86_64.zip
 	else
 		UNAME_O := $(shell uname -o)
 		ifeq ($(UNAME_O), Msys)
-			PROTOC_OS = osx
 			DEP_URL=$(DEP_BASE_URL)/dep-windows-amd64.exe
 			PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-win32.zip
 		endif
@@ -37,29 +46,36 @@ else
 endif
 
 $(PROTOC):
-	$(CURL) -Lso $(PROTOC).zip $(PROTOC_URL)
+	$(CURL) -Lo $(PROTOC).zip $(PROTOC_URL)
 	$(UNZIP) -p $(PROTOC).zip bin/protoc >$(PROTOC)
-	$(RM) $(PROTOC).zip
-	$(CHMOD) 755 $(PROTOC)
+	rm $(PROTOC).zip
+	chmod 755 $(PROTOC)
 
 $(DEP):
 	$(CURL) -Lso $(DEP) $(DEP_URL)
-	$(CHMOD) 755 $(DEP)
+	chmod 755 $(DEP)
+
+Cargo.lock: Cargo.toml rs/Cargo.toml
+	$(CARGO) fetch
 
 .PHONY: rs
-rs: proto
-	$(CARGO) test -p linkerd2-proxy-api
+rs: Cargo.lock
+	$(CARGO_TEST)
 
-Gopkg.lock: $(DEP) Gopkg.toml
+Gopkg.lock: Gopkg.toml $(DEP)
 	$(DEP) ensure
 
-vendor: Gopkg.lock
-	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
-
 .PHONY: go
-go: vendor proto $(PROTOC)
+go: Gopkg.lock $(PROTOC)
+	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
+	rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
 
+.PHONY: check-go
+check-go: go
+	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go |wc -l)
+
+.PHONY: all
 all: go rs

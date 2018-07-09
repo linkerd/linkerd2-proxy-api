@@ -1,0 +1,2 @@
+Gopkg.lock linguist-generated=false
+go/**/*.pb.go linguist-generated=true
