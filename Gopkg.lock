@@ -8,6 +8,7 @@
     "protoc-gen-go",
     "protoc-gen-go/descriptor",
     "protoc-gen-go/generator",
+    "protoc-gen-go/generator/internal/remap",
     "protoc-gen-go/grpc",
     "protoc-gen-go/plugin",
     "ptypes",
@@ -15,7 +16,8 @@
     "ptypes/duration",
     "ptypes/timestamp"
   ]
-  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -93,6 +95,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1d6bc9a4ed1d54752d377e35d9c0a456d43b20e4bfe683a76c711d4396ace935"
+  inputs-digest = "08c1067ee7d6167cff41542f264e384712bb5704ac9bc2393605d03099e5b997"
   solver-name = "gps-cdcl"
   solver-version = 1
