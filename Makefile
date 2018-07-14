@@ -46,12 +46,14 @@ else
 endif
 
 $(PROTOC):
+	mkdir -p $(TARGET)
 	$(CURL) -Lo $(PROTOC).zip $(PROTOC_URL)
 	$(UNZIP) -p $(PROTOC).zip bin/protoc >$(PROTOC)
 	rm $(PROTOC).zip
 	chmod 755 $(PROTOC)
 
 $(DEP):
+	mkdir -p $(TARGET)
 	$(CURL) -Lso $(DEP) $(DEP_URL)
 	chmod 755 $(DEP)
 
