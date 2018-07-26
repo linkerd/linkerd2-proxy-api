@@ -86,6 +86,7 @@ message WeightedAddr {
   uint32 weight = 3;
   map<string, string> metric_labels = 4;
   TlsIdentity tls_identity = 5;
+  ProtocolHint protocol_hint = 6;
 }
 
 // Which strategy should be used for verifying TLS.
@@ -106,4 +107,16 @@ message TlsIdentity {
 
 message NoEndpoints {
   bool exists = 1;
+}
+
+// A hint of what protocol the service knows. The default value is
+// for the `hint` field to be not be set, essentially meaning "unknown".
+message ProtocolHint {
+  oneof protocol {
+    // Hints that the service understands HTTP2 and the proxy's internal
+    // http2-upgrade mechanism.
+    H2 h2 = 1;
+  }
+
+  message H2 {}
 }
