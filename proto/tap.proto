@@ -6,6 +6,7 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/tap";
 
 import "google/protobuf/duration.proto";
 
+import "http_types.proto";
 import "net.proto";
 
 // A service exposed by proxy instances to setup
@@ -68,11 +69,11 @@ message ObserveRequest {
 
     message Http {
       oneof match {
-        Scheme     scheme    = 1;
-        HttpMethod method    = 3;
-        StringMatch       authority = 2;
-        StringMatch       path      = 4;
-        // TODO Header    header    = 4;
+        http_types.Scheme     scheme    = 1;
+        http_types.HttpMethod method    = 3;
+        StringMatch           authority = 2;
+        StringMatch           path      = 4;
+        // TODO Header        header    = 4;
       }
 
       message StringMatch {
@@ -82,37 +83,6 @@ message ObserveRequest {
         }
       }
     }
-  }
-}
-
-message HttpMethod {
-  enum Registered {
-    GET = 0;
-    POST = 1;
-    PUT = 2;
-    DELETE = 3;
-    PATCH = 4;
-    OPTIONS = 5;
-    CONNECT = 6;
-    HEAD = 7;
-    TRACE = 8;
-  }
-
-  oneof type {
-    Registered registered = 1;
-    string unregistered = 2;
-  }
-}
-
-message Scheme {
-  enum Registered {
-    HTTP = 0;
-    HTTPS = 1;
-  }
-
-  oneof type {
-    Registered registered = 1;
-    string unregistered = 2;
   }
 }
 
@@ -162,8 +132,8 @@ message TapEvent {
 
     message RequestInit {
       StreamId id = 1;
-      HttpMethod method =  2;
-      Scheme scheme = 3;
+      http_types.HttpMethod method =  2;
+      http_types.Scheme scheme = 3;
       string authority = 4;
       string path = 5;
       // TODO headers

@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.profile;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/profile";
+
+import "google/protobuf/duration.proto";
+
+import "http_types.proto";
+
+message ServiceProfile {
+  // A list of request polcies, each with a RequestMatch.  If a request matches
+  // more than one RequestPolicy, the first match wins.
+  repeated RequestPolicy request_policies = 1;
+  RetryBudget retry_budget = 2;
+  google.protobuf.Duration default_retry_timeout = 3;
+}
+
+message RetryBudget {
+  // The maximum ratio of retries to non-retry requests.  For example if this
+  // value is 0.2 then the number of retries is at most 20% of the number of
+  // non-retry requests.  This can be thought of as the amount of extra load
+  // added by retries (e.g. 20% extra load).
+  float32 max_retry_ratio = 1;
+}
+
+message RequestPolicy {
+  // This policy applies to requests that match this condition.
+  RequestMatch condition = 1;
+  // Responses that match this condition will be considered successful.  All
+  // other responses will be considered failures.
+  ResponseMatch success_condition = 2;
+  // Failure responses that match this condition may be retried.
+  ResponseMatch retry_condition = 3;
+  // If this duration has elapsed since the request was initiated, do not
+  // attempt any more retries.  If unset, use the service profile's 
+  // default_retry_timeout.
+  google.protobuf.Duration retry_timeout = 4;
+}
+
+message RequestMatch {
+  message Seq {
+    repeated RequestMatch matches = 1;
+  }
+
+  oneof match {
+    Seq all = 1;
+    Seq any = 2;
+    Match not = 3;
+
+    // Match if the request path matches this regex.
+    string path  = 4;
+    http_types.HttpMethod method = 5;
+    //TODO: match on arbitrary header
+  }
+}
+
+message ResponseMatch {
+  message Seq {
+    repeated ResponseMatch matches = 1;
+  }
+
+  oneof match {
+    Seq all = 1;
+    Seq any = 2;
+    Match not = 3;
+
+    HttpStatusMatch status  = 4;
+    //TODO: match on arbitrary header or trailer
+  }
+}
+
+message HttpStatusMatch {
+  oneof match {
+    // Match if the status equals this.
+    uint32 equal = 1;
+    // Match if the status does not equal this.
+    uint32 not_equal = 2;
+    // Match if the status is greater than this.
+    uint32 greater_than = 3;
+    // Match if the status is less than this.
+    uint32 less_than = 4;
+  }
+}
