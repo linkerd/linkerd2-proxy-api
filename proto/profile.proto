@@ -21,7 +21,7 @@ message RetryBudget {
   // value is 0.2 then the number of retries is at most 20% of the number of
   // non-retry requests.  This can be thought of as the amount of extra load
   // added by retries (e.g. 20% extra load).
-  float32 max_retry_ratio = 1;
+  float max_retry_ratio = 1;
 }
 
 message RequestPolicy {
@@ -46,7 +46,7 @@ message RequestMatch {
   oneof match {
     Seq all = 1;
     Seq any = 2;
-    Match not = 3;
+    RequestMatch not = 3;
 
     // Match if the request path matches this regex.
     string path  = 4;
@@ -63,7 +63,7 @@ message ResponseMatch {
   oneof match {
     Seq all = 1;
     Seq any = 2;
-    Match not = 3;
+    ResponseMatch not = 3;
 
     HttpStatusMatch status  = 4;
     //TODO: match on arbitrary header or trailer

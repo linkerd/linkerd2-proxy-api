@@ -27,6 +27,10 @@ mod gen {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.http_types.rs"));
     }
 
+    pub mod profile {
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.profile.rs"));
+    }
+
     pub mod destination {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.destination.rs"));
     }

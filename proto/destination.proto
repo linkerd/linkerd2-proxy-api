@@ -72,7 +72,7 @@ message Update {
     NoEndpoints no_endpoints = 3;
 
     // Set the service profile, replacing the previous profile if there was one.
-    ServiceProfile profile = 4;
+    profile.ServiceProfile profile = 4;
   }
 }
 
