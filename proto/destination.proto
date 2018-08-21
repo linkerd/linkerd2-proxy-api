@@ -5,7 +5,6 @@ package io.linkerd.proxy.destination;
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/destination";
 
 import "net.proto";
-import "profile.proto";
 
 /// Destination Service ///
 //
@@ -70,9 +69,6 @@ message Update {
     // `no_endpoints(exists: true)` indicates that the service does exist and
     // the client MUST NOT fall back to an alternate service discovery method.
     NoEndpoints no_endpoints = 3;
-
-    // Set the service profile, replacing the previous profile if there was one.
-    profile.ServiceProfile profile = 4;
   }
 }
 

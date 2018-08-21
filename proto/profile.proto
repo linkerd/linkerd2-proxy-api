@@ -7,6 +7,13 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/profile";
 import "google/protobuf/duration.proto";
 
 import "http_types.proto";
+import "destination.proto";
+
+service Profile {
+  // Given a destination, return that service's profile and send an update
+  // whenever it changes.
+  rpc Get(destination.GetDestination) returns (stream ServiceProfile) {}
+}
 
 message ServiceProfile {
   // A list of request polcies, each with a RequestMatch.  If a request matches
@@ -65,20 +72,18 @@ message ResponseMatch {
     Seq any = 2;
     ResponseMatch not = 3;
 
-    HttpStatusMatch status  = 4;
+    HttpStatusRange status  = 4;
     //TODO: match on arbitrary header or trailer
   }
 }
 
-message HttpStatusMatch {
+// If either a minimum or maximum is not specified, the range is considered to be
+// over a discrete value.
+message HttpStatusRange {
   oneof match {
-    // Match if the status equals this.
-    uint32 equal = 1;
-    // Match if the status does not equal this.
-    uint32 not_equal = 2;
-    // Match if the status is greater than this.
-    uint32 greater_than = 3;
-    // Match if the status is less than this.
-    uint32 less_than = 4;
+    // Minimum matching http status code (inclusive), if specified.
+    uint32 min = 1;
+    // Maximum matching http status code (inclusive), if specified.
+    uint32 max = 2;
   }
 }
