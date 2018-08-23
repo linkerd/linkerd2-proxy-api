@@ -19,6 +19,8 @@ message ServiceProfile {
   // A list of request polcies, each with a RequestMatch.  If a request matches
   // more than one RequestPolicy, the first match wins.
   repeated RequestPolicy request_policies = 1;
+  // Retry budget describes how much additional load is acceptable to send to
+  // this service from retries.
   RetryBudget retry_budget = 2;
   google.protobuf.Duration default_retry_timeout = 3;
 }
@@ -29,20 +31,38 @@ message RetryBudget {
   // non-retry requests.  This can be thought of as the amount of extra load
   // added by retries (e.g. 20% extra load).
   float max_retry_ratio = 1;
+  // The duration over which the retry budget is calculated.  For example, if
+  // this value is 10 seconds, then in the past 10 seconds it must be true that:
+  //
+  // #retries <= #requests*max_retry_ratio + additional_retries_per_second*10
+  //
+  // Increasing the duration over which this is calculated allows for larger
+  // bursts of retries.
+  google.protobuf.Duration ttl = 2;
+  // This amount of retries per second are allowed in addition to the ones
+  // allowed by the max_retry_ratio.  This is to allow retries to happen even
+  // when the request rate is low.
+  uint32 additional_retries_per_second = 3;
 }
 
 message RequestPolicy {
   // This policy applies to requests that match this condition.
   RequestMatch condition = 1;
-  // Responses that match this condition will be considered successful.  All
-  // other responses will be considered failures.
-  ResponseMatch success_condition = 2;
-  // Failure responses that match this condition may be retried.
-  ResponseMatch retry_condition = 3;
-  // If this duration has elapsed since the request was initiated, do not
-  // attempt any more retries.  If unset, use the service profile's 
+  repeated ResponsePolicy response_policies = 2;
+  // After this duration has elapsed since the initial request, no more retries
+  // will be attempted.  If unspecified, this defaults to the service profile's
   // default_retry_timeout.
-  google.protobuf.Duration retry_timeout = 4;
+  google.protobuf.Duration retry_timeout = 3;
+}
+
+message ResponsePolicy {
+  // This policy applies to responses that match this condition.
+  ResponseMatch condition = 1;
+  string description = 2;
+  // If responses that match this policy should be considered failures.
+  bool failure = 3;
+  // If responses that match this policy are safe to retry.
+  bool retryably = 4;
 }
 
 message RequestMatch {
