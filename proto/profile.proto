@@ -16,9 +16,9 @@ service Profile {
 }
 
 message ServiceProfile {
-  // A list of request polcies, each with a RequestMatch.  If a request matches
-  // more than one RequestPolicy, the first match wins.
-  repeated RequestPolicy request_policies = 1;
+  // A list of request classes, each with a RequestMatch.  If a request matches
+  // more than one RequestClass, the first match wins.
+  repeated RequestClass request_classes = 1;
   // Retry budget describes how much additional load is acceptable to send to
   // this service from retries.
   RetryBudget retry_budget = 2;
@@ -45,24 +45,27 @@ message RetryBudget {
   uint32 additional_retries_per_second = 3;
 }
 
-message RequestPolicy {
-  // This policy applies to requests that match this condition.
+message RequestClass {
+  // This class contains requests which match this condition.
   RequestMatch condition = 1;
-  repeated ResponsePolicy response_policies = 2;
+  // A list of response classes for this request class.  If a response matches
+  // more than one ResponseClass, the first match wins.  If a response does not
+  // match any ResponseClasses, it is considered to be a successful response.
+  repeated ResponseClass response_classes = 2;
   // After this duration has elapsed since the initial request, no more retries
   // will be attempted.  If unspecified, this defaults to the service profile's
   // default_retry_timeout.
   google.protobuf.Duration retry_timeout = 3;
 }
 
-message ResponsePolicy {
-  // This policy applies to responses that match this condition.
+message ResponseClass {
+  // This class contains responses which match this condition.
   ResponseMatch condition = 1;
   string description = 2;
-  // If responses that match this policy should be considered failures.
+  // If responses in this class should be considered failures.
   bool failure = 3;
-  // If responses that match this policy are safe to retry.
-  bool retryably = 4;
+  // If responses in this class are safe to retry.
+  bool retryable = 4;
 }
 
 message RequestMatch {
