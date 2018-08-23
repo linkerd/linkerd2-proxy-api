@@ -61,11 +61,10 @@ message RequestClass {
 message ResponseClass {
   // This class contains responses which match this condition.
   ResponseMatch condition = 1;
-  string description = 2;
   // If responses in this class should be considered failures.
-  bool failure = 3;
+  bool is_failure = 2;
   // If responses in this class are safe to retry.
-  bool retryable = 4;
+  bool is_retryable = 3;
 }
 
 message RequestMatch {
