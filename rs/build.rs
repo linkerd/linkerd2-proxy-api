@@ -9,7 +9,6 @@ fn build_control() {
         "../proto/destination.proto",
         "../proto/http_types.proto",
         "../proto/net.proto",
-        "../proto/profile.proto",
         "../proto/tap.proto"
     ];
     let dirs = &["../proto"];

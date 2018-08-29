@@ -75,7 +75,6 @@ go: godep $(PROTOC)
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/net.proto
-	$(PROTOC_GO) proto/profile.proto
 	$(PROTOC_GO) proto/tap.proto
 
 .PHONY: check-go
