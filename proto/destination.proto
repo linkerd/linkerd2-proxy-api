@@ -144,7 +144,8 @@ message Route {
 message ResponseClass {
   // This class contains responses which match this condition.
   ResponseMatch condition = 1;
-  // If responses in this class should be considered failures.
+  // If responses in this class should be considered failures.  This defaults
+  // to false (success).
   bool is_failure = 2;
 }
 
