@@ -53,7 +53,7 @@ message ObserveRequest {
       message Netmask {
         net.IPAddress ip = 1;
 
-        uint32 mask =2;
+        uint32 mask = 2;
       }
 
       // If either a minimum or maximum is not specified, the range is considered to be
