@@ -590,7 +590,8 @@ func (m *Route) GetResponseClasses() []*ResponseClass {
 type ResponseClass struct {
 	// This class contains responses which match this condition.
 	Condition *ResponseMatch `protobuf:"bytes,1,opt,name=condition" json:"condition,omitempty"`
-	// If responses in this class should be considered failures.
+	// If responses in this class should be considered failures.  This defaults
+	// to false (success).
 	IsFailure bool `protobuf:"varint,2,opt,name=is_failure,json=isFailure" json:"is_failure,omitempty"`
 }
 
