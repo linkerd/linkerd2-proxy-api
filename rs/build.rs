@@ -7,6 +7,7 @@ fn main() {
 fn build_control() {
     let iface_files = &[
         "../proto/destination.proto",
+        "../proto/http_types.proto",
         "../proto/net.proto",
         "../proto/tap.proto"
     ];

@@ -23,6 +23,10 @@ mod gen {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.net.rs"));
     }
 
+    pub mod http_types {
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.http_types.rs"));
+    }
+
     pub mod destination {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.destination.rs"));
     }
@@ -189,11 +193,11 @@ impl<'a> From<&'a ::std::net::SocketAddr> for net::TcpAddress {
     }
 }
 
-// ===== impl tap::scheme::Type =====
+// ===== impl http_types::scheme::Type =====
 
-impl tap::scheme::Type {
+impl http_types::scheme::Type {
     pub fn try_to_string(&self) -> Result<String, InvalidScheme> {
-        use self::tap::scheme::*;
+        use self::http_types::scheme::*;
 
         match *self {
             Type::Registered(reg) => if reg == Registered::Http.into() {
@@ -208,11 +212,11 @@ impl tap::scheme::Type {
     }
 }
 
-// ===== impl tap::HttpMethod =====
+// ===== impl http::HttpMethod =====
 
-impl tap::http_method::Type {
+impl http_types::http_method::Type {
     pub fn try_as_http(&self) -> Result<http::Method, InvalidMethod> {
-        use self::tap::http_method::*;
+        use self::http_types::http_method::*;
         use http::HttpTryFrom;
 
         match *self {
@@ -244,9 +248,9 @@ impl tap::http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for tap::http_method::Type {
+impl<'a> From<&'a http::Method> for http_types::http_method::Type {
     fn from(m: &'a http::Method) -> Self {
-        use self::tap::http_method::*;
+        use self::http_types::http_method::*;
 
         match *m {
             http::Method::GET => Type::Registered(Registered::Get.into()),
@@ -262,9 +266,9 @@ impl<'a> From<&'a http::Method> for tap::http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for tap::HttpMethod {
+impl<'a> From<&'a http::Method> for http_types::HttpMethod {
     fn from(m: &'a http::Method) -> Self {
-        tap::HttpMethod {
+        http_types::HttpMethod {
             type_: Some(m.into()),
         }
     }
@@ -285,17 +289,17 @@ impl Error for InvalidMethod {
     }
 }
 
-// ===== impl tap::Scheme =====
+// ===== impl http_types::Scheme =====
 
-impl<'a> From<&'a http::uri::Scheme> for tap::Scheme {
+impl<'a> From<&'a http::uri::Scheme> for http_types::Scheme {
     fn from(scheme: &'a http::uri::Scheme) -> Self {
         scheme.as_ref().into()
     }
 }
 
-impl<'a> From<&'a str> for tap::scheme::Type {
+impl<'a> From<&'a str> for http_types::scheme::Type {
     fn from(s: &'a str) -> Self {
-        use self::tap::scheme::*;
+        use self::http_types::scheme::*;
 
         match s {
             "http" => Type::Registered(Registered::Http.into()),
@@ -305,9 +309,9 @@ impl<'a> From<&'a str> for tap::scheme::Type {
     }
 }
 
-impl<'a> From<&'a str> for tap::Scheme {
+impl<'a> From<&'a str> for http_types::Scheme {
     fn from(s: &'a str) -> Self {
-        tap::Scheme {
+        http_types::Scheme {
             type_: Some(s.into()),
         }
     }

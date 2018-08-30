@@ -4,6 +4,7 @@ package io.linkerd.proxy.destination;
 
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/destination";
 
+import "http_types.proto";
 import "net.proto";
 
 /// Destination Service ///
@@ -47,6 +48,10 @@ service Destination {
   // Given a destination, return all addresses in that destination as a long-
   // running stream of updates.
   rpc Get(GetDestination) returns (stream Update) {}
+
+  // Given a destination, return that destination's profile and send an update
+  // whenever it changes.
+  rpc GetProfile(GetDestination) returns (stream DestinationProfile) {}
 }
 
 message GetDestination {
@@ -120,3 +125,74 @@ message ProtocolHint {
 
   message H2 {}
 }
+
+message DestinationProfile {
+  // A list of routes, each with a RequestMatch.  If a request matches
+  // more than one route, the first match wins.
+  repeated Route routes = 1;
+}
+
+message Route {
+  // This route contains requests which match this condition.
+  RequestMatch condition = 1;
+  // A list of response classes for this route.  If a response matches
+  // more than one ResponseClass, the first match wins.  If a response does not
+  // match any ResponseClasses, it is considered to be a successful response.
+  repeated ResponseClass response_classes = 2;
+}
+
+message ResponseClass {
+  // This class contains responses which match this condition.
+  ResponseMatch condition = 1;
+  // If responses in this class should be considered failures.  This defaults
+  // to false (success).
+  bool is_failure = 2;
+}
+
+message RequestMatch {
+  message Seq {
+    repeated RequestMatch matches = 1;
+  }
+
+  oneof match {
+    Seq all = 1;
+    Seq any = 2;
+    RequestMatch not = 3;
+
+    PathMatch path  = 4;
+    http_types.HttpMethod method = 5;
+    //TODO: match on arbitrary header
+  }
+}
+
+message PathMatch {
+  // Match if the request path matches this regex.
+  string regex = 1;
+}
+
+message ResponseMatch {
+  message Seq {
+    repeated ResponseMatch matches = 1;
+  }
+
+  oneof match {
+    Seq all = 1;
+    Seq any = 2;
+    ResponseMatch not = 3;
+
+    HttpStatusRange status  = 4;
+    //TODO: match on arbitrary header or trailer
+  }
+}
+
+// If either a minimum or maximum is not specified, the range is considered to be
+// over a discrete value.
+message HttpStatusRange {
+  oneof match {
+    // Minimum matching http status code (inclusive), if specified.
+    uint32 min = 1;
+    // Maximum matching http status code (inclusive), if specified.
+    uint32 max = 2;
+  }
+}
+

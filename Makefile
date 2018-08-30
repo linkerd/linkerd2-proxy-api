@@ -73,6 +73,7 @@ go: godep $(PROTOC)
 	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
 	rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
+	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
 
