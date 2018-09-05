@@ -19,7 +19,7 @@ GIT = git
 UNZIP = unzip
 
 GO = go
-DEP_VERSION = 0.4.1
+DEP_VERSION = 0.5.0
 DEP_BASE_URL = https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
 DEP = target/dep-$(DEP_VERSION)
 
