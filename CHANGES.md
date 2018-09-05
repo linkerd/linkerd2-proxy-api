@@ -1,3 +1,10 @@
+## v0.1.2
+
+* `io.linkerd.proxy.destination`
+  * Add destination profile API to destination service
+* Go
+  * Upgrade protobuf to v1.2.0, dep to v0.5.0
+
 ## v0.1.1
 
 * `io.linkerd.proxy.destination`
