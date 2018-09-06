@@ -188,11 +188,9 @@ message ResponseMatch {
 // If either a minimum or maximum is not specified, the range is considered to be
 // over a discrete value.
 message HttpStatusRange {
-  oneof match {
-    // Minimum matching http status code (inclusive), if specified.
-    uint32 min = 1;
-    // Maximum matching http status code (inclusive), if specified.
-    uint32 max = 2;
-  }
+  // Minimum matching http status code (inclusive), if specified.
+  uint32 min = 1;
+  // Maximum matching http status code (inclusive), if specified.
+  uint32 max = 2;
 }
 
