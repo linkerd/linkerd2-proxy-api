@@ -139,6 +139,8 @@ message Route {
   // more than one ResponseClass, the first match wins.  If a response does not
   // match any ResponseClasses, it is considered to be a successful response.
   repeated ResponseClass response_classes = 2;
+  // Metric labels to attach to requests and responses that match this route.
+  map<string, string> metrics_labels = 3;
 }
 
 message ResponseClass {
