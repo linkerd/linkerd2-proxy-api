@@ -4,6 +4,7 @@ use std::boxed::Box;
 
 use quickcheck::*;
 
+use super::http_types::*;
 use super::net::*;
 use super::tap::*;
 
