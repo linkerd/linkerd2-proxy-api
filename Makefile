@@ -9,10 +9,7 @@ ifdef CARGO_VERBOSE
 	CARGO = cargo --verbose
 endif
 
-ifndef TEST_FLAKEY
-	TEST_FLAGS = --no-default-features
-endif
-CARGO_TEST = $(CARGO) test --frozen $(RELEASE) $(TEST_FLAGS)
+CARGO_TEST = $(CARGO) test --frozen $(RELEASE) --all-features
 
 CURL = curl -s
 GIT = git
