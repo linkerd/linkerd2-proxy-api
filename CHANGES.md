@@ -1,3 +1,8 @@
+## v0.1.3
+
+* Add metrics labels to routes
+* Fix rust compilation for 'arbitrary' feature
+
 ## v0.1.2
 
 * `io.linkerd.proxy.destination`
