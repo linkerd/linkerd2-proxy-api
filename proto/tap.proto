@@ -36,6 +36,7 @@ message ObserveRequest {
       Http http = 6;
 
       Label destination_label = 7;
+      Label route_label = 8;
     }
 
     message Label {
@@ -97,6 +98,8 @@ message TapEvent {
   net.TcpAddress source      = 1;
   EndpointMeta   source_meta = 5;
 
+  RouteMeta      route_meta =  7;
+
   net.TcpAddress destination      = 2;
   EndpointMeta   destination_meta = 4;
 
@@ -112,6 +115,10 @@ message TapEvent {
   }
 
   message EndpointMeta {
+    map<string, string> labels = 1;
+  }
+
+  message RouteMeta {
     map<string, string> labels = 1;
   }
 
