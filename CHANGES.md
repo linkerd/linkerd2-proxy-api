@@ -1,3 +1,7 @@
+## v0.1.4
+
+* Add Route metadata to Tap queries and events.
+
 ## v0.1.3
 
 * Add metrics labels to routes
