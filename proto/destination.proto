@@ -136,8 +136,8 @@ message DestinationProfile {
   // as retries.  Failured requets on retryable routes will not be retried if
   // there is no available budget.
   RetryBudget retry_budget = 2;
-  // The retry timeout to use if none is specified by the route.
-  google.protobuf.Duration default_retry_timeout = 3;
+  // The timeout to use if none is specified by the route.
+  google.protobuf.Duration default_timeout = 3;
 }
 
 message Route {
@@ -152,9 +152,10 @@ message Route {
   // If a route is retryable, any failed requests on that route may be retried
   // by the proxy.
   bool is_retryable = 4;
-  // After this time has elapsed since receiving the initial request, no more
-  // retries will be attempted.
-  google.protobuf.Duration retry_timeout = 5;
+  // After this time has elapsed since receiving the initial request, any
+  // outstanding request will be cancelled, a timeout error response will be
+  // returned, and no more retries will be attempted.
+  google.protobuf.Duration timeout = 5;
 }
 
 message RetryBudget {
