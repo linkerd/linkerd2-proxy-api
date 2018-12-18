@@ -133,7 +133,7 @@ message DestinationProfile {
   // more than one route, the first match wins.
   repeated Route routes = 1;
   // The retry budget controls how much additional load the proxy can generate
-  // as retries.  Failured requets on retryable routes will not be retried if
+  // as retries.  Failured requests on retryable routes will not be retried if
   // there is no available budget.
   RetryBudget retry_budget = 2;
 }
@@ -163,7 +163,7 @@ message RetryBudget {
   // would violate the retry_ratio.  This is to allow retries to happen even
   // when the request rate is very low.
   uint32 min_retries_per_second = 2;
-  // This duraiton indicate for how long requests should be considered for the
+  // This duration indicates for how long requests should be considered for the
   // purposes of enforcing the retry_ratio.  A higher value considers a larger
   // window and therefore allows burstier retries.
   google.protobuf.Duration ttl = 3;

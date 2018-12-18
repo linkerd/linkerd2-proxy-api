@@ -38,7 +38,7 @@ func (m *GetDestination) Reset()         { *m = GetDestination{} }
 func (m *GetDestination) String() string { return proto.CompactTextString(m) }
 func (*GetDestination) ProtoMessage()    {}
 func (*GetDestination) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{0}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{0}
 }
 func (m *GetDestination) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetDestination.Unmarshal(m, b)
@@ -87,7 +87,7 @@ func (m *Update) Reset()         { *m = Update{} }
 func (m *Update) String() string { return proto.CompactTextString(m) }
 func (*Update) ProtoMessage()    {}
 func (*Update) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{1}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{1}
 }
 func (m *Update) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Update.Unmarshal(m, b)
@@ -261,7 +261,7 @@ func (m *AddrSet) Reset()         { *m = AddrSet{} }
 func (m *AddrSet) String() string { return proto.CompactTextString(m) }
 func (*AddrSet) ProtoMessage()    {}
 func (*AddrSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{2}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{2}
 }
 func (m *AddrSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddrSet.Unmarshal(m, b)
@@ -300,7 +300,7 @@ func (m *WeightedAddrSet) Reset()         { *m = WeightedAddrSet{} }
 func (m *WeightedAddrSet) String() string { return proto.CompactTextString(m) }
 func (*WeightedAddrSet) ProtoMessage()    {}
 func (*WeightedAddrSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{3}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{3}
 }
 func (m *WeightedAddrSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WeightedAddrSet.Unmarshal(m, b)
@@ -349,7 +349,7 @@ func (m *WeightedAddr) Reset()         { *m = WeightedAddr{} }
 func (m *WeightedAddr) String() string { return proto.CompactTextString(m) }
 func (*WeightedAddr) ProtoMessage()    {}
 func (*WeightedAddr) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{4}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{4}
 }
 func (m *WeightedAddr) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WeightedAddr.Unmarshal(m, b)
@@ -418,7 +418,7 @@ func (m *TlsIdentity) Reset()         { *m = TlsIdentity{} }
 func (m *TlsIdentity) String() string { return proto.CompactTextString(m) }
 func (*TlsIdentity) ProtoMessage()    {}
 func (*TlsIdentity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{5}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{5}
 }
 func (m *TlsIdentity) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TlsIdentity.Unmarshal(m, b)
@@ -533,7 +533,7 @@ func (m *TlsIdentity_K8SPodIdentity) Reset()         { *m = TlsIdentity_K8SPodId
 func (m *TlsIdentity_K8SPodIdentity) String() string { return proto.CompactTextString(m) }
 func (*TlsIdentity_K8SPodIdentity) ProtoMessage()    {}
 func (*TlsIdentity_K8SPodIdentity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{5, 0}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{5, 0}
 }
 func (m *TlsIdentity_K8SPodIdentity) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TlsIdentity_K8SPodIdentity.Unmarshal(m, b)
@@ -578,7 +578,7 @@ func (m *NoEndpoints) Reset()         { *m = NoEndpoints{} }
 func (m *NoEndpoints) String() string { return proto.CompactTextString(m) }
 func (*NoEndpoints) ProtoMessage()    {}
 func (*NoEndpoints) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{6}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{6}
 }
 func (m *NoEndpoints) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NoEndpoints.Unmarshal(m, b)
@@ -620,7 +620,7 @@ func (m *ProtocolHint) Reset()         { *m = ProtocolHint{} }
 func (m *ProtocolHint) String() string { return proto.CompactTextString(m) }
 func (*ProtocolHint) ProtoMessage()    {}
 func (*ProtocolHint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{7}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{7}
 }
 func (m *ProtocolHint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProtocolHint.Unmarshal(m, b)
@@ -729,7 +729,7 @@ func (m *ProtocolHint_H2) Reset()         { *m = ProtocolHint_H2{} }
 func (m *ProtocolHint_H2) String() string { return proto.CompactTextString(m) }
 func (*ProtocolHint_H2) ProtoMessage()    {}
 func (*ProtocolHint_H2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{7, 0}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{7, 0}
 }
 func (m *ProtocolHint_H2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProtocolHint_H2.Unmarshal(m, b)
@@ -754,7 +754,7 @@ type DestinationProfile struct {
 	// more than one route, the first match wins.
 	Routes []*Route `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
 	// The retry budget controls how much additional load the proxy can generate
-	// as retries.  Failured requets on retryable routes will not be retried if
+	// as retries.  Failured requests on retryable routes will not be retried if
 	// there is no available budget.
 	RetryBudget          *RetryBudget `protobuf:"bytes,2,opt,name=retry_budget,json=retryBudget,proto3" json:"retry_budget,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
@@ -766,7 +766,7 @@ func (m *DestinationProfile) Reset()         { *m = DestinationProfile{} }
 func (m *DestinationProfile) String() string { return proto.CompactTextString(m) }
 func (*DestinationProfile) ProtoMessage()    {}
 func (*DestinationProfile) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{8}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{8}
 }
 func (m *DestinationProfile) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DestinationProfile.Unmarshal(m, b)
@@ -821,7 +821,7 @@ func (m *Route) Reset()         { *m = Route{} }
 func (m *Route) String() string { return proto.CompactTextString(m) }
 func (*Route) ProtoMessage()    {}
 func (*Route) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{9}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{9}
 }
 func (m *Route) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Route.Unmarshal(m, b)
@@ -880,7 +880,7 @@ type RetryBudget struct {
 	// would violate the retry_ratio.  This is to allow retries to happen even
 	// when the request rate is very low.
 	MinRetriesPerSecond uint32 `protobuf:"varint,2,opt,name=min_retries_per_second,json=minRetriesPerSecond,proto3" json:"min_retries_per_second,omitempty"`
-	// This duraiton indicate for how long requests should be considered for the
+	// This duration indicates for how long requests should be considered for the
 	// purposes of enforcing the retry_ratio.  A higher value considers a larger
 	// window and therefore allows burstier retries.
 	Ttl                  *duration.Duration `protobuf:"bytes,3,opt,name=ttl,proto3" json:"ttl,omitempty"`
@@ -893,7 +893,7 @@ func (m *RetryBudget) Reset()         { *m = RetryBudget{} }
 func (m *RetryBudget) String() string { return proto.CompactTextString(m) }
 func (*RetryBudget) ProtoMessage()    {}
 func (*RetryBudget) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{10}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{10}
 }
 func (m *RetryBudget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RetryBudget.Unmarshal(m, b)
@@ -949,7 +949,7 @@ func (m *ResponseClass) Reset()         { *m = ResponseClass{} }
 func (m *ResponseClass) String() string { return proto.CompactTextString(m) }
 func (*ResponseClass) ProtoMessage()    {}
 func (*ResponseClass) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{11}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{11}
 }
 func (m *ResponseClass) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseClass.Unmarshal(m, b)
@@ -1000,7 +1000,7 @@ func (m *RequestMatch) Reset()         { *m = RequestMatch{} }
 func (m *RequestMatch) String() string { return proto.CompactTextString(m) }
 func (*RequestMatch) ProtoMessage()    {}
 func (*RequestMatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{12}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{12}
 }
 func (m *RequestMatch) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequestMatch.Unmarshal(m, b)
@@ -1238,7 +1238,7 @@ func (m *RequestMatch_Seq) Reset()         { *m = RequestMatch_Seq{} }
 func (m *RequestMatch_Seq) String() string { return proto.CompactTextString(m) }
 func (*RequestMatch_Seq) ProtoMessage()    {}
 func (*RequestMatch_Seq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{12, 0}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{12, 0}
 }
 func (m *RequestMatch_Seq) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequestMatch_Seq.Unmarshal(m, b)
@@ -1277,7 +1277,7 @@ func (m *PathMatch) Reset()         { *m = PathMatch{} }
 func (m *PathMatch) String() string { return proto.CompactTextString(m) }
 func (*PathMatch) ProtoMessage()    {}
 func (*PathMatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{13}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{13}
 }
 func (m *PathMatch) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PathMatch.Unmarshal(m, b)
@@ -1320,7 +1320,7 @@ func (m *ResponseMatch) Reset()         { *m = ResponseMatch{} }
 func (m *ResponseMatch) String() string { return proto.CompactTextString(m) }
 func (*ResponseMatch) ProtoMessage()    {}
 func (*ResponseMatch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{14}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{14}
 }
 func (m *ResponseMatch) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseMatch.Unmarshal(m, b)
@@ -1526,7 +1526,7 @@ func (m *ResponseMatch_Seq) Reset()         { *m = ResponseMatch_Seq{} }
 func (m *ResponseMatch_Seq) String() string { return proto.CompactTextString(m) }
 func (*ResponseMatch_Seq) ProtoMessage()    {}
 func (*ResponseMatch_Seq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{14, 0}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{14, 0}
 }
 func (m *ResponseMatch_Seq) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseMatch_Seq.Unmarshal(m, b)
@@ -1569,7 +1569,7 @@ func (m *HttpStatusRange) Reset()         { *m = HttpStatusRange{} }
 func (m *HttpStatusRange) String() string { return proto.CompactTextString(m) }
 func (*HttpStatusRange) ProtoMessage()    {}
 func (*HttpStatusRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_destination_ef7705ce4d8621e4, []int{15}
+	return fileDescriptor_destination_fce70f9d3ab9ffbc, []int{15}
 }
 func (m *HttpStatusRange) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HttpStatusRange.Unmarshal(m, b)
@@ -1796,9 +1796,9 @@ var _Destination_serviceDesc = grpc.ServiceDesc{
 	Metadata: "destination.proto",
 }
 
-func init() { proto.RegisterFile("destination.proto", fileDescriptor_destination_ef7705ce4d8621e4) }
+func init() { proto.RegisterFile("destination.proto", fileDescriptor_destination_fce70f9d3ab9ffbc) }
 
-var fileDescriptor_destination_ef7705ce4d8621e4 = []byte{
+var fileDescriptor_destination_fce70f9d3ab9ffbc = []byte{
 	// 1183 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x57, 0xdb, 0x6e, 0x1b, 0x37,
 	0x10, 0xb5, 0xb4, 0xb6, 0x62, 0xcf, 0x4a, 0x8e, 0xc3, 0x16, 0x81, 0x2a, 0xf4, 0x92, 0x6c, 0x1a,
