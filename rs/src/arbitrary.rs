@@ -3,13 +3,14 @@
 use std::boxed::Box;
 
 use quickcheck::*;
+use rand::Rng;
 
 use super::http_types::*;
 use super::net::*;
 use super::tap::*;
 
 impl Arbitrary for ObserveRequest {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         ObserveRequest {
             limit: g.gen(),
             match_: Arbitrary::arbitrary(g),
@@ -18,7 +19,7 @@ impl Arbitrary for ObserveRequest {
 }
 
 impl Arbitrary for observe_request::Match {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::Match {
             match_: Arbitrary::arbitrary(g),
         }
@@ -26,7 +27,7 @@ impl Arbitrary for observe_request::Match {
 }
 
 impl Arbitrary for observe_request::match_::Match {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         match g.gen::<u32>() % 6 {
             0 => observe_request::match_::Match::All(Arbitrary::arbitrary(g)),
             1 => observe_request::match_::Match::Any(Arbitrary::arbitrary(g)),
@@ -40,7 +41,7 @@ impl Arbitrary for observe_request::match_::Match {
 }
 
 impl Arbitrary for observe_request::match_::Seq {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::Seq {
             matches: Arbitrary::arbitrary(g),
         }
@@ -56,7 +57,7 @@ impl Arbitrary for observe_request::match_::Seq {
 }
 
 impl Arbitrary for observe_request::match_::Label {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::Label {
             key: Arbitrary::arbitrary(g),
             value: Arbitrary::arbitrary(g),
@@ -65,7 +66,7 @@ impl Arbitrary for observe_request::match_::Label {
 }
 
 impl Arbitrary for observe_request::match_::Tcp {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::Tcp {
             match_: Arbitrary::arbitrary(g),
         }
@@ -73,7 +74,7 @@ impl Arbitrary for observe_request::match_::Tcp {
 }
 
 impl Arbitrary for observe_request::match_::tcp::Match {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         use self::observe_request::match_::tcp;
 
         if g.gen::<bool>() {
@@ -85,7 +86,7 @@ impl Arbitrary for observe_request::match_::tcp::Match {
 }
 
 impl Arbitrary for observe_request::match_::tcp::PortRange {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::tcp::PortRange {
             min: g.gen(),
             max: g.gen(),
@@ -94,7 +95,7 @@ impl Arbitrary for observe_request::match_::tcp::PortRange {
 }
 
 impl Arbitrary for observe_request::match_::tcp::Netmask {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         let ip: Option<IpAddress> = Arbitrary::arbitrary(g);
         let mask = match ip.as_ref().and_then(|a| a.ip.as_ref()) {
             Some(&ip_address::Ip::Ipv4(_)) => g.gen::<u32>() % 32 + 1,
@@ -109,7 +110,7 @@ impl Arbitrary for observe_request::match_::tcp::Netmask {
 }
 
 impl Arbitrary for observe_request::match_::Http {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::Http {
             match_: Arbitrary::arbitrary(g),
         }
@@ -117,7 +118,7 @@ impl Arbitrary for observe_request::match_::Http {
 }
 
 impl Arbitrary for observe_request::match_::http::Match {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         use self::observe_request::match_::http;
 
         match g.gen::<u32>() % 4 {
@@ -131,7 +132,7 @@ impl Arbitrary for observe_request::match_::http::Match {
 }
 
 impl Arbitrary for observe_request::match_::http::StringMatch {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         observe_request::match_::http::StringMatch {
             match_: Arbitrary::arbitrary(g),
         }
@@ -139,7 +140,7 @@ impl Arbitrary for observe_request::match_::http::StringMatch {
 }
 
 impl Arbitrary for observe_request::match_::http::string_match::Match {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         use self::observe_request::match_::http::string_match;
 
         match g.gen::<u32>() % 2 {
@@ -151,7 +152,7 @@ impl Arbitrary for observe_request::match_::http::string_match::Match {
 }
 
 impl Arbitrary for IpAddress {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         IpAddress {
             ip: Arbitrary::arbitrary(g),
         }
@@ -159,7 +160,7 @@ impl Arbitrary for IpAddress {
 }
 
 impl Arbitrary for ip_address::Ip {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         if g.gen::<bool>() {
             ip_address::Ip::Ipv4(g.gen())
         } else {
@@ -169,7 +170,7 @@ impl Arbitrary for ip_address::Ip {
 }
 
 impl Arbitrary for IPv6 {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         IPv6 {
             first: g.gen(),
             last: g.gen(),
@@ -178,7 +179,7 @@ impl Arbitrary for IPv6 {
 }
 
 impl Arbitrary for HttpMethod {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         HttpMethod {
             type_: Arbitrary::arbitrary(g),
         }
@@ -186,7 +187,7 @@ impl Arbitrary for HttpMethod {
 }
 
 impl Arbitrary for http_method::Type {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         match g.gen::<u16>() % 9 {
             8 => http_method::Type::Unregistered(String::arbitrary(g)),
             n => http_method::Type::Registered(i32::from(n).into()),
@@ -195,7 +196,7 @@ impl Arbitrary for http_method::Type {
 }
 
 impl Arbitrary for Scheme {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         Scheme {
             type_: Arbitrary::arbitrary(g),
         }
@@ -203,7 +204,7 @@ impl Arbitrary for Scheme {
 }
 
 impl Arbitrary for scheme::Type {
-    fn arbitrary<G: Gen>(g: &mut G) -> Self {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
         match g.gen::<u16>() % 3 {
             3 => scheme::Type::Unregistered(String::arbitrary(g)),
             n => scheme::Type::Registered(i32::from(n).into()),

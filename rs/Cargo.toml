@@ -6,7 +6,7 @@ publish = false
 
 [features]
 default = []
-arbitrary = ["quickcheck"]
+arbitrary = ["quickcheck", "rand"]
 
 [dependencies]
 bytes = "0.4"
@@ -19,8 +19,8 @@ prost-types = "0.4.0"
 
 tower-grpc = { git = "https://github.com/tower-rs/tower-grpc", default-features = false, features = ["protobuf"] }
 
-quickcheck = { version = "0.6", default-features = false, optional = true }
-
+quickcheck = { version = "0.8", default-features = false, optional = true }
+rand = { version = "0.6", optional = true }
 
 [build-dependencies]
 tower-grpc-build = { git = "https://github.com/tower-rs/tower-grpc", default-features = false }

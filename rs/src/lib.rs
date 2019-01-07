@@ -6,6 +6,8 @@ extern crate prost_derive;
 extern crate prost_types;
 #[cfg(feature = "arbitrary")]
 extern crate quickcheck;
+#[cfg(feature = "arbitrary")]
+extern crate rand;
 extern crate tower_grpc;
 
 use std::fmt;
