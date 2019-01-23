@@ -150,6 +150,10 @@ message Route {
   // If a route is retryable, any failed requests on that route may be retried
   // by the proxy.
   bool is_retryable = 4;
+  // After this time has elapsed since receiving the initial request, any
+  // outstanding request will be cancelled, a timeout error response will be
+  // returned, and no more retries will be attempted.
+  google.protobuf.Duration timeout = 5;
 }
 
 message RetryBudget {
