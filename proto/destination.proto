@@ -53,12 +53,22 @@ service Destination {
 
   // Given a destination, return that destination's profile and send an update
   // whenever it changes.
-  rpc GetProfile(GetDestination) returns (stream DestinationProfile) {}
+  rpc GetProfile(GetProfileRequest) returns (stream DestinationProfile) {}
 }
 
 message GetDestination {
   string scheme = 1;
   string path = 2;
+}
+
+message GetProfileRequest {
+  GetDestination dst = 1;
+  // This identifies the proxy which is requesting the profile.  The server may
+  // use this as context when deciding which profile to return.  For example,
+  // the server may look for the profile in the client's namespace.
+  // For proxies running in Kubernetes, the format of this id should be
+  // "<pod>.<namespace>".
+  string clientId = 2;
 }
 
 message Update {
