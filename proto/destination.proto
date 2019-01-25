@@ -181,6 +181,35 @@ message ResponseClass {
   bool is_failure = 2;
 }
 
+message HeaderMatch {
+  string header_name = 1;
+
+  enum OperationType {
+    // The header must have exactly one value and it must satisfy the match.
+    EQUALS = 0;
+    // The header must contain at least one value that satisfies the match.
+    CONTAINS = 1;
+  }
+  OperationType operation = 2;
+
+  oneof match {
+    // Satisfied if the header exists.
+    bool exists = 3;
+    // Satisfied if the header value equals this exactly.
+    string string_eq = 4;
+    // Satisfied if the header value matches this regex.
+    string string_regex = 5;
+    // Satisfied if the header value is an integer with exactly this value.
+    uint64 int_eq = 6;
+    // Satisfied if the header value is an integer and is greater than or equal
+    // to this value.
+    uint64 int_geq = 7;
+    // Satisfied if the header value is an integer and is less than or equal to
+    // this value.
+    uint64 int_leq = 8;
+  }
+}
+
 message RequestMatch {
   message Seq {
     repeated RequestMatch matches = 1;
@@ -193,7 +222,9 @@ message RequestMatch {
 
     PathMatch path  = 4;
     http_types.HttpMethod method = 5;
-    //TODO: match on arbitrary header
+    // Only initial request headers are considered when evaluating a request
+    // header match (not trailers).
+    HeaderMatch header = 6;
   }
 }
 
@@ -213,7 +244,9 @@ message ResponseMatch {
     ResponseMatch not = 3;
 
     HttpStatusRange status  = 4;
-    //TODO: match on arbitrary header or trailer
+    // Both response headers and response trailers are considered when
+    // evaluating a response header match.
+    HeaderMatch header = 5;
   }
 }
 
