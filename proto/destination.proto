@@ -59,13 +59,10 @@ service Destination {
 message GetDestination {
   string scheme = 1;
   string path = 2;
-  // This identifies the proxy which is requesting the profile.  The server may
-  // use this as context when deciding which profile to return.  For example,
-  // the server may look for the profile in the client's namespace.
-  // For proxies running in Kubernetes, the format of this id should be
-  // "<pod>.<namespace>".
-  string client_id = 3;
-
+  // This identifies the proxy which is making the request.  The server may use
+  // this as context processing the request.  For example, the server may look
+  // for service profiles in the proxy's namespace.
+  string proxy_id = 3;
 }
 
 message Update {
