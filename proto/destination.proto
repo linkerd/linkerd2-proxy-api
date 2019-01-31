@@ -59,6 +59,10 @@ service Destination {
 message GetDestination {
   string scheme = 1;
   string path = 2;
+  // This identifies the proxy which is making the request.  The server may use
+  // this as context processing the request.  For example, the server may look
+  // for service profiles in the proxy's namespace.
+  string proxy_id = 3;
 }
 
 message Update {
