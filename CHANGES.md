@@ -1,3 +1,11 @@
+## v0.1.6
+
+* Add proxy_id field to Get and GetProfile methods.
+
+## v0.1.5
+
+* Add retryability and timeouts to destination profiles.
+
 ## v0.1.4
 
 * Add Route metadata to Tap queries and events.
