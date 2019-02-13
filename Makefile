@@ -71,6 +71,7 @@ go: godep $(PROTOC)
 	rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
+	$(PROTOC_GO) proto/identity.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
 

@@ -109,6 +109,7 @@
     "github.com/golang/protobuf/proto",
     "github.com/golang/protobuf/protoc-gen-go",
     "github.com/golang/protobuf/ptypes/duration",
+    "github.com/golang/protobuf/ptypes/timestamp",
     "golang.org/x/net/context",
     "google.golang.org/grpc",
   ]
