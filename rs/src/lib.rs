@@ -33,6 +33,10 @@ mod gen {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.destination.rs"));
     }
 
+    pub mod identity {
+        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.identity.rs"));
+    }
+
     pub mod tap {
         include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.tap.rs"));
     }
