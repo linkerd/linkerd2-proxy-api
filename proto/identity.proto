@@ -33,7 +33,8 @@ message CertifyResponse {
   // A PEM-encoded x509 Certificate.
   bytes leaf_certificate = 1;
 
-  // A list of PEM-encoded x509 Certificates of intermediate signing certificates.
+  // A list of PEM-encoded x509 Certificates that establish the trust chain
+  // between the leaf_certificate and the well-known trust anchors.
   repeated bytes intermediate_certificates = 2;
 
   google.protobuf.Timestamp valid_until = 3;
