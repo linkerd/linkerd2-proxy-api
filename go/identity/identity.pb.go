@@ -41,7 +41,7 @@ func (m *CertifyRequest) Reset()         { *m = CertifyRequest{} }
 func (m *CertifyRequest) String() string { return proto.CompactTextString(m) }
 func (*CertifyRequest) ProtoMessage()    {}
 func (*CertifyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_identity_9e0a590fd588564f, []int{0}
+	return fileDescriptor_identity_6e4256bddd2bbdea, []int{0}
 }
 func (m *CertifyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CertifyRequest.Unmarshal(m, b)
@@ -85,7 +85,8 @@ func (m *CertifyRequest) GetCertificateSigningRequest() []byte {
 type CertifyResponse struct {
 	// A PEM-encoded x509 Certificate.
 	LeafCertificate []byte `protobuf:"bytes,1,opt,name=leaf_certificate,json=leafCertificate,proto3" json:"leaf_certificate,omitempty"`
-	// A list of PEM-encoded x509 Certificates of intermediate signing certificates.
+	// A list of PEM-encoded x509 Certificates that establish the trust chain
+	// between the leaf_certificate and the well-known trust anchors.
 	IntermediateCertificates [][]byte             `protobuf:"bytes,2,rep,name=intermediate_certificates,json=intermediateCertificates,proto3" json:"intermediate_certificates,omitempty"`
 	ValidUntil               *timestamp.Timestamp `protobuf:"bytes,3,opt,name=valid_until,json=validUntil,proto3" json:"valid_until,omitempty"`
 	XXX_NoUnkeyedLiteral     struct{}             `json:"-"`
@@ -97,7 +98,7 @@ func (m *CertifyResponse) Reset()         { *m = CertifyResponse{} }
 func (m *CertifyResponse) String() string { return proto.CompactTextString(m) }
 func (*CertifyResponse) ProtoMessage()    {}
 func (*CertifyResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_identity_9e0a590fd588564f, []int{1}
+	return fileDescriptor_identity_6e4256bddd2bbdea, []int{1}
 }
 func (m *CertifyResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CertifyResponse.Unmarshal(m, b)
@@ -229,9 +230,9 @@ var _Identity_serviceDesc = grpc.ServiceDesc{
 	Metadata: "identity.proto",
 }
 
-func init() { proto.RegisterFile("identity.proto", fileDescriptor_identity_9e0a590fd588564f) }
+func init() { proto.RegisterFile("identity.proto", fileDescriptor_identity_6e4256bddd2bbdea) }
 
-var fileDescriptor_identity_9e0a590fd588564f = []byte{
+var fileDescriptor_identity_6e4256bddd2bbdea = []byte{
 	// 331 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x41, 0x4f, 0xfa, 0x40,
 	0x10, 0xc5, 0xff, 0x85, 0xfc, 0x15, 0x17, 0x02, 0x66, 0xe3, 0xa1, 0xd4, 0x0b, 0xe1, 0x04, 0x26,
