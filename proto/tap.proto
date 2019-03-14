@@ -21,6 +21,9 @@ message ObserveRequest {
   // Encodes request-matching logic.
   Match match = 2;
 
+  bool request_body = 3;
+  bool response_body = 4;
+
   message Match {
     message Seq {
       repeated Match matches = 1;
@@ -54,7 +57,7 @@ message ObserveRequest {
       message Netmask {
         net.IPAddress ip = 1;
 
-        uint32 mask =2;
+        uint32 mask = 2;
       }
 
       // If either a minimum or maximum is not specified, the range is considered to be
@@ -127,6 +130,8 @@ message TapEvent {
       RequestInit  request_init  = 1;
       ResponseInit response_init = 2;
       ResponseEnd  response_end  = 3;
+      RequestData  request_data  = 4;
+      ResponseData response_data = 5;
     }
 
     message StreamId {
@@ -152,6 +157,27 @@ message TapEvent {
       google.protobuf.Duration since_request_init = 2;
 
       uint32 http_status = 3;
+    }
+
+    message RequestData {
+      StreamId id = 1;
+
+      bytes data = 2;
+      bool eos = 3;
+
+
+      google.protobuf.Duration since_request_init = 4;
+    }
+
+    message ResponseData {
+      StreamId id = 1;
+
+      bytes data = 2;
+      bool eos = 3;
+
+
+      google.protobuf.Duration since_request_init = 4;
+      google.protobuf.Duration since_response_init = 5;
     }
 
     message ResponseEnd {

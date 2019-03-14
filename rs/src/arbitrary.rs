@@ -14,6 +14,8 @@ impl Arbitrary for ObserveRequest {
         ObserveRequest {
             limit: g.gen(),
             match_: Arbitrary::arbitrary(g),
+            request_body: g.gen(),
+            response_body: g.gen(),
         }
     }
 }
