@@ -1,6 +1,12 @@
+## v0.1.7
+
+* Introduce a new Identity service.
+* destination: Deprecate `K8SPodIdentity` in favor of `DnsLikeIdentity`.
+* destination: Rename `proxy_id` field to `context_token`.
+
 ## v0.1.6
 
-* Add proxy_id field to Get and GetProfile methods.
+* Add `proxy_id` field to Get and GetProfile methods.
 
 ## v0.1.5
 
