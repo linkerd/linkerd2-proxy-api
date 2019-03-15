@@ -9,7 +9,7 @@ ifdef CARGO_VERBOSE
 	CARGO = cargo --verbose
 endif
 
-CARGO_TEST = $(CARGO) test --frozen $(RELEASE) --all-features
+CARGO_TEST = $(CARGO) test --locked $(RELEASE) --all-features
 
 CURL = curl -s
 GIT = git
