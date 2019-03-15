@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.identity;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/identity";
+
+import "google/protobuf/timestamp/timestamp.proto";
+
+service Identity {
+  // Requests that a time-bounded certificate be signed.
+  //
+  // The requester must provide a token that verifies the client's identity and
+  // a Certificate Signing Request that adheres to the service naming rules.
+  //
+  // Errors are returned when the provided request is invalid or when
+  // authentication cannot be performed.
+  rpc Certify(CertifyRequest) returns (CertifyResponse) {}
+}
+
+message CertifyRequest {
+  string identity = 1;
+
+  // Proof of the requester's identity.
+  //
+  // In Kubernetes, for instance, this is the contents of a service account token.
+  bytes token = 2;
+
+  // A PEM-encoded x509 Certificate Signing Request.
+  bytes certificate_signing_request = 3;
+}
+
+message CertifyResponse {
+  // A PEM-encoded x509 Certificate.
+  bytes leaf_certificate = 1;
+
+  // A list of PEM-encoded x509 Certificates that establish the trust chain
+  // between the leaf_certificate and the well-known trust anchors.
+  repeated bytes intermediate_certificates = 2;
+
+  google.protobuf.Timestamp valid_until = 3;
+}

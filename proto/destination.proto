@@ -59,10 +59,13 @@ service Destination {
 message GetDestination {
   string scheme = 1;
   string path = 2;
-  // This identifies the proxy which is making the request.  The server may use
-  // this as context processing the request.  For example, the server may look
-  // for service profiles in the proxy's namespace.
-  string proxy_id = 3;
+
+  // An opaque value that is set at injection-time and sent with destintion lookups.
+  //
+  // If, for instance, the token encodes a namespace or some locality
+  // information, the service may alter its results to take this locality into
+  // account.
+  string context_token = 3;
 }
 
 message Update {
@@ -102,17 +105,20 @@ message WeightedAddr {
 
 // Which strategy should be used for verifying TLS.
 message TlsIdentity {
+  reserved 2;
+  reserved "k8s_pod_identity";
+
   oneof strategy {
-    K8sPodIdentity k8s_pod_identity = 2;
+    DnsLikeIdentity dns_like_identity = 1;
   }
 
   // Verify the certificate based on the Kubernetes pod identity.
-  message K8sPodIdentity {
-    // The pod_identity string is of the format:
-    // {owner_name}.{owner_type}.{pod_ns}.linkerd-managed.{controller_ns}.svc.cluster.local
-    string pod_identity = 1;
-    // The Kubernetes namespace of the pod's Linkerd2 control plane.
-    string controller_ns = 2;
+  message DnsLikeIdentity {
+    // A DNS-like name that encodes workload coordinates.
+    //
+    // For example:
+    //    {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
+    string name = 1;
   }
 }
 
