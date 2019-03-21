@@ -1,8 +1,6 @@
 extern crate h2;
 extern crate http;
 extern crate prost;
-#[macro_use]
-extern crate prost_derive;
 extern crate prost_types;
 #[cfg(feature = "arbitrary")]
 extern crate quickcheck;
@@ -275,7 +273,7 @@ impl<'a> From<&'a http::Method> for http_types::http_method::Type {
 impl<'a> From<&'a http::Method> for http_types::HttpMethod {
     fn from(m: &'a http::Method) -> Self {
         http_types::HttpMethod {
-            type_: Some(m.into()),
+            r#type: Some(m.into()),
         }
     }
 }
@@ -318,7 +316,7 @@ impl<'a> From<&'a str> for http_types::scheme::Type {
 impl<'a> From<&'a str> for http_types::Scheme {
     fn from(s: &'a str) -> Self {
         http_types::Scheme {
-            type_: Some(s.into()),
+            r#type: Some(s.into()),
         }
     }
 }
