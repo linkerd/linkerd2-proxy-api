@@ -1,3 +1,7 @@
+## v0.1.8
+
+* Update Rust dependencies
+
 ## v0.1.7
 
 * Introduce a new Identity service.
