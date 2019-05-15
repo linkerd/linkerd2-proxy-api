@@ -151,19 +151,33 @@ message DestinationProfile {
 message Route {
   // This route contains requests which match this condition.
   RequestMatch condition = 1;
+
   // A list of response classes for this route.  If a response matches
   // more than one ResponseClass, the first match wins.  If a response does not
   // match any ResponseClasses, it is considered to be a successful response.
   repeated ResponseClass response_classes = 2;
+
   // Metric labels to attach to requests and responses that match this route.
   map<string, string> metrics_labels = 3;
+
   // If a route is retryable, any failed requests on that route may be retried
   // by the proxy.
   bool is_retryable = 4;
+
   // After this time has elapsed since receiving the initial request, any
   // outstanding request will be cancelled, a timeout error response will be
   // returned, and no more retries will be attempted.
   google.protobuf.Duration timeout = 5;
+
+  // A list of weighted delegate destinations. The proxy distributes requests
+  // over the destinations according to their weight.
+  repeated WeightedDelegate weighted_delegates = 6;
+}
+
+
+message WeightedDelegate {
+  string name = 1;
+  uint32 weight = 2;
 }
 
 message RetryBudget {
@@ -173,10 +187,12 @@ message RetryBudget {
   // every 1 regular request (in other words, total request load may be doubled
   // as a result of retries).
   float retry_ratio = 1;
+
   // The proxy may always attempt this number of retries per second, even if it
   // would violate the retry_ratio.  This is to allow retries to happen even
   // when the request rate is very low.
   uint32 min_retries_per_second = 2;
+
   // This duration indicates for how long requests should be considered for the
   // purposes of enforcing the retry_ratio.  A higher value considers a larger
   // window and therefore allows burstier retries.
@@ -186,6 +202,7 @@ message RetryBudget {
 message ResponseClass {
   // This class contains responses which match this condition.
   ResponseMatch condition = 1;
+
   // If responses in this class should be considered failures.  This defaults
   // to false (success).
   bool is_failure = 2;
