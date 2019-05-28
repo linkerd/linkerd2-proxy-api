@@ -146,6 +146,12 @@ message DestinationProfile {
   // as retries.  Failured requests on retryable routes will not be retried if
   // there is no available budget.
   RetryBudget retry_budget = 2;
+
+  // If this list is non-empty, traffic to this service should instead be split
+  // between the backends in this list.  Each backend should receive a portion
+  // of the traffic proportional to its weight.  If this list is empty, traffic
+  // should be sent to this service as normal.
+  repeated Backend traffic_split = 3;
 }
 
 message Route {
@@ -164,12 +170,6 @@ message Route {
   // outstanding request will be cancelled, a timeout error response will be
   // returned, and no more retries will be attempted.
   google.protobuf.Duration timeout = 5;
-
-  // If this list is non-empty, traffic to this service should instead be split
-  // between the backends in this list.  Each backend should receive a portion
-  // of the traffic proportional to its weight.  If this list is empty, traffic
-  // should be sent to this service as normal.
-  repeated Backend traffic_split = 6;
 }
 
 message RetryBudget {
