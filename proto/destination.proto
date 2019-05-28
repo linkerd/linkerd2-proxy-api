@@ -147,11 +147,11 @@ message DestinationProfile {
   // there is no available budget.
   RetryBudget retry_budget = 2;
 
-  // If this list is non-empty, traffic to this service should instead be split
-  // between the backends in this list.  Each backend should receive a portion
-  // of the traffic proportional to its weight.  If this list is empty, traffic
-  // should be sent to this service as normal.
-  repeated Backend traffic_split = 3;
+  // If this list is non-empty, requests to this destination should instead be
+  //split between the destinations in this list.  Each destination should
+  // receive a portion of the requests proportional to its weight.  If this list
+  // is empty, requests should be sent to this destination as normal.
+  repeated WeightedDst dst_overrides = 3;
 }
 
 message Route {
@@ -242,8 +242,12 @@ message HttpStatusRange {
   uint32 max = 2;
 }
 
-message Backend {
-  string service = 1;
+message WeightedDst {
+  // This authority will be used as the `path` in a call to the Destination.Get
+  // rpc.
+  string authority = 1;
+  // The proportion of requests to send to this destination.  This value is 
+  // relative to other weights in the same dst_overrides list.
   uint32 weight = 2;
 }
 
