@@ -16,7 +16,7 @@ service Tap {
 
 message ObserveRequest {
   // Limits the number of event keys that will be returned by this tap.
-  uint32 limit  = 1;
+  uint32 limit = 1;
 
   // Encodes request-matching logic.
   Match match = 2;
@@ -54,7 +54,7 @@ message ObserveRequest {
       message Netmask {
         net.IPAddress ip = 1;
 
-        uint32 mask =2;
+        uint32 mask = 2;
       }
 
       // If either a minimum or maximum is not specified, the range is considered to be
@@ -74,13 +74,23 @@ message ObserveRequest {
         http_types.HttpMethod method    = 3;
         StringMatch           authority = 2;
         StringMatch           path      = 4;
-        // TODO Header        header    = 4;
+        Header                header    = 5;
       }
 
       message StringMatch {
         oneof match {
           string exact  = 1;
           string prefix = 2;
+        }
+      }
+
+      message Header {
+        string name = 1;
+        oneof match {
+          string exact = 2; // Header has exactly one value and it equals this.
+          string regex = 3; // Header has exactly one value and it matches this regex.
+          string contains_exact = 4; // Header has at least one value which equals this.
+          string contains_regex = 5; // Header has at least one value which matches this regex.
         }
       }
     }
@@ -143,7 +153,7 @@ message TapEvent {
       http_types.Scheme scheme = 3;
       string authority = 4;
       string path = 5;
-      // TODO headers
+      map<string, string> headers = 6;
     }
 
     message ResponseInit {
