@@ -34,3 +34,12 @@ message Scheme {
     string unregistered = 2;
   }
 }
+
+message Headers {
+  message Header {
+    string name = 1;
+    bytes value = 2;
+  }
+
+  repeated Header headers = 1;
+}
