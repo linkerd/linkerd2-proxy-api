@@ -13,14 +13,13 @@ bytes = "0.4"
 futures = "0.1"
 h2 = "0.1"
 http = "0.1"
-prost = "0.5.0"
-prost-types = "0.5.0"
-
-tower-grpc = { git = "https://github.com/tower-rs/tower-grpc", default-features = false, features = ["protobuf"] }
+prost = "0.5"
+prost-types = "0.5"
+tower-grpc = "0.1"
 
 quickcheck = { version = "0.8", default-features = false, optional = true }
 rand = { version = "0.6", optional = true }
 
 [build-dependencies]
-tower-grpc-build = { git = "https://github.com/tower-rs/tower-grpc", default-features = false }
+tower-grpc-build = "0.1"
 
