@@ -21,6 +21,9 @@ message ObserveRequest {
   // Encodes request-matching logic.
   Match match = 2;
 
+  // Conditionally adds headers and trailers to requests and responses in tap events.
+  bool includeMetadata = 3;
+
   message Match {
     message Seq {
       repeated Match matches = 1;
