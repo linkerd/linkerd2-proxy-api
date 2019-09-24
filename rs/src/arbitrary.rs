@@ -14,6 +14,7 @@ impl Arbitrary for ObserveRequest {
         ObserveRequest {
             limit: g.gen(),
             r#match: Arbitrary::arbitrary(g),
+            include_metadata: false,
         }
     }
 }
@@ -48,11 +49,11 @@ impl Arbitrary for observe_request::r#match::Seq {
     }
 
     fn shrink(&self) -> Box<Iterator<Item = Self>> {
-        Box::new(self.matches.shrink().map(|matches| {
-            observe_request::r#match::Seq {
-                matches,
-            }
-        }))
+        Box::new(
+            self.matches
+                .shrink()
+                .map(|matches| observe_request::r#match::Seq { matches }),
+        )
     }
 }
 
@@ -102,10 +103,7 @@ impl Arbitrary for observe_request::r#match::tcp::Netmask {
             Some(&ip_address::Ip::Ipv6(_)) => g.gen::<u32>() % 128 + 1,
             None => 0u32,
         };
-        observe_request::r#match::tcp::Netmask {
-            ip,
-            mask,
-        }
+        observe_request::r#match::tcp::Netmask { ip, mask }
     }
 }
 
