@@ -14,7 +14,7 @@ impl Arbitrary for ObserveRequest {
         ObserveRequest {
             limit: g.gen(),
             r#match: Arbitrary::arbitrary(g),
-            include_metadata: false,
+            extract: Arbitrary::arbitrary(g),
         }
     }
 }
@@ -207,5 +207,39 @@ impl Arbitrary for scheme::Type {
             3 => scheme::Type::Unregistered(String::arbitrary(g)),
             n => scheme::Type::Registered(i32::from(n).into()),
         }
+    }
+}
+
+impl Arbitrary for observe_request::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::Extract {
+            extract: Arbitrary::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for observe_request::extract::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::Extract::Http(Arbitrary::arbitrary(g))
+    }
+}
+
+impl Arbitrary for observe_request::extract::Http {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::Http {
+            extract: Arbitrary::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for observe_request::extract::http::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::http::Extract::Headers(Arbitrary::arbitrary(g))
+    }
+}
+
+impl Arbitrary for observe_request::extract::http::Headers {
+    fn arbitrary<G: Gen + Rng>(_g: &mut G) -> Self {
+        Self {}
     }
 }

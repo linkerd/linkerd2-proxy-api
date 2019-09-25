@@ -21,9 +21,6 @@ message ObserveRequest {
   // Encodes request-matching logic.
   Match match = 2;
 
-  // Conditionally adds headers and trailers to requests and responses in tap events.
-  bool includeMetadata = 3;
-
   message Match {
     message Seq {
       repeated Match matches = 1;
@@ -86,6 +83,24 @@ message ObserveRequest {
           string prefix = 2;
         }
       }
+    }
+  }
+
+  // Conditionally extracts components from requests and responses to include
+  // in tap events
+  Extract extract = 3;
+
+  message Extract {
+    oneof extract {
+      Http http = 1;
+    }
+
+    message Http {
+      oneof extract {
+        Headers headers = 1;
+      }
+
+      message Headers {}
     }
   }
 }
