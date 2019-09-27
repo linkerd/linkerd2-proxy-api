@@ -85,6 +85,24 @@ message ObserveRequest {
       }
     }
   }
+
+  // Conditionally extracts components from requests and responses to include
+  // in tap events
+  Extract extract = 3;
+
+  message Extract {
+    oneof extract {
+      Http http = 1;
+    }
+
+    message Http {
+      oneof extract {
+        Headers headers = 1;
+      }
+
+      message Headers {}
+    }
+  }
 }
 
 message Eos {
@@ -143,7 +161,7 @@ message TapEvent {
       http_types.Scheme scheme = 3;
       string authority = 4;
       string path = 5;
-      // TODO headers
+      http_types.Headers headers = 6;
     }
 
     message ResponseInit {
@@ -152,6 +170,7 @@ message TapEvent {
       google.protobuf.Duration since_request_init = 2;
 
       uint32 http_status = 3;
+      http_types.Headers headers = 4;
     }
 
     message ResponseEnd {
@@ -162,6 +181,7 @@ message TapEvent {
       uint64 response_bytes = 4;
 
       Eos eos = 5;
+      http_types.Headers trailers = 6;
     }
   }
 }

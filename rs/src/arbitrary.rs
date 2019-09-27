@@ -14,6 +14,7 @@ impl Arbitrary for ObserveRequest {
         ObserveRequest {
             limit: g.gen(),
             r#match: Arbitrary::arbitrary(g),
+            extract: Arbitrary::arbitrary(g),
         }
     }
 }
@@ -48,11 +49,11 @@ impl Arbitrary for observe_request::r#match::Seq {
     }
 
     fn shrink(&self) -> Box<Iterator<Item = Self>> {
-        Box::new(self.matches.shrink().map(|matches| {
-            observe_request::r#match::Seq {
-                matches,
-            }
-        }))
+        Box::new(
+            self.matches
+                .shrink()
+                .map(|matches| observe_request::r#match::Seq { matches }),
+        )
     }
 }
 
@@ -102,10 +103,7 @@ impl Arbitrary for observe_request::r#match::tcp::Netmask {
             Some(&ip_address::Ip::Ipv6(_)) => g.gen::<u32>() % 128 + 1,
             None => 0u32,
         };
-        observe_request::r#match::tcp::Netmask {
-            ip,
-            mask,
-        }
+        observe_request::r#match::tcp::Netmask { ip, mask }
     }
 }
 
@@ -209,5 +207,39 @@ impl Arbitrary for scheme::Type {
             3 => scheme::Type::Unregistered(String::arbitrary(g)),
             n => scheme::Type::Registered(i32::from(n).into()),
         }
+    }
+}
+
+impl Arbitrary for observe_request::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::Extract {
+            extract: Arbitrary::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for observe_request::extract::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::Extract::Http(Arbitrary::arbitrary(g))
+    }
+}
+
+impl Arbitrary for observe_request::extract::Http {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::Http {
+            extract: Arbitrary::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for observe_request::extract::http::Extract {
+    fn arbitrary<G: Gen + Rng>(g: &mut G) -> Self {
+        observe_request::extract::http::Extract::Headers(Arbitrary::arbitrary(g))
+    }
+}
+
+impl Arbitrary for observe_request::extract::http::Headers {
+    fn arbitrary<G: Gen + Rng>(_g: &mut G) -> Self {
+        Self {}
     }
 }
