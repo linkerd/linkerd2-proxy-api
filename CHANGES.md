@@ -1,3 +1,12 @@
+## v0.1.10
+
+* Add headers and trailers to Tap events
+* Update tower-grpc to 0.1 from crates.io
+
+## v0.1.9
+
+* Add traffic split to profiles API
+
 ## v0.1.8
 
 * Update Rust dependencies
