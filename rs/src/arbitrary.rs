@@ -48,7 +48,7 @@ impl Arbitrary for observe_request::r#match::Seq {
         }
     }
 
-    fn shrink(&self) -> Box<Iterator<Item = Self>> {
+    fn shrink(&self) -> Box<dyn Iterator<Item = Self>> {
         Box::new(
             self.matches
                 .shrink()
