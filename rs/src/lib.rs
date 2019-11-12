@@ -1,20 +1,11 @@
-extern crate h2;
-extern crate http;
-extern crate prost;
-extern crate prost_types;
-#[cfg(feature = "arbitrary")]
-extern crate quickcheck;
-#[cfg(feature = "arbitrary")]
-extern crate rand;
-extern crate tower_grpc;
+#![deny(warnings, rust_2018_idioms)]
 
-use std::fmt;
+pub use self::gen::*;
 use std::error::Error;
+use std::fmt;
 
 #[cfg(feature = "arbitrary")]
 pub mod arbitrary;
-
-pub use self::gen::*;
 
 // The generated code requires two tiers of outer modules so that references between
 // modules resolve properly.
@@ -58,21 +49,16 @@ pub fn pb_duration(d: ::std::time::Duration) -> ::prost_types::Duration {
         d.subsec_nanos() as i32
     };
 
-    ::prost_types::Duration {
-        seconds,
-        nanos,
-    }
+    ::prost_types::Duration { seconds, nanos }
 }
 
 /// Indicates an HTTP Method could not be decoded.
 #[derive(Debug, Clone)]
 pub struct InvalidMethod;
 
-
 /// Indicates a URI Scheme could not be decoded.
 #[derive(Debug, Clone)]
 pub struct InvalidScheme;
-
 
 // ===== impl tap::Eos =====
 
@@ -120,7 +106,9 @@ impl From<::std::net::IpAddr> for net::IpAddress {
 impl From<[u8; 4]> for net::ip_address::Ip {
     fn from(octets: [u8; 4]) -> Self {
         net::ip_address::Ip::Ipv4(
-            u32::from(octets[0]) << 24 | u32::from(octets[1]) << 16 | u32::from(octets[2]) << 8
+            u32::from(octets[0]) << 24
+                | u32::from(octets[1]) << 16
+                | u32::from(octets[2]) << 8
                 | u32::from(octets[3]),
         )
     }
@@ -149,18 +137,23 @@ where
 
 impl From<[u8; 16]> for net::IPv6 {
     fn from(octets: [u8; 16]) -> Self {
-        let first = (u64::from(octets[0]) << 56) + (u64::from(octets[1]) << 48)
-            + (u64::from(octets[2]) << 40) + (u64::from(octets[3]) << 32)
-            + (u64::from(octets[4]) << 24) + (u64::from(octets[5]) << 16)
-            + (u64::from(octets[6]) << 8) + u64::from(octets[7]);
-        let last = (u64::from(octets[8]) << 56) + (u64::from(octets[9]) << 48)
-            + (u64::from(octets[10]) << 40) + (u64::from(octets[11]) << 32)
-            + (u64::from(octets[12]) << 24) + (u64::from(octets[13]) << 16)
-            + (u64::from(octets[14]) << 8) + u64::from(octets[15]);
-        Self {
-            first,
-            last,
-        }
+        let first = (u64::from(octets[0]) << 56)
+            + (u64::from(octets[1]) << 48)
+            + (u64::from(octets[2]) << 40)
+            + (u64::from(octets[3]) << 32)
+            + (u64::from(octets[4]) << 24)
+            + (u64::from(octets[5]) << 16)
+            + (u64::from(octets[6]) << 8)
+            + u64::from(octets[7]);
+        let last = (u64::from(octets[8]) << 56)
+            + (u64::from(octets[9]) << 48)
+            + (u64::from(octets[10]) << 40)
+            + (u64::from(octets[11]) << 32)
+            + (u64::from(octets[12]) << 24)
+            + (u64::from(octets[13]) << 16)
+            + (u64::from(octets[14]) << 8)
+            + u64::from(octets[15]);
+        Self { first, last }
     }
 }
 
@@ -204,13 +197,15 @@ impl http_types::scheme::Type {
         use self::http_types::scheme::*;
 
         match *self {
-            Type::Registered(reg) => if reg == Registered::Http.into() {
-                Ok("http".into())
-            } else if reg == Registered::Https.into() {
-                Ok("https".into())
-            } else {
-                Err(InvalidScheme)
-            },
+            Type::Registered(reg) => {
+                if reg == Registered::Http.into() {
+                    Ok("http".into())
+                } else if reg == Registered::Https.into() {
+                    Ok("https".into())
+                } else {
+                    Err(InvalidScheme)
+                }
+            }
             Type::Unregistered(ref s) => Ok(s.clone()),
         }
     }
@@ -224,27 +219,29 @@ impl http_types::http_method::Type {
         use http::HttpTryFrom;
 
         match *self {
-            Type::Registered(reg) => if reg == Registered::Get.into() {
-                Ok(http::Method::GET)
-            } else if reg == Registered::Post.into() {
-                Ok(http::Method::POST)
-            } else if reg == Registered::Put.into() {
-                Ok(http::Method::PUT)
-            } else if reg == Registered::Delete.into() {
-                Ok(http::Method::DELETE)
-            } else if reg == Registered::Patch.into() {
-                Ok(http::Method::PATCH)
-            } else if reg == Registered::Options.into() {
-                Ok(http::Method::OPTIONS)
-            } else if reg == Registered::Connect.into() {
-                Ok(http::Method::CONNECT)
-            } else if reg == Registered::Head.into() {
-                Ok(http::Method::HEAD)
-            } else if reg == Registered::Trace.into() {
-                Ok(http::Method::TRACE)
-            } else {
-                Err(InvalidMethod)
-            },
+            Type::Registered(reg) => {
+                if reg == Registered::Get.into() {
+                    Ok(http::Method::GET)
+                } else if reg == Registered::Post.into() {
+                    Ok(http::Method::POST)
+                } else if reg == Registered::Put.into() {
+                    Ok(http::Method::PUT)
+                } else if reg == Registered::Delete.into() {
+                    Ok(http::Method::DELETE)
+                } else if reg == Registered::Patch.into() {
+                    Ok(http::Method::PATCH)
+                } else if reg == Registered::Options.into() {
+                    Ok(http::Method::OPTIONS)
+                } else if reg == Registered::Connect.into() {
+                    Ok(http::Method::CONNECT)
+                } else if reg == Registered::Head.into() {
+                    Ok(http::Method::HEAD)
+                } else if reg == Registered::Trace.into() {
+                    Ok(http::Method::TRACE)
+                } else {
+                    Err(InvalidMethod)
+                }
+            }
             Type::Unregistered(ref m) => {
                 HttpTryFrom::try_from(m.as_str()).map_err(|_| InvalidMethod)
             }
@@ -281,7 +278,7 @@ impl<'a> From<&'a http::Method> for http_types::HttpMethod {
 // ===== impl InvalidMethod =====
 
 impl fmt::Display for InvalidMethod {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "invalid http method")
     }
 }
@@ -324,7 +321,7 @@ impl<'a> From<&'a str> for http_types::Scheme {
 // ===== impl InvalidScheme =====
 
 impl fmt::Display for InvalidScheme {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "invalid http scheme")
     }
 }

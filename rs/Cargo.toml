@@ -3,6 +3,7 @@ name = "linkerd2-proxy-api"
 version = "0.1.10"
 authors = ["Oliver Gould <ver@buoyant.io>"]
 publish = false
+edition = "2018"
 
 [features]
 default = []
@@ -17,8 +18,9 @@ prost = "0.5"
 prost-types = "0.5"
 tower-grpc = "0.1"
 
-quickcheck = { version = "0.8", default-features = false, optional = true }
-rand = { version = "0.6", optional = true }
+# For `arbitrary`:
+quickcheck = { version = "0.9", default-features = false, optional = true }
+rand = { version = "0.7", optional = true }
 
 [build-dependencies]
 tower-grpc-build = "0.1"
