@@ -1,3 +1,7 @@
+## v0.1.11
+
+* Update Rust dependencies
+
 ## v0.1.10
 
 * Add headers and trailers to Tap events
