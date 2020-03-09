@@ -101,6 +101,7 @@ message WeightedAddr {
   map<string, string> metric_labels = 4;
   TlsIdentity tls_identity = 5;
   ProtocolHint protocol_hint = 6;
+  string authority_override = 7;	
 }
 
 // Which strategy should be used for verifying TLS.
