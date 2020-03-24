@@ -1,3 +1,7 @@
+## v0.1.12
+
+* Add `AuthorityOverride` to  `WeightedAddr`
+
 ## v0.1.11
 
 * Update Rust dependencies
