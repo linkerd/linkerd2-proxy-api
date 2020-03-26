@@ -9,6 +9,7 @@ branches:
 jobs:
   include:
     - language: rust
+      install: rustup component add rustfmt
       script: make rs
       rust: stable
       cache: cargo
