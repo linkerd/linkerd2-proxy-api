@@ -25,16 +25,13 @@ MODULE_NAME = github.com/linkerd/linkerd2-proxy-api
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
-	DEP_URL=$(DEP_BASE_URL)/dep-linux-amd64
 	PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-linux-x86_64.zip
 else
 	ifeq ($(UNAME_S), Darwin)
-		DEP_URL=$(DEP_BASE_URL)/dep-darwin-amd64
 		PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-osx-x86_64.zip
 	else
 		UNAME_O := $(shell uname -o)
 		ifeq ($(UNAME_O), Msys)
-			DEP_URL=$(DEP_BASE_URL)/dep-windows-amd64.exe
 			PROTOC_URL=$(PROTOC_BASE_URL)/protoc-$(PROTOC_VERSION)-win32.zip
 		endif
 	endif
