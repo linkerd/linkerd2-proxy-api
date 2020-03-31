@@ -1037,7 +1037,8 @@ type ObserveRequest_Match_Http_StringMatch_Prefix struct {
 
 func (*ObserveRequest_Match_Http_StringMatch_Exact) isObserveRequest_Match_Http_StringMatch_Match() {}
 
-func (*ObserveRequest_Match_Http_StringMatch_Prefix) isObserveRequest_Match_Http_StringMatch_Match() {}
+func (*ObserveRequest_Match_Http_StringMatch_Prefix) isObserveRequest_Match_Http_StringMatch_Match() {
+}
 
 func (m *ObserveRequest_Match_Http_StringMatch) GetMatch() isObserveRequest_Match_Http_StringMatch_Match {
 	if m != nil {

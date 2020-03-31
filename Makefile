@@ -13,17 +13,15 @@ CARGO_TEST = $(CARGO) test --locked $(RELEASE) --all-features
 
 CURL = curl -s
 GIT = git
-UNZIP = unzip
-
 GO = go
-DEP_VERSION = 0.5.0
-DEP_BASE_URL = https://github.com/golang/dep/releases/download/v$(DEP_VERSION)
-DEP = target/dep-$(DEP_VERSION)
+UNZIP = unzip
 
 PROTOC_VERSION = 3.6.0
 PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
 PROTOC = target/protoc-$(PROTOC_VERSION)
-PROTOC_GO = $(PROTOC) -I proto --go_out="plugins=grpc:$(GOPATH)/src"
+PROTOC_GO = $(PROTOC) -I proto --go_out="plugins=grpc:."
+
+MODULE_NAME = github.com/linkerd/linkerd2-proxy-api
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -49,10 +47,9 @@ $(PROTOC):
 	rm $(PROTOC).zip
 	chmod 755 $(PROTOC)
 
-$(DEP):
-	mkdir -p $(TARGET)
-	$(CURL) -Lso $(DEP) $(DEP_URL)
-	chmod 755 $(DEP)
+$(CHECK_GO_SETUP):
+	rm -rf go/*
+	cp -r $(MODULE_NAME)/go/* go/
 
 Cargo.lock: Cargo.toml rs/Cargo.toml
 	$(CARGO) fetch
@@ -61,22 +58,22 @@ Cargo.lock: Cargo.toml rs/Cargo.toml
 rs: Cargo.lock
 	$(CARGO_TEST)
 
-.PHONY: godep
-godep: Gopkg.toml $(DEP)
-	$(DEP) ensure
+.PHONY: go-build
+go-build:
+	go build ./...
 
 .PHONY: go
-go: godep $(PROTOC)
-	$(GO) install ./vendor/github.com/golang/protobuf/protoc-gen-go
-	rm -rf go/*
+go: go-build $(PROTOC)
+	go install github.com/golang/protobuf/protoc-gen-go
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/identity.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
+	@rm -rf github.com/
 
 .PHONY: check-go
-check-go: go
+check-go: go $(CHECK_GO_SETUP)
 	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go |wc -l)
 
 .PHONY: all
