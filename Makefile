@@ -60,11 +60,11 @@ rs: Cargo.lock
 
 .PHONY: go-build
 go-build:
-	go build ./...
+	$(GO) build ./...
 
 .PHONY: go
 go: go-build $(PROTOC)
-	go install github.com/golang/protobuf/protoc-gen-go
+	$(GO) install github.com/golang/protobuf/protoc-gen-go
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/identity.proto
