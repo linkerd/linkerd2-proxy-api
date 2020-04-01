@@ -58,20 +58,17 @@ go-build:
 .PHONY: go
 go: go-build $(PROTOC)
 	$(GO) install github.com/golang/protobuf/protoc-gen-go
+	@rm -rf go/*
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/identity.proto
 	$(PROTOC_GO) proto/net.proto
 	$(PROTOC_GO) proto/tap.proto
-
-.PHONY: move-proto
-move-proto:
-	rm -rf go/*
-	mv $(MODULE_NAME)/go/ .
-	rm -rf github.com/
+	@mv $(MODULE_NAME)/go/ .
+	@rm -rf github.com/
 
 .PHONY: check-go
-check-go: go move-proto
+check-go: go
 	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go | wc -l)
 
 .PHONY: all
