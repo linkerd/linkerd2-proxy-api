@@ -1,0 +1,27 @@
+name: CI
+on:
+  pull_request: {}
+  push:
+    branches:
+    - master
+jobs:
+  rust_build:
+    name: Rust build
+    runs-on: ubuntu-18.04
+    container:
+      image: docker://rust:1.41.0-buster
+    steps:
+    # actions/checkout@v2
+    - uses: actions/checkout@722adc6
+    - run: make rs
+  go_build:
+    name: Go build
+    runs-on: ubuntu-18.04
+    steps:
+    # actions/checkout@v2
+    - uses: actions/checkout@722adc6
+    - name: Check go
+      run: |
+        export PATH="$(go env GOPATH)/bin:$PATH"
+        make check-go
+    
