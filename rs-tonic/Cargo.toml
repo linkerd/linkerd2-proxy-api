@@ -9,11 +9,11 @@ edition = "2018"
 
 
 [dependencies]
-tonic = { version = "0.1.1", features = ["tls", "tokio", "prost"] }
+tonic = { version = "0.2", features = ["tls", "tokio", "prost"] }
 prost = "0.6"
 prost-types = "0.6"
 h2 = "0.2"
 http = "0.2"
 
 [build-dependencies]
-tonic-build = { version = "0.1.1" }
+tonic-build = { version = "0.2" }
