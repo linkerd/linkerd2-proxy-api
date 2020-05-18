@@ -19,4 +19,4 @@ h2 = "0.2"
 http = "0.2"
 
 [build-dependencies]
-tonic-build = { version = "0.2", features = ["rustfmt", "prost"], default-features = false }
+tonic-build = { version = "0.2", features = ["prost"], default-features = false }
