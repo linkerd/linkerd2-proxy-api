@@ -1,50 +1,49 @@
 #![deny(warnings, rust_2018_idioms)]
 
 pub use self::gen::*;
+use std::borrow::Cow;
+use std::convert::{TryFrom, TryInto};
 use std::error::Error;
 use std::fmt;
-
-#[cfg(feature = "arbitrary")]
-pub mod arbitrary;
 
 // The generated code requires two tiers of outer modules so that references between
 // modules resolve properly.
 mod gen {
     pub mod net {
-        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.net.rs"));
+        tonic::include_proto!("io.linkerd.proxy.net");
     }
 
     pub mod http_types {
-        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.http_types.rs"));
+        tonic::include_proto!("io.linkerd.proxy.http_types");
     }
 
     pub mod destination {
-        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.destination.rs"));
+        tonic::include_proto!("io.linkerd.proxy.destination");
     }
 
     pub mod identity {
-        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.identity.rs"));
+        tonic::include_proto!("io.linkerd.proxy.identity");
     }
 
     pub mod tap {
-        include!(concat!(env!("OUT_DIR"), "/io.linkerd.proxy.tap.rs"));
+        tonic::include_proto!("io.linkerd.proxy.tap");
     }
 }
 
-pub fn pb_elapsed(t0: ::std::time::Instant, t1: ::std::time::Instant) -> ::prost_types::Duration {
+pub fn pb_elapsed(t0: std::time::Instant, t1: std::time::Instant) -> prost_types::Duration {
     pb_duration(t1 - t0)
 }
 
 /// Converts a Rust Duration to a Protobuf Duration.
-pub fn pb_duration(d: ::std::time::Duration) -> ::prost_types::Duration {
-    let seconds = if d.as_secs() > ::std::i64::MAX as u64 {
-        ::std::i64::MAX
+pub fn pb_duration(d: std::time::Duration) -> prost_types::Duration {
+    let seconds = if d.as_secs() > std::i64::MAX as u64 {
+        std::i64::MAX
     } else {
         d.as_secs() as i64
     };
 
-    let nanos = if d.subsec_nanos() > ::std::i32::MAX as u32 {
-        ::std::i32::MAX
+    let nanos = if d.subsec_nanos() > std::i32::MAX as u32 {
+        std::i32::MAX
     } else {
         d.subsec_nanos() as i32
     };
@@ -90,13 +89,13 @@ where
     }
 }
 
-impl From<::std::net::IpAddr> for net::IpAddress {
-    fn from(ip: ::std::net::IpAddr) -> Self {
+impl From<std::net::IpAddr> for net::IpAddress {
+    fn from(ip: std::net::IpAddr) -> Self {
         match ip {
-            ::std::net::IpAddr::V4(v4) => Self {
+            std::net::IpAddr::V4(v4) => Self {
                 ip: Some(v4.into()),
             },
-            ::std::net::IpAddr::V6(v6) => Self {
+            std::net::IpAddr::V6(v6) => Self {
                 ip: Some(v6.into()),
             },
         }
@@ -116,9 +115,9 @@ impl From<[u8; 4]> for net::ip_address::Ip {
 
 // ===== impl net::ip_address:Ip =====
 
-impl From<::std::net::Ipv4Addr> for net::ip_address::Ip {
+impl From<std::net::Ipv4Addr> for net::ip_address::Ip {
     #[inline]
-    fn from(v4: ::std::net::Ipv4Addr) -> Self {
+    fn from(v4: std::net::Ipv4Addr) -> Self {
         Self::from(v4.octets())
     }
 }
@@ -157,16 +156,16 @@ impl From<[u8; 16]> for net::IPv6 {
     }
 }
 
-impl From<::std::net::Ipv6Addr> for net::IPv6 {
+impl From<std::net::Ipv6Addr> for net::IPv6 {
     #[inline]
-    fn from(v6: ::std::net::Ipv6Addr) -> Self {
+    fn from(v6: std::net::Ipv6Addr) -> Self {
         Self::from(v6.octets())
     }
 }
 
-impl<'a> From<&'a net::IPv6> for ::std::net::Ipv6Addr {
-    fn from(ip: &'a net::IPv6) -> ::std::net::Ipv6Addr {
-        ::std::net::Ipv6Addr::new(
+impl<'a> From<&'a net::IPv6> for std::net::Ipv6Addr {
+    fn from(ip: &'a net::IPv6) -> std::net::Ipv6Addr {
+        std::net::Ipv6Addr::new(
             (ip.first >> 48) as u16,
             (ip.first >> 32) as u16,
             (ip.first >> 16) as u16,
@@ -181,8 +180,8 @@ impl<'a> From<&'a net::IPv6> for ::std::net::Ipv6Addr {
 
 // ===== impl net::TcpAddress =====
 
-impl<'a> From<&'a ::std::net::SocketAddr> for net::TcpAddress {
-    fn from(sa: &::std::net::SocketAddr) -> net::TcpAddress {
+impl<'a> From<&'a std::net::SocketAddr> for net::TcpAddress {
+    fn from(sa: &std::net::SocketAddr) -> net::TcpAddress {
         net::TcpAddress {
             ip: Some(sa.ip().into()),
             port: u32::from(sa.port()),
@@ -192,31 +191,32 @@ impl<'a> From<&'a ::std::net::SocketAddr> for net::TcpAddress {
 
 // ===== impl http_types::scheme::Type =====
 
-impl http_types::scheme::Type {
-    pub fn try_to_string(&self) -> Result<String, InvalidScheme> {
+impl TryInto<Cow<'static, str>> for &'_ http_types::scheme::Type {
+    type Error = InvalidScheme;
+    fn try_into(self) -> Result<Cow<'static, str>, Self::Error> {
         use self::http_types::scheme::*;
 
         match *self {
             Type::Registered(reg) => {
                 if reg == Registered::Http.into() {
-                    Ok("http".into())
+                    Ok(Cow::Borrowed("http"))
                 } else if reg == Registered::Https.into() {
-                    Ok("https".into())
+                    Ok(Cow::Borrowed("https"))
                 } else {
                     Err(InvalidScheme)
                 }
             }
-            Type::Unregistered(ref s) => Ok(s.clone()),
+            Type::Unregistered(ref s) => Ok(Cow::Owned(s.clone())),
         }
     }
 }
 
 // ===== impl http::HttpMethod =====
 
-impl http_types::http_method::Type {
-    pub fn try_as_http(&self) -> Result<http::Method, InvalidMethod> {
+impl TryInto<http::Method> for &'_ http_types::http_method::Type {
+    type Error = InvalidMethod;
+    fn try_into(self) -> Result<http::Method, Self::Error> {
         use self::http_types::http_method::*;
-        use http::HttpTryFrom;
 
         match *self {
             Type::Registered(reg) => {
@@ -242,9 +242,7 @@ impl http_types::http_method::Type {
                     Err(InvalidMethod)
                 }
             }
-            Type::Unregistered(ref m) => {
-                HttpTryFrom::try_from(m.as_str()).map_err(|_| InvalidMethod)
-            }
+            Type::Unregistered(ref m) => TryFrom::try_from(m.as_str()).map_err(|_| InvalidMethod),
         }
     }
 }
@@ -283,12 +281,7 @@ impl fmt::Display for InvalidMethod {
     }
 }
 
-impl Error for InvalidMethod {
-    #[inline]
-    fn description(&self) -> &str {
-        "invalid http method"
-    }
-}
+impl Error for InvalidMethod {}
 
 // ===== impl http_types::Scheme =====
 
@@ -326,9 +319,4 @@ impl fmt::Display for InvalidScheme {
     }
 }
 
-impl Error for InvalidScheme {
-    #[inline]
-    fn description(&self) -> &str {
-        "invalid http scheme"
-    }
-}
+impl Error for InvalidScheme {}
