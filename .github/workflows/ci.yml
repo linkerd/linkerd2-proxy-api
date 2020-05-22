@@ -13,6 +13,7 @@ jobs:
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@722adc6
+    - run: rustup component add rustfmt
     - run: make rs
   go_build:
     name: Go build
