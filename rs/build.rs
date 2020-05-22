@@ -17,7 +17,6 @@ fn build_control() -> Result<(), Box<dyn Error>> {
     tonic_build::configure()
         .build_client(true)
         .build_server(true)
-        .format(true)
         .compile(iface_files, dirs)?;
 
     // recompile protobufs only if any of the proto files changes.
