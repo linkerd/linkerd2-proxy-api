@@ -25,4 +25,4 @@ quickcheck = { version = "0.9", default-features = false, optional = true }
 rand = { version = "0.7", optional = true }
 
 [build-dependencies]
-tonic-build = { version = "0.2", features = ["prost"], default-features = false }
+tonic-build = { version = "0.2", features = ["prost", "format"], default-features = false }
