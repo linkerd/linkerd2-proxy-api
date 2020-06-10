@@ -60,12 +60,16 @@ message GetDestination {
   string scheme = 1;
   string path = 2;
 
-  // An opaque value that is set at injection-time and sent with destintion lookups.
+  // An opaque value that is set at injection-time and sent with destination lookups.
   //
   // If, for instance, the token encodes a namespace or some locality
   // information, the service may alter its results to take this locality into
   // account.
   string context_token = 3;
+  // The name of the node that the pod (destination client) is running on.
+  // It is sent with destination lookups, and used by the destination service
+  // to infer the locality of the pod by collecting its node's topology-specific keys.
+  string source_node = 4;
 }
 
 message Update {
