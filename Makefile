@@ -51,13 +51,9 @@ Cargo.lock: Cargo.toml rs/Cargo.toml
 rs: Cargo.lock
 	$(CARGO_TEST)
 
-.PHONY: go-build
-go-build:
-	$(GO) build ./...
-
 .PHONY: go
-go: go-build $(PROTOC)
-	$(GO) install github.com/golang/protobuf/protoc-gen-go
+go: $(PROTOC)
+	$(GO) get -u github.com/golang/protobuf/protoc-gen-go
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/identity.proto
@@ -66,6 +62,7 @@ go: go-build $(PROTOC)
 	@rm -rf go/*
 	@mv $(MODULE_NAME)/go/ .
 	@rm -rf github.com/
+	$(GO) build ./go/...
 
 .PHONY: check-go
 check-go: go
