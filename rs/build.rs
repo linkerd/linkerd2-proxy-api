@@ -1,4 +1,5 @@
 use std::error::Error;
+
 fn main() -> Result<(), Box<dyn Error>> {
     build_control()?;
     Ok(())
