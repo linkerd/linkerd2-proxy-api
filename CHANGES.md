@@ -1,3 +1,8 @@
+## v0.1.13
+
+* Update Rust crate to use `tonic` instead of `tower-grpc`
+* Update `grpc-go` dependencies
+
 ## v0.1.12
 
 * Add `AuthorityOverride` to  `WeightedAddr`
