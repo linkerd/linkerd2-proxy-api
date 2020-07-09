@@ -54,6 +54,8 @@ service Destination {
   // Given a destination, return that destination's profile and send an update
   // whenever it changes.
   rpc GetProfile(GetDestination) returns (stream DestinationProfile) {}
+
+  rpc Strategy(StrategyRequest) returns (stream StrategyResponse) {}
 }
 
 message GetDestination {
@@ -156,54 +158,7 @@ message DestinationProfile {
   // split between the destinations in this list.  Each destination should
   // receive a portion of the requests proportional to its weight.  If this list
   // is empty, requests should be sent to this destination as normal.
-  //
-  // Only applies when the `proxy` is Logical.
   repeated WeightedDst dst_overrides = 3;
-
-  // Configures the proxying strategy to be used for the given destination.
-  ProxyStrategy proxy = 4;
-
-  // Configures the protocol detection strategy to be used for the given
-  // destination.
-  ProtocolDetection detect = 5;
-}
-
-message ProxyStrategy {
-  // Configures the proxy to forward traffic to the specified endpoint metadata.
-  message Endpoint {
-    WeightedAddr addr = 1;
-  }
-
-  // Indicates the endpoint is logical and can be resolved via Destination.Get.
-  //
-  // `WeightedDst` overrides may take precedence over this behavior.
-  message Logical {
-    // The logical service's name:port.
-    string authority = 1;
-
-    // The service-lvel metadata (as would be returned in a `WeightedAddrSet` from `Get`).
-    map<string, string> metric_labels = 2;
-  }
-
-  oneof kind {
-    Endpoint endpoint = 1;
-    Logical logical = 2;
-  }
-}
-
-message ProtocolDetection {
-  // Configures the proxy to handle the given destination as an opaque TCP
-  // stream without performing protocol detection.
-  message Opaque {}
-
-  // Configures the proxy to detect the protocol of the TCP stream by reading
-  // the client's stream.
-  message Client {}
-
-  oneof protocol {
-    Opaque opaque = 1;
-    Client client = 2;
-  }
 }
 
 message Route {
@@ -298,8 +253,109 @@ message WeightedDst {
   // This authority will be used as the `path` in a call to the Destination.Get
   // rpc.
   string authority = 1;
-  // The proportion of requests to send to this destination.  This value is 
+  // The proportion of requests to send to this destination.  This value is
   // relative to other weights in the same dst_overrides list.
   uint32 weight = 2;
 }
 
+// === Strategy ===
+
+message StrategyRequest {
+  net.TcpAddress target = 1;
+
+  // An opaque value that is set at injection-time and sent with destintion lookups.
+  //
+  // If, for instance, the token encodes a namespace or some locality
+  // information, the service may alter its results to take this locality into
+  // account.
+  string context_token = 3;
+}
+
+message StrategyResponse {
+  // Configures the protocol detection strategy to be used for the given
+  // destination.
+  ProtocolDetection detect = 2;
+
+  // Configures the proxying strategy to be used for the given destination.
+  //Target target = 3;
+}
+
+message Target {
+  // Configures the proxy to forward traffic to the specified endpoint metadata.
+  message Endpoint {
+    WeightedAddr addr = 1;
+  }
+
+  // Indicates the endpoint is a concrete service that can be resolved via
+  // Destination.Get.
+  //
+  // `WeightedDst` overrides may take precedence over this behavior.
+  message Concrete {
+    // The logical service's name:port.
+    string authority = 1;
+
+    // The service-lvel metadata (as would be returned in a `WeightedAddrSet` from `Get`).
+    map<string, string> metric_labels = 2;
+
+    oneof profile {
+      HttpProfile http = 3;
+    }
+  }
+
+  // Indicates the endpoint is a logical service that can be resolved via
+  // Destination.Get.
+  //
+  // `WeightedDst` overrides may take precedence over this behavior.
+   message Logical {
+    // Distributes traffic over a weighted distribution of inner targets.
+    message Split {
+      repeated WeightedTarget targets = 1;
+    }
+
+    oneof inner {
+      Split split = 1;
+    }
+
+    // The service-lvel metadata (as would be returned in a `WeightedAddrSet` from `Get`).
+    map<string, string> metric_labels = 2;
+  }
+
+  oneof kind {
+    Endpoint endpoint = 1;
+    Concrete concrete = 2;
+    Logical logical = 3;
+  }
+}
+
+message WeightedTarget {
+  Target target = 1;
+  // The proportion of requests to send to this destination.  This value is
+  // relative to other weights in the same set of WeightedTargets.
+  uint32 weight = 2;
+}
+
+message ProtocolDetection {
+  // Configures the proxy to handle the given destination as an opaque TCP
+  // stream without performing protocol detection.
+  message Opaque {}
+
+  // Configures the proxy to detect the protocol of the TCP stream by reading
+  // the client's stream.
+  message Client {}
+
+  oneof protocol {
+    Opaque opaque = 1;
+    Client client = 2;
+  }
+}
+
+message HttpProfile {
+  // A list of routes, each with a RequestMatch.  If a request matches
+  // more than one route, the first match wins.
+  repeated Route routes = 1;
+
+  // The retry budget controls how much additional load the proxy can generate
+  // as retries.  Failured requests on retryable routes will not be retried if
+  // there is no available budget.
+  RetryBudget retry_budget = 2;
+}
