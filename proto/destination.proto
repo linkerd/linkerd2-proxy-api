@@ -153,10 +153,57 @@ message DestinationProfile {
   RetryBudget retry_budget = 2;
 
   // If this list is non-empty, requests to this destination should instead be
-  //split between the destinations in this list.  Each destination should
+  // split between the destinations in this list.  Each destination should
   // receive a portion of the requests proportional to its weight.  If this list
   // is empty, requests should be sent to this destination as normal.
+  //
+  // Only applies when the `proxy` is Logical.
   repeated WeightedDst dst_overrides = 3;
+
+  // Configures the proxying strategy to be used for the given destination.
+  ProxyStrategy proxy = 4;
+
+  // Configures the protocol detection strategy to be used for the given
+  // destination.
+  ProtocolDetection detect = 5;
+}
+
+message ProxyStrategy {
+  // Configures the proxy to forward traffic to the specified endpoint metadata.
+  message Endpoint {
+    WeightedAddr addr = 1;
+  }
+
+  // Indicates the endpoint is logical and can be resolved via Destination.Get.
+  //
+  // `WeightedDst` overrides may take precedence over this behavior.
+  message Logical {
+    // The logical service's name:port.
+    string authority = 1;
+
+    // The service-lvel metadata (as would be returned in a `WeightedAddrSet` from `Get`).
+    map<string, string> metric_labels = 2;
+  }
+
+  oneof kind {
+    Endpoint endpoint = 1;
+    Logical logical = 2;
+  }
+}
+
+message ProtocolDetection {
+  // Configures the proxy to handle the given destination as an opaque TCP
+  // stream without performing protocol detection.
+  message Opaque {}
+
+  // Configures the proxy to detect the protocol of the TCP stream by reading
+  // the client's stream.
+  message DetectFromClient {}
+
+  oneof protocol {
+    Opaque opaque = 1;
+    DetectFromClient detect = 2;
+  }
 }
 
 message Route {
