@@ -198,11 +198,11 @@ message ProtocolDetection {
 
   // Configures the proxy to detect the protocol of the TCP stream by reading
   // the client's stream.
-  message DetectFromClient {}
+  message Client {}
 
   oneof protocol {
     Opaque opaque = 1;
-    DetectFromClient detect = 2;
+    Client client = 2;
   }
 }
 
