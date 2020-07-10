@@ -59,6 +59,10 @@ pub struct InvalidMethod;
 #[derive(Debug, Clone)]
 pub struct InvalidScheme;
 
+/// Indicates an IP address could not be decoded.
+#[derive(Debug, Clone)]
+pub struct InvalidIpAddress;
+
 // ===== impl tap::Eos =====
 
 impl From<h2::Reason> for tap::Eos {
@@ -76,6 +80,20 @@ impl tap::Eos {
 }
 
 // ===== impl net::IpAddress =====
+
+impl TryFrom<net::IpAddress> for std::net::IpAddr {
+    type Error = InvalidIpAddress;
+    fn try_from(ip: net::IpAddress) -> Result<Self, Self::Error> {
+        use net::ip_address::Ip;
+        match ip.ip {
+            Some(Ip::Ipv4(octets)) => Ok(std::net::Ipv4Addr::from(octets).into()),
+            Some(Ip::Ipv6(v6)) => std::net::Ipv6Addr::try_from(v6)
+                .map(Into::into)
+                .map_err(|_| InvalidIpAddress),
+            None => Err(InvalidIpAddress),
+        }
+    }
+}
 
 impl<T> From<T> for net::IpAddress
 where
@@ -163,8 +181,8 @@ impl From<std::net::Ipv6Addr> for net::IPv6 {
     }
 }
 
-impl<'a> From<&'a net::IPv6> for std::net::Ipv6Addr {
-    fn from(ip: &'a net::IPv6) -> std::net::Ipv6Addr {
+impl<'a> From<net::IPv6> for std::net::Ipv6Addr {
+    fn from(ip: net::IPv6) -> std::net::Ipv6Addr {
         std::net::Ipv6Addr::new(
             (ip.first >> 48) as u16,
             (ip.first >> 32) as u16,
@@ -180,12 +198,26 @@ impl<'a> From<&'a net::IPv6> for std::net::Ipv6Addr {
 
 // ===== impl net::TcpAddress =====
 
-impl<'a> From<&'a std::net::SocketAddr> for net::TcpAddress {
-    fn from(sa: &std::net::SocketAddr) -> net::TcpAddress {
+impl<'a> From<std::net::SocketAddr> for net::TcpAddress {
+    fn from(sa: std::net::SocketAddr) -> net::TcpAddress {
         net::TcpAddress {
             ip: Some(sa.ip().into()),
             port: u32::from(sa.port()),
         }
+    }
+}
+
+impl<'a> TryFrom<net::TcpAddress> for std::net::SocketAddr {
+    type Error = InvalidIpAddress;
+
+    fn try_from(tcp: net::TcpAddress) -> Result<std::net::SocketAddr, Self::Error> {
+        if let Some(ip) = tcp.ip {
+            let port = tcp.port as u16;
+            let ip = std::net::IpAddr::try_from(ip)?;
+            return Ok(std::net::SocketAddr::from((ip, port)));
+        }
+
+        Err(InvalidIpAddress)
     }
 }
 
@@ -320,3 +352,13 @@ impl fmt::Display for InvalidScheme {
 }
 
 impl Error for InvalidScheme {}
+
+// ===== impl InvalidIpAddress =====
+
+impl fmt::Display for InvalidIpAddress {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "invalid ip address")
+    }
+}
+
+impl Error for InvalidIpAddress {}
