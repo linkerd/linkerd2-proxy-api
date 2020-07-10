@@ -9,8 +9,6 @@ ifdef CARGO_VERBOSE
 	CARGO = cargo --verbose
 endif
 
-CARGO_TEST = $(CARGO) test --locked $(RELEASE) --features=arbitrary
-
 CURL = curl -s
 GIT = git
 GO = go
@@ -49,7 +47,7 @@ Cargo.lock: Cargo.toml rs/Cargo.toml
 
 .PHONY: rs
 rs: Cargo.lock
-	$(CARGO_TEST)
+	cd rs && $(CARGO) test --locked $(RELEASE) --features=arbitrary
 
 .PHONY: go
 go: $(PROTOC)
