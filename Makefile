@@ -51,7 +51,7 @@ rs: Cargo.lock
 
 .PHONY: go
 go: $(PROTOC)
-	$(GO) get -u github.com/golang/protobuf/protoc-gen-go
+	$(GO) get github.com/golang/protobuf/protoc-gen-go
 	$(PROTOC_GO) proto/destination.proto
 	$(PROTOC_GO) proto/http_types.proto
 	$(PROTOC_GO) proto/identity.proto

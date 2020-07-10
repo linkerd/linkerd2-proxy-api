@@ -181,7 +181,7 @@ impl From<std::net::Ipv6Addr> for net::IPv6 {
     }
 }
 
-impl<'a> From<net::IPv6> for std::net::Ipv6Addr {
+impl From<net::IPv6> for std::net::Ipv6Addr {
     fn from(ip: net::IPv6) -> std::net::Ipv6Addr {
         std::net::Ipv6Addr::new(
             (ip.first >> 48) as u16,
@@ -198,7 +198,7 @@ impl<'a> From<net::IPv6> for std::net::Ipv6Addr {
 
 // ===== impl net::TcpAddress =====
 
-impl<'a> From<std::net::SocketAddr> for net::TcpAddress {
+impl From<std::net::SocketAddr> for net::TcpAddress {
     fn from(sa: std::net::SocketAddr) -> net::TcpAddress {
         net::TcpAddress {
             ip: Some(sa.ip().into()),
@@ -207,7 +207,7 @@ impl<'a> From<std::net::SocketAddr> for net::TcpAddress {
     }
 }
 
-impl<'a> TryFrom<net::TcpAddress> for std::net::SocketAddr {
+impl TryFrom<net::TcpAddress> for std::net::SocketAddr {
     type Error = InvalidIpAddress;
 
     fn try_from(tcp: net::TcpAddress) -> Result<std::net::SocketAddr, Self::Error> {
