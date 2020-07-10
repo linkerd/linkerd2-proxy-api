@@ -10,6 +10,8 @@ edition = "2018"
 [features]
 # Generate code that is compatible with Tonic's `transport` module.
 transport = ["tonic-build/transport", "tonic/transport"]
+# Generate code that is formatted.
+rustfmt = ["tonic-build/rustfmt"]
 # Enable generation of arbitrary protos with quickcheck.
 arbitrary = ["quickcheck", "rand"]
 
