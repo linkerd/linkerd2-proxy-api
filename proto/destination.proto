@@ -184,10 +184,12 @@ message RetryBudget {
   // every 1 regular request (in other words, total request load may be doubled
   // as a result of retries).
   float retry_ratio = 1;
+
   // The proxy may always attempt this number of retries per second, even if it
   // would violate the retry_ratio.  This is to allow retries to happen even
   // when the request rate is very low.
   uint32 min_retries_per_second = 2;
+
   // This duration indicates for how long requests should be considered for the
   // purposes of enforcing the retry_ratio.  A higher value considers a larger
   // window and therefore allows burstier retries.
@@ -197,6 +199,7 @@ message RetryBudget {
 message ResponseClass {
   // This class contains responses which match this condition.
   ResponseMatch condition = 1;
+
   // If responses in this class should be considered failures.  This defaults
   // to false (success).
   bool is_failure = 2;
@@ -239,6 +242,7 @@ message ResponseMatch {
 message HttpStatusRange {
   // Minimum matching http status code (inclusive), if specified.
   uint32 min = 1;
+
   // Maximum matching http status code (inclusive), if specified.
   uint32 max = 2;
 }
@@ -247,6 +251,7 @@ message WeightedDst {
   // This authority will be used as the `path` in a call to the Destination.Get
   // rpc.
   string authority = 1;
+
   // The proportion of requests to send to this destination.  This value is
   // relative to other weights in the same dst_overrides list.
   uint32 weight = 2;
@@ -272,73 +277,59 @@ message StrategyResponse {
   ProtocolDetection detect = 2;
 
   // Configures the proxying strategy to be used for the given destination.
-  Target target = 3;
-}
-
-message Target {
-  // Configures the proxy to forward traffic to the specified endpoint metadata.
-  message Endpoint { WeightedAddr addr = 1; }
-
-  // Indicates the endpoint is a concrete service that can be resolved via
-  // Destination.Get.
-  //
-  // `WeightedDst` overrides may take precedence over this behavior.
-  message Concrete {
-    // The logical service's name:port.
-    string authority = 1;
-
-    // The service-lvel metadata (as would be returned in a `WeightedAddrSet`
-    // from `Get`).
-    map<string, string> metric_labels = 2;
-
-    oneof profile { HttpProfile http = 3; }
-  }
-
-  // Indicates the endpoint is a logical service that is backed by one or more
-  // concrete services..
-  message LogicalSplit {
-    // Distributes traffic over a weighted distribution of inner targets.
-    repeated WeightedTarget targets = 1;
-
-    map<string, string> metric_labels = 2;
-  }
-
-  oneof kind {
-    Endpoint endpoint = 1;
-    Concrete concrete = 2;
-    Logical logical = 3;
-  }
-}
-
-message WeightedTarget {
-  Target target = 1;
-  // The proportion of requests to send to this destination.  This value is
-  // relative to other weights in the same set of WeightedTargets.
-  uint32 weight = 2;
+  Logical logical = 3;
 }
 
 message ProtocolDetection {
+  oneof strategy {
+    ClientData client = 1;
+    Opaque opaque = 2;
+  }
+
+  // Configures the proxy to detect the protocol of the TCP stream by
+  // peeking/reading the client's stream.
+  message ClientData {}
+
   // Configures the proxy to handle the given destination as an opaque TCP
   // stream without performing protocol detection.
   message Opaque {}
+}
 
-  // Configures the proxy to detect the protocol of the TCP stream by reading
-  // the client's stream.
-  message Client {}
+message Concrete {
+  oneof kind {
+    Forward forward = 1;
+    Balance balance = 2;
+  }
 
-  oneof protocol {
-    Opaque opaque = 1;
-    Client client = 2;
+  // Configures the proxy to forward traffic to the specified endpoint.
+  message Forward { WeightedAddr addr = 1; }
+
+  // Indicates the endpoint is a concrete service that can be resolved via
+  // Destination.Get.
+  message Balance {
+    // The logical service's name:port.
+    string authority = 1;
   }
 }
 
-message HttpProfile {
-  // A list of routes, each with a RequestMatch.  If a request matches
-  // more than one route, the first match wins.
-  repeated Route routes = 1;
+// Indicates the endpoint is a logical service that is backed by one or more
+// concrete services.
+message Logical {
+  oneof kind {
+    Concrete concrete = 1;
+    Split split = 2;
+  }
 
-  // The retry budget controls how much additional load the proxy can generate
-  // as retries.  Failured requests on retryable routes will not be retried if
-  // there is no available budget.
-  RetryBudget retry_budget = 2;
+  // Distributes traffic over a weighted distribution of inner targets.
+  message Split {
+    repeated Weighted targets = 1;
+
+    message Weighted {
+      Logical target = 1;
+
+      // The proportion of requests to send to this destination.  This value is
+      // relative to other weights in the same set of WeightedLogicals.
+      uint32 weight = 2;
+    }
+  }
 }
