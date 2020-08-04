@@ -98,11 +98,15 @@ message WeightedAddrSet {
 
 message WeightedAddr {
   net.TcpAddress addr = 1;
-  uint32 weight = 3;
-  map<string, string> metric_labels = 4;
   TlsIdentity tls_identity = 5;
+
+  map<string, string> metric_labels = 4;
   ProtocolHint protocol_hint = 6;
   AuthorityOverride authority_override = 7;
+
+  google.protobuf.Duration connect_timeout = 8;
+
+  uint32 weight = 3 [ deprecated = true ];
 }
 
 // Which strategy should be used for verifying TLS.
@@ -152,7 +156,12 @@ message DestinationProfile {
   // split between the destinations in this list.  Each destination should
   // receive a portion of the requests proportional to its weight.  If this list
   // is empty, requests should be sent to this destination as normal.
-  repeated WeightedDst dst_overrides = 3;
+  //
+  // Deprecated in favor of Strategy responses, which may include logical
+  // splits.
+  repeated WeightedDst dst_overrides = 3 [ deprecated = true ];
+  // reserved 3;
+  // reserved "dst_override";
 }
 
 message Route {
@@ -288,28 +297,14 @@ message ProtocolDetection {
 
   // Configures the proxy to detect the protocol of the TCP stream by
   // peeking/reading the client's stream.
-  message ClientData {}
+  message ClientData {
+    uint32 buffer_capacity = 1;
+    google.protobuf.Duration timeout = 2;
+  }
 
   // Configures the proxy to handle the given destination as an opaque TCP
   // stream without performing protocol detection.
   message Opaque {}
-}
-
-message Concrete {
-  oneof kind {
-    Forward forward = 1;
-    Balance balance = 2;
-  }
-
-  // Configures the proxy to forward traffic to the specified endpoint.
-  message Forward { WeightedAddr addr = 1; }
-
-  // Indicates the endpoint is a concrete service that can be resolved via
-  // Destination.Get.
-  message Balance {
-    // The logical service's name:port.
-    string authority = 1;
-  }
 }
 
 // Indicates the endpoint is a logical service that is backed by one or more
@@ -331,5 +326,25 @@ message Logical {
       // relative to other weights in the same set of WeightedLogicals.
       uint32 weight = 2;
     }
+  }
+}
+
+message Concrete {
+  oneof kind {
+    Forward forward = 1;
+    Balance balance = 2;
+  }
+
+  // Configures the proxy to forward traffic to the specified endpoint.
+  message Forward { WeightedAddr addr = 1; }
+
+  // Indicates the endpoint is a concrete service that can be resolved via
+  // Destination.Get.
+  message Balance {
+    // The logical service's name:port.
+    string authority = 1;
+
+    google.protobuf.Duration peak_ewma_decay = 2;
+    google.protobuf.Duration peak_ewma_default_rtt = 3;
   }
 }
