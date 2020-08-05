@@ -104,7 +104,7 @@ message WeightedAddr {
   ProtocolHint protocol_hint = 6;
   AuthorityOverride authority_override = 7;
 
-  google.protobuf.Duration transport_connect_timeout = 8;
+  google.protobuf.Duration connect_timeout = 8;
 
   uint32 weight = 3 [ deprecated = true ];
 }
