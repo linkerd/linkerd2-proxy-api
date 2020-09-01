@@ -917,8 +917,8 @@ func (x *ObserveRequest_Match_Tcp_Netmask) GetMask() uint32 {
 	return 0
 }
 
-// If either a minimum or maximum is not specified, the range is considered to be
-// over a discrete value.
+// If either a minimum or maximum is not specified, the range is
+// considered to be over a discrete value.
 type ObserveRequest_Match_Tcp_PortRange struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

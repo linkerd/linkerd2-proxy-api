@@ -60,7 +60,8 @@ message GetDestination {
   string scheme = 1;
   string path = 2;
 
-  // An opaque value that is set at injection-time and sent with destintion lookups.
+  // An opaque value that is set at injection-time and sent with destintion
+  // lookups.
   //
   // If, for instance, the token encodes a namespace or some locality
   // information, the service may alter its results to take this locality into
@@ -86,9 +87,7 @@ message Update {
   }
 }
 
-message AddrSet {
-  repeated net.TcpAddress addrs = 1;
-}
+message AddrSet { repeated net.TcpAddress addrs = 1; }
 
 message WeightedAddrSet {
   repeated WeightedAddr addrs = 1;
@@ -101,7 +100,7 @@ message WeightedAddr {
   map<string, string> metric_labels = 4;
   TlsIdentity tls_identity = 5;
   ProtocolHint protocol_hint = 6;
-  AuthorityOverride authority_override = 7;	
+  AuthorityOverride authority_override = 7;
 }
 
 // Which strategy should be used for verifying TLS.
@@ -109,9 +108,7 @@ message TlsIdentity {
   reserved 2;
   reserved "k8s_pod_identity";
 
-  oneof strategy {
-    DnsLikeIdentity dns_like_identity = 1;
-  }
+  oneof strategy { DnsLikeIdentity dns_like_identity = 1; }
 
   // Verify the certificate based on the Kubernetes pod identity.
   message DnsLikeIdentity {
@@ -123,13 +120,9 @@ message TlsIdentity {
   }
 }
 
-message AuthorityOverride {
-    string authority_override = 1;
-}
+message AuthorityOverride { string authority_override = 1; }
 
-message NoEndpoints {
-  bool exists = 1;
-}
+message NoEndpoints { bool exists = 1; }
 
 // A hint of what protocol the service knows. The default value is
 // for the `hint` field to be not be set, essentially meaning "unknown".
@@ -148,12 +141,12 @@ message DestinationProfile {
   // more than one route, the first match wins.
   repeated Route routes = 1;
   // The retry budget controls how much additional load the proxy can generate
-  // as retries.  Failured requests on retryable routes will not be retried if
+  // as retries. Failured requests on retryable routes will not be retried if
   // there is no available budget.
   RetryBudget retry_budget = 2;
 
   // If this list is non-empty, requests to this destination should instead be
-  //split between the destinations in this list.  Each destination should
+  // split between the destinations in this list.  Each destination should
   // receive a portion of the requests proportional to its weight.  If this list
   // is empty, requests should be sent to this destination as normal.
   repeated WeightedDst dst_overrides = 3;
@@ -203,18 +196,16 @@ message ResponseClass {
 }
 
 message RequestMatch {
-  message Seq {
-    repeated RequestMatch matches = 1;
-  }
+  message Seq { repeated RequestMatch matches = 1; }
 
   oneof match {
     Seq all = 1;
     Seq any = 2;
     RequestMatch not = 3;
 
-    PathMatch path  = 4;
+    PathMatch path = 4;
     http_types.HttpMethod method = 5;
-    //TODO: match on arbitrary header
+    // TODO: match on arbitrary header
   }
 }
 
@@ -224,22 +215,20 @@ message PathMatch {
 }
 
 message ResponseMatch {
-  message Seq {
-    repeated ResponseMatch matches = 1;
-  }
+  message Seq { repeated ResponseMatch matches = 1; }
 
   oneof match {
     Seq all = 1;
     Seq any = 2;
     ResponseMatch not = 3;
 
-    HttpStatusRange status  = 4;
-    //TODO: match on arbitrary header or trailer
+    HttpStatusRange status = 4;
+    // TODO: match on arbitrary header or trailer
   }
 }
 
-// If either a minimum or maximum is not specified, the range is considered to be
-// over a discrete value.
+// If either a minimum or maximum is not specified, the range is considered to
+// be over a discrete value.
 message HttpStatusRange {
   // Minimum matching http status code (inclusive), if specified.
   uint32 min = 1;
@@ -251,8 +240,7 @@ message WeightedDst {
   // This authority will be used as the `path` in a call to the Destination.Get
   // rpc.
   string authority = 1;
-  // The proportion of requests to send to this destination.  This value is 
+  // The proportion of requests to send to this destination.  This value is
   // relative to other weights in the same dst_overrides list.
   uint32 weight = 2;
 }
-

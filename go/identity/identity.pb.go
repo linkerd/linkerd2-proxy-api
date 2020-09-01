@@ -38,7 +38,8 @@ type CertifyRequest struct {
 	Identity string `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
 	// Proof of the requester's identity.
 	//
-	// In Kubernetes, for instance, this is the contents of a service account token.
+	// In Kubernetes, for instance, this is the contents of a service account
+	// token.
 	Token []byte `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
 	// A PEM-encoded x509 Certificate Signing Request.
 	CertificateSigningRequest []byte `protobuf:"bytes,3,opt,name=certificate_signing_request,json=certificateSigningRequest,proto3" json:"certificate_signing_request,omitempty"`

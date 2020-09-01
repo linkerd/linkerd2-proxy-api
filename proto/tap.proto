@@ -16,22 +16,20 @@ service Tap {
 
 message ObserveRequest {
   // Limits the number of event keys that will be returned by this tap.
-  uint32 limit  = 1;
+  uint32 limit = 1;
 
   // Encodes request-matching logic.
   Match match = 2;
 
   message Match {
-    message Seq {
-      repeated Match matches = 1;
-    }
+    message Seq { repeated Match matches = 1; }
 
     oneof match {
       Seq all = 1;
       Seq any = 2;
       Match not = 3;
 
-      Tcp source  = 4;
+      Tcp source = 4;
       Tcp destination = 5;
       Http http = 6;
 
@@ -40,7 +38,7 @@ message ObserveRequest {
     }
 
     message Label {
-      string key   = 1;
+      string key = 1;
       string value = 2;
     }
 
@@ -54,11 +52,11 @@ message ObserveRequest {
       message Netmask {
         net.IPAddress ip = 1;
 
-        uint32 mask =2;
+        uint32 mask = 2;
       }
 
-      // If either a minimum or maximum is not specified, the range is considered to be
-      // over a discrete value.
+      // If either a minimum or maximum is not specified, the range is
+      // considered to be over a discrete value.
       message PortRange {
         // Minimum matching port value (inclusive), if specified.
         uint32 min = 1;
@@ -70,16 +68,16 @@ message ObserveRequest {
 
     message Http {
       oneof match {
-        http_types.Scheme     scheme    = 1;
-        http_types.HttpMethod method    = 3;
-        StringMatch           authority = 2;
-        StringMatch           path      = 4;
+        http_types.Scheme scheme = 1;
+        http_types.HttpMethod method = 3;
+        StringMatch authority = 2;
+        StringMatch path = 4;
         // TODO Header        header    = 4;
       }
 
       message StringMatch {
         oneof match {
-          string exact  = 1;
+          string exact = 1;
           string prefix = 2;
         }
       }
@@ -91,14 +89,10 @@ message ObserveRequest {
   Extract extract = 3;
 
   message Extract {
-    oneof extract {
-      Http http = 1;
-    }
+    oneof extract { Http http = 1; }
 
     message Http {
-      oneof extract {
-        Headers headers = 1;
-      }
+      oneof extract { Headers headers = 1; }
 
       message Headers {}
     }
@@ -113,13 +107,13 @@ message Eos {
 }
 
 message TapEvent {
-  net.TcpAddress source      = 1;
-  EndpointMeta   source_meta = 5;
+  net.TcpAddress source = 1;
+  EndpointMeta source_meta = 5;
 
-  RouteMeta      route_meta =  7;
+  RouteMeta route_meta = 7;
 
-  net.TcpAddress destination      = 2;
-  EndpointMeta   destination_meta = 4;
+  net.TcpAddress destination = 2;
+  EndpointMeta destination_meta = 4;
 
   ProxyDirection proxy_direction = 6;
   enum ProxyDirection {
@@ -128,23 +122,17 @@ message TapEvent {
     OUTBOUND = 2;
   }
 
-  oneof event {
-    Http http = 3;
-  }
+  oneof event { Http http = 3; }
 
-  message EndpointMeta {
-    map<string, string> labels = 1;
-  }
+  message EndpointMeta { map<string, string> labels = 1; }
 
-  message RouteMeta {
-    map<string, string> labels = 1;
-  }
+  message RouteMeta { map<string, string> labels = 1; }
 
   message Http {
     oneof event {
-      RequestInit  request_init  = 1;
+      RequestInit request_init = 1;
       ResponseInit response_init = 2;
-      ResponseEnd  response_end  = 3;
+      ResponseEnd response_end = 3;
     }
 
     message StreamId {
@@ -157,7 +145,7 @@ message TapEvent {
 
     message RequestInit {
       StreamId id = 1;
-      http_types.HttpMethod method =  2;
+      http_types.HttpMethod method = 2;
       http_types.Scheme scheme = 3;
       string authority = 4;
       string path = 5;

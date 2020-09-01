@@ -22,7 +22,8 @@ message CertifyRequest {
 
   // Proof of the requester's identity.
   //
-  // In Kubernetes, for instance, this is the contents of a service account token.
+  // In Kubernetes, for instance, this is the contents of a service account
+  // token.
   bytes token = 2;
 
   // A PEM-encoded x509 Certificate Signing Request.
