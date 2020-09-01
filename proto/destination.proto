@@ -137,6 +137,11 @@ message ProtocolHint {
 }
 
 message DestinationProfile {
+  // Indicates that connections on this service address should be handled as
+  // opaque TCP streams. HTTP routes returned on for such services will be
+  // ignored.
+  bool opaque_protocol = 4;
+
   // A list of routes, each with a RequestMatch.  If a request matches
   // more than one route, the first match wins.
   repeated Route routes = 1;
