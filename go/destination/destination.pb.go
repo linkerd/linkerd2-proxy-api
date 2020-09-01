@@ -39,7 +39,8 @@ type GetDestination struct {
 
 	Scheme string `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`
 	Path   string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
-	// An opaque value that is set at injection-time and sent with destintion lookups.
+	// An opaque value that is set at injection-time and sent with destintion
+	// lookups.
 	//
 	// If, for instance, the token encodes a namespace or some locality
 	// information, the service may alter its results to take this locality into
@@ -631,11 +632,11 @@ type DestinationProfile struct {
 	// more than one route, the first match wins.
 	Routes []*Route `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
 	// The retry budget controls how much additional load the proxy can generate
-	// as retries.  Failured requests on retryable routes will not be retried if
+	// as retries. Failured requests on retryable routes will not be retried if
 	// there is no available budget.
 	RetryBudget *RetryBudget `protobuf:"bytes,2,opt,name=retry_budget,json=retryBudget,proto3" json:"retry_budget,omitempty"`
 	// If this list is non-empty, requests to this destination should instead be
-	//split between the destinations in this list.  Each destination should
+	// split between the destinations in this list.  Each destination should
 	// receive a portion of the requests proportional to its weight.  If this list
 	// is empty, requests should be sent to this destination as normal.
 	DstOverrides []*WeightedDst `protobuf:"bytes,3,rep,name=dst_overrides,json=dstOverrides,proto3" json:"dst_overrides,omitempty"`
@@ -1024,7 +1025,7 @@ type RequestMatch_Path struct {
 }
 
 type RequestMatch_Method struct {
-	Method *http_types.HttpMethod `protobuf:"bytes,5,opt,name=method,proto3,oneof"` //TODO: match on arbitrary header
+	Method *http_types.HttpMethod `protobuf:"bytes,5,opt,name=method,proto3,oneof"` // TODO: match on arbitrary header
 }
 
 func (*RequestMatch_All) isRequestMatch_Match() {}
@@ -1182,7 +1183,7 @@ type ResponseMatch_Not struct {
 }
 
 type ResponseMatch_Status struct {
-	Status *HttpStatusRange `protobuf:"bytes,4,opt,name=status,proto3,oneof"` //TODO: match on arbitrary header or trailer
+	Status *HttpStatusRange `protobuf:"bytes,4,opt,name=status,proto3,oneof"` // TODO: match on arbitrary header or trailer
 }
 
 func (*ResponseMatch_All) isResponseMatch_Match() {}
@@ -1193,8 +1194,8 @@ func (*ResponseMatch_Not) isResponseMatch_Match() {}
 
 func (*ResponseMatch_Status) isResponseMatch_Match() {}
 
-// If either a minimum or maximum is not specified, the range is considered to be
-// over a discrete value.
+// If either a minimum or maximum is not specified, the range is considered to
+// be over a discrete value.
 type HttpStatusRange struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
