@@ -137,6 +137,20 @@ message ProtocolHint {
 }
 
 message DestinationProfile {
+  // The fully-qualified service name, if one exists.
+  //
+  // When resolving (especially by IP), this field provides the fully-qualified
+  // name of the resolved service, if one exists. This field does NOT include
+  // any port information. E.g. a lookup for 10.2.3.4:8080 might have a name
+  // like `foo.bar.svc.cluster.local`.
+  //
+  // Implementations MAY provide names for non-service IP-lookups (e.g., pod or
+  // node dns names), but this is not required.
+  //
+  // If the lookup does not refer to a known named entity, this field MUST be
+  // left empty.
+  string fully_qualified_name = 5;
+
   // Indicates that connections on this service address should be handled as
   // opaque TCP streams. HTTP routes returned on for such services will be
   // ignored.
