@@ -1,3 +1,8 @@
+## v0.1.14
+
+* Add `opaque_protocol` to profile responses
+* Add `fully_qualified_name` to profile responses
+
 ## v0.1.13
 
 * Update Rust crate to use `tonic` instead of `tower-grpc`
