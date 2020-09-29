@@ -275,7 +275,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "linkerd2-proxy-api"
-version = "0.1.13"
+version = "0.1.14"
 dependencies = [
  "h2 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "http 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
