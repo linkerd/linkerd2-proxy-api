@@ -1,3 +1,8 @@
+## v0.1.15
+
+* Add `endpoint` to profile responses
+* Update Rust dependencies
+
 ## v0.1.14
 
 * Add `opaque_protocol` to profile responses
