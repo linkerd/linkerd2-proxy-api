@@ -657,15 +657,13 @@ type DestinationProfile struct {
 	// receive a portion of the requests proportional to its weight.  If this
 	// list is empty, requests should be sent to this destination as normal.
 	DstOverrides []*WeightedDst `protobuf:"bytes,3,rep,name=dst_overrides,json=dstOverrides,proto3" json:"dst_overrides,omitempty"`
-	// If this field is set, it indicates that the target is a single (pod)
-	// endpoint and not a service address. The values of `fully_qualified_name`
-	// and `dst_overrides` will be ignored for the purposes of service discovery--
+	// If this field is set, it indicates that the target is a known endpoint (and
+	// not a service address). The values of `fully_qualified_name` and
+	// `dst_overrides` will be ignored for the purposes of service discovery--
 	// traffic split and load balancing will be skipped and the single endpoint
 	// are used.
 	//
-	// Similarly, if this is unset and both `fully_qualified_name` &
-	// `dst_overrides` are not set, then discovery and load balancing will be
-	// skipped.
+	// No endpoint should be set If the target is unknown.
 	Endpoint *WeightedAddr `protobuf:"bytes,6,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
 }
 
