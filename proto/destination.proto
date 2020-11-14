@@ -170,15 +170,13 @@ message DestinationProfile {
   // list is empty, requests should be sent to this destination as normal.
   repeated WeightedDst dst_overrides = 3;
 
-  // If this field is set, it indicates that the target is a single (pod)
-  // endpoint and not a service address. The values of `fully_qualified_name`
-  // and `dst_overrides` will be ignored for the purposes of service discovery--
+  // If this field is set, it indicates that the target is a known endpoint (and
+  // not a service address). The values of `fully_qualified_name` and
+  // `dst_overrides` will be ignored for the purposes of service discovery--
   // traffic split and load balancing will be skipped and the single endpoint
   // are used.
   //
-  // Similarly, if this is unset and both `fully_qualified_name` &
-  // `dst_overrides` are not set, then discovery and load balancing will be
-  // skipped.
+  // No endpoint should be set If the target is unknown.
   WeightedAddr endpoint = 6;
 }
 
