@@ -16,9 +16,9 @@ rustfmt = ["tonic-build/rustfmt"]
 arbitrary = ["quickcheck", "rand"]
 
 [dependencies]
-tonic = { version = "0.3", default-features = false, features = ["prost", "codegen"] }
-prost = "0.6"
-prost-types = "0.6"
+tonic = { git = "https://github.com/hawkw/tonic", branch = "eliza/tokio-0.3", default-features = false, features = ["prost", "codegen"] }
+prost = { git = "https://github.com/danburkert/prost" }
+prost-types = { git = "https://github.com/danburkert/prost" }
 h2 = "0.2"
 http = "0.2"
 
@@ -27,4 +27,4 @@ quickcheck = { version = "0.9", default-features = false, optional = true }
 rand = { version = "0.7", optional = true }
 
 [build-dependencies]
-tonic-build = { version = "0.3", features = ["prost"], default-features = false }
+tonic-build = { git = "https://github.com/hawkw/tonic", branch = "eliza/tokio-0.3", features = ["prost"], default-features = false }
