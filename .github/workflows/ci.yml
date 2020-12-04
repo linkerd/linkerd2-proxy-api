@@ -9,7 +9,7 @@ jobs:
     name: Rust build
     runs-on: ubuntu-18.04
     container:
-      image: docker://rust:1.41.0-buster
+      image: docker://rust:1.47.0-buster
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@722adc6
