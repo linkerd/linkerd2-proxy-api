@@ -134,6 +134,12 @@ message ProtocolHint {
   }
 
   message H2 {}
+
+  // When set, indicates that the target supports receiving opaque traffic
+  // wrapped with the Linkerd connection header on the specified port.
+  OpaqueHeader opaque_header = 2;
+
+  message OpaqueHeader { uint32 port = 1; }
 }
 
 message DestinationProfile {
