@@ -1,3 +1,7 @@
+## v0.1.16
+
+* Add an optional `OpaqueTransport` to the endpoint `ProtocolHint`
+
 ## v0.1.15
 
 * Add `endpoint` to profile responses
