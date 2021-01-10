@@ -1,3 +1,7 @@
+## v0.1.17
+
+* Update Rust dependencies
+
 ## v0.1.16
 
 * Add an optional `OpaqueTransport` to the endpoint `ProtocolHint`
