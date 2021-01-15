@@ -1,3 +1,7 @@
+## v0.1.18
+
+* Update tonic to v0.4
+
 ## v0.1.17
 
 * Update Rust dependencies
