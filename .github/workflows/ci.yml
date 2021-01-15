@@ -4,9 +4,11 @@ on:
   push:
     branches:
     - master
+
 jobs:
   rust_build:
     name: Rust build
+    timeout-minutes: 5
     runs-on: ubuntu-18.04
     container:
       image: docker://rust:1.47.0-buster
@@ -14,8 +16,37 @@ jobs:
     # actions/checkout@v2
     - uses: actions/checkout@722adc6
     - run: make rs
+
+  rust_audit:
+    name: Rust audit
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+    # Prevent sudden announcement of a new advisory from failing Ci.
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: EmbarkStudios/cargo-deny-action@v1
+      with:
+        command: check ${{ matrix.checks }}
+
+  clippy:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.49.0-buster
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup component add clippy
+      - run: cargo clippy --all-targets --all-features
+
   go_build:
     name: Go build
+    timeout-minutes: 5
     runs-on: ubuntu-18.04
     steps:
     # actions/checkout@v2
