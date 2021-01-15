@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-18.04
     container:
-      image: docker://rust:1.47.0-buster
+      image: docker://rust:1.49.0-buster
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@722adc6
@@ -34,7 +34,8 @@ jobs:
       with:
         command: check ${{ matrix.checks }}
 
-  clippy:
+  rust_lint:
+    name: Rust lint
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
