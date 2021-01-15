@@ -42,7 +42,7 @@ jobs:
       image: docker://rust:1.49.0-buster
     steps:
       - uses: actions/checkout@v2
-      - run: rustup component add clippy
+      - run: rustup component add clippy rustfmt
       - run: cargo clippy --all-targets --all-features
 
   go_build:
