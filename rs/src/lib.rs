@@ -63,6 +63,13 @@ pub struct InvalidScheme;
 #[derive(Debug, Clone)]
 pub struct InvalidIpAddress;
 
+/// Indicates an IP address could not be decoded.
+#[derive(Debug, Clone)]
+pub enum InvalidIpNetwork {
+    Ip(InvalidIpAddress),
+    PrefixLen(ipnet::PrefixLenError),
+}
+
 // ===== impl tap::Eos =====
 
 impl From<h2::Reason> for tap::Eos {
@@ -120,6 +127,53 @@ impl From<std::net::IpAddr> for net::IpAddress {
     }
 }
 
+// ===== impl net::IpAddress =====
+
+impl TryFrom<net::IpNetwork> for ipnet::IpNet {
+    type Error = InvalidIpNetwork;
+    fn try_from(net: net::IpNetwork) -> Result<Self, Self::Error> {
+        let ip = net
+            .ip
+            .ok_or(InvalidIpNetwork::Ip(InvalidIpAddress))?
+            .try_into()
+            .map_err(InvalidIpNetwork::Ip)?;
+        let prefix_len = if (0..=std::u8::MAX as u32).contains(&net.prefix_len) {
+            net.prefix_len as u8
+        } else {
+            return Err(InvalidIpNetwork::PrefixLen(ipnet::PrefixLenError));
+        };
+        match ip {
+            std::net::IpAddr::V4(addr) => ipnet::Ipv4Net::new(addr, prefix_len).map(Into::into),
+            std::net::IpAddr::V6(addr) => ipnet::Ipv6Net::new(addr, prefix_len).map(Into::into),
+        }
+        .map_err(InvalidIpNetwork::PrefixLen)
+    }
+}
+
+impl<T> From<(T, u8)> for net::IpNetwork
+where
+    net::IpAddress: From<T>,
+{
+    #[inline]
+    fn from((ip, prefix_len): (T, u8)) -> Self {
+        Self {
+            ip: Some(ip.into()),
+            prefix_len: prefix_len.into(),
+        }
+    }
+}
+
+impl From<ipnet::IpNet> for net::IpNetwork {
+    fn from(net: ipnet::IpNet) -> Self {
+        net::IpNetwork {
+            ip: Some(net.addr().into()),
+            prefix_len: net.prefix_len().into(),
+        }
+    }
+}
+
+// ===== impl net::ip_address:Ip =====
+
 impl From<[u8; 4]> for net::ip_address::Ip {
     fn from(octets: [u8; 4]) -> Self {
         net::ip_address::Ip::Ipv4(
@@ -130,8 +184,6 @@ impl From<[u8; 4]> for net::ip_address::Ip {
         )
     }
 }
-
-// ===== impl net::ip_address:Ip =====
 
 impl From<std::net::Ipv4Addr> for net::ip_address::Ip {
     #[inline]
@@ -362,3 +414,24 @@ impl fmt::Display for InvalidIpAddress {
 }
 
 impl Error for InvalidIpAddress {}
+
+// ===== impl InvalidIpNetwork =====
+
+impl fmt::Display for InvalidIpNetwork {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "invalid network: ")?;
+        match self {
+            Self::Ip(e) => e.fmt(f),
+            Self::PrefixLen(e) => e.fmt(f),
+        }
+    }
+}
+
+impl Error for InvalidIpNetwork {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        match self {
+            Self::Ip(e) => Some(&*e),
+            Self::PrefixLen(e) => Some(&*e),
+        }
+    }
+}
