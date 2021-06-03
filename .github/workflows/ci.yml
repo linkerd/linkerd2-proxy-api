@@ -15,6 +15,7 @@ jobs:
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@v2
+    - run: rustup component add rustfmt # Needed for the rustfmt feature.
     - run: make rs
 
   rust_audit:
