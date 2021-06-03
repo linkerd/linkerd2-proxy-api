@@ -89,10 +89,13 @@ impl TryFrom<IpNetwork> for ipnet::IpNet {
             return Err(InvalidIpNetwork::PrefixLen(ipnet::PrefixLenError));
         };
         match ip {
-            std::net::IpAddr::V4(addr) => ipnet::Ipv4Net::new(addr, prefix_len).map(Into::into),
-            std::net::IpAddr::V6(addr) => ipnet::Ipv6Net::new(addr, prefix_len).map(Into::into),
+            std::net::IpAddr::V4(addr) => ipnet::Ipv4Net::new(addr, prefix_len)
+                .map(Into::into)
+                .map_err(InvalidIpNetwork::PrefixLen),
+            std::net::IpAddr::V6(addr) => ipnet::Ipv6Net::new(addr, prefix_len)
+                .map(Into::into)
+                .map_err(InvalidIpNetwork::PrefixLen),
         }
-        .map_err(InvalidIpNetwork::PrefixLen)
     }
 }
 
