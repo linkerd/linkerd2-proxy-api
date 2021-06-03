@@ -11,6 +11,11 @@ message IPAddress {
   }
 }
 
+message IPNetwork {
+  IPAddress ip = 1;
+  uint32 prefix_len = 2;
+}
+
 message IPv6 {
   fixed64 first = 1; // hextets 1-4
   fixed64 last = 2;  // hextets 5-8

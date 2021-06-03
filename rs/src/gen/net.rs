@@ -1,10 +1,21 @@
-use std::{convert::TryFrom, error::Error, fmt};
+use std::{
+    convert::{TryFrom, TryInto},
+    error::Error,
+    fmt,
+};
 
 tonic::include_proto!("io.linkerd.proxy.net");
 
 /// Indicates an IP address could not be decoded.
 #[derive(Debug, Clone)]
 pub struct InvalidIpAddress;
+
+/// Indicates an IP address could not be decoded.
+#[derive(Debug, Clone)]
+pub enum InvalidIpNetwork {
+    Ip(InvalidIpAddress),
+    PrefixLen(ipnet::PrefixLenError),
+}
 
 // === impl IpAddress ===
 
@@ -58,6 +69,55 @@ impl From<[u8; 4]> for ip_address::Ip {
                 | u32::from(octets[2]) << 8
                 | u32::from(octets[3]),
         )
+    }
+}
+
+// === impl IpNetwork ===
+
+impl TryFrom<IpNetwork> for ipnet::IpNet {
+    type Error = InvalidIpNetwork;
+
+    fn try_from(net: IpNetwork) -> Result<Self, Self::Error> {
+        let ip = net
+            .ip
+            .ok_or(InvalidIpNetwork::Ip(InvalidIpAddress))?
+            .try_into()
+            .map_err(InvalidIpNetwork::Ip)?;
+        let prefix_len = if (0..=std::u8::MAX as u32).contains(&net.prefix_len) {
+            net.prefix_len as u8
+        } else {
+            return Err(InvalidIpNetwork::PrefixLen(ipnet::PrefixLenError));
+        };
+        match ip {
+            std::net::IpAddr::V4(addr) => ipnet::Ipv4Net::new(addr, prefix_len)
+                .map(Into::into)
+                .map_err(InvalidIpNetwork::PrefixLen),
+            std::net::IpAddr::V6(addr) => ipnet::Ipv6Net::new(addr, prefix_len)
+                .map(Into::into)
+                .map_err(InvalidIpNetwork::PrefixLen),
+        }
+    }
+}
+
+impl<T> From<(T, u8)> for IpNetwork
+where
+    IpAddress: From<T>,
+{
+    #[inline]
+    fn from((ip, prefix_len): (T, u8)) -> Self {
+        Self {
+            ip: Some(ip.into()),
+            prefix_len: prefix_len.into(),
+        }
+    }
+}
+
+impl From<ipnet::IpNet> for IpNetwork {
+    fn from(net: ipnet::IpNet) -> Self {
+        IpNetwork {
+            ip: Some(net.addr().into()),
+            prefix_len: net.prefix_len().into(),
+        }
     }
 }
 
