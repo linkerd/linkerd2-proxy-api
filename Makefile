@@ -47,7 +47,16 @@ Cargo.lock: Cargo.toml rs/Cargo.toml
 
 .PHONY: rs
 rs: Cargo.lock
-	cd rs && $(CARGO) test --locked $(RELEASE) --features=arbitrary
+	cargo check --all-features --locked $(RELASE)
+
+.PHONY: clippy
+clippy: Cargo.lock
+	for api in destination http_types identity net tap ; do \
+		for kind in arbitrary client server ; do \
+			$(CARGO) clippy --locked $(RELEASE) --features=$$api,$$kind --all-targets ; \
+		done ; \
+	done
+
 
 .PHONY: go
 go: $(PROTOC)

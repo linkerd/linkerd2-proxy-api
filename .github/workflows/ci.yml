@@ -9,12 +9,13 @@ jobs:
   rust_build:
     name: Rust build
     timeout-minutes: 5
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container:
-      image: docker://rust:1.49.0-buster
+      image: docker://rust:1.52.1-buster
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@v2
+    - run: rustup component add rustfmt # Needed for the rustfmt feature.
     - run: make rs
 
   rust_audit:
@@ -39,11 +40,11 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: docker://rust:1.49.0-buster
+      image: docker://rust:1.52.1-buster
     steps:
       - uses: actions/checkout@v2
       - run: rustup component add clippy rustfmt
-      - run: cargo clippy --all-targets --all-features
+      - run: make clippy
 
   go_build:
     name: Go build
