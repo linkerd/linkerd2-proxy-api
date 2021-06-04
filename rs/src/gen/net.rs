@@ -1,20 +1,20 @@
-use std::{
-    convert::{TryFrom, TryInto},
-    error::Error,
-    fmt,
-};
+use std::convert::{TryFrom, TryInto};
+use thiserror::Error;
 
 tonic::include_proto!("io.linkerd.proxy.net");
 
 /// Indicates an IP address could not be decoded.
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, Error)]
+#[error("invalid IP address")]
 pub struct InvalidIpAddress;
 
 /// Indicates an IP address could not be decoded.
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, Error)]
 pub enum InvalidIpNetwork {
-    Ip(InvalidIpAddress),
-    PrefixLen(ipnet::PrefixLenError),
+    #[error("invalid IP address")]
+    Ip(#[from] InvalidIpAddress),
+    #[error("invalid network prefix length")]
+    PrefixLen(#[from] ipnet::PrefixLenError),
 }
 
 // === impl IpAddress ===
@@ -210,16 +210,6 @@ impl TryFrom<TcpAddress> for std::net::SocketAddr {
         Err(InvalidIpAddress)
     }
 }
-
-// === impl InvalidIpAddress ===
-
-impl fmt::Display for InvalidIpAddress {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "invalid ip address")
-    }
-}
-
-impl Error for InvalidIpAddress {}
 
 #[cfg(feature = "arbitrary")]
 mod arbitary {

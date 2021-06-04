@@ -1,18 +1,19 @@
 use std::{
     borrow::Cow,
     convert::{TryFrom, TryInto},
-    error::Error,
-    fmt,
 };
+use thiserror::Error;
 
 tonic::include_proto!("io.linkerd.proxy.http_types");
 
 /// Indicates an HTTP Method could not be decoded.
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, Error)]
+#[error("invalid HTTP method")]
 pub struct InvalidMethod;
 
 /// Indicates a URI Scheme could not be decoded.
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, Error)]
+#[error("invalid HTTP scheme")]
 pub struct InvalidScheme;
 
 // === impl scheme::Type ===
@@ -99,16 +100,6 @@ impl<'a> From<&'a http::Method> for HttpMethod {
     }
 }
 
-// === impl InvalidMethod ===
-
-impl fmt::Display for InvalidMethod {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "invalid http method")
-    }
-}
-
-impl Error for InvalidMethod {}
-
 // === impl Scheme ===
 
 impl<'a> From<&'a http::uri::Scheme> for Scheme {
@@ -136,16 +127,6 @@ impl<'a> From<&'a str> for Scheme {
         }
     }
 }
-
-// === impl InvalidScheme ===
-
-impl fmt::Display for InvalidScheme {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "invalid http scheme")
-    }
-}
-
-impl Error for InvalidScheme {}
 
 #[cfg(feature = "arbitrary")]
 mod arbitary {
