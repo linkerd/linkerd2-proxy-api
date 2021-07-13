@@ -14,10 +14,9 @@ GIT = git
 GO = go
 UNZIP = unzip
 
-PROTOC_VERSION = 3.6.0
+PROTOC_VERSION = 3.17.3
 PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
-PROTOC = target/protoc-$(PROTOC_VERSION)
-PROTOC_GO = $(PROTOC) -I proto --go_out=plugins=grpc:.
+PROTOC ?= target/protoc-$(PROTOC_VERSION)
 
 MODULE_NAME = github.com/linkerd/linkerd2-proxy-api
 
@@ -60,19 +59,23 @@ clippy: Cargo.lock
 
 .PHONY: go
 go: $(PROTOC)
-	$(GO) get github.com/golang/protobuf/protoc-gen-go
-	$(PROTOC_GO) proto/destination.proto
-	$(PROTOC_GO) proto/http_types.proto
-	$(PROTOC_GO) proto/identity.proto
-	$(PROTOC_GO) proto/net.proto
-	$(PROTOC_GO) proto/tap.proto
 	@rm -rf go/*
-	@mv $(MODULE_NAME)/go/ .
-	@rm -rf github.com/
+	mkdir -p ./go/destination ./go/http_types ./go/identity ./go/net ./go/tap
+	$(GO) get google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
+	$(GO) get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/destination proto/destination.proto
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/http_types proto/http_types.proto
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/identity proto/identity.proto
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/net proto/net.proto
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/tap proto/tap.proto
+	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/destination proto/destination.proto
+	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/identity proto/identity.proto
+	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/tap proto/tap.proto
 	$(GO) build ./go/...
 
 .PHONY: check-go
 check-go: go
+	$(GIT) diff-index -p HEAD -- go
 	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go | wc -l)
 
 .PHONY: all
