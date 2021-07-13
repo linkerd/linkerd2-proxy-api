@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.inbound;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
+
+import "google/protobuf/duration.proto";
+import "net.proto";
+
+service InboundServerDiscovery {
+  rpc GetPort(PortSpec) returns (Server) {}
+
+  rpc WatchPort(PortSpec) returns (stream Server) {}
+}
+
+message PortSpec {
+  // Identifies a proxy workload (e.g., pod name).
+  string workload = 1;
+
+  // An inbound port on _workload_.
+  uint32 port = 2;
+}
+
+message Server {
+  // If set, indicates how the proxy should proxy connections on the specified
+  // port.
+  ProxyProtocol protocol = 1;
+
+  // Indicates the IP addresses on which the proxy may receive connections.
+  // Connections targetting other IP addresses will be dropped.
+  repeated io.linkerd.proxy.net.IPAddress server_ips = 2;
+
+  // Configures a proxy to allow connections from the specified clients.
+  //
+  // If unset, no connections are permitted.
+  repeated Authz authorizations = 3;
+
+  // Descriptive labels to be added to metrics, etc.
+  //
+  // A control plane SHOULD return the same keys in all policies. That is, we do
+  // NOT want to return arbitrary pod labels in this field.
+  map<string, string> labels = 4;
+}
+
+message ProxyProtocol {
+  oneof kind {
+    Detect detect = 1;
+    Opaque opaque = 2;
+    Tls tls = 3;
+    Http1 http1 = 4;
+    Http2 http2 = 5;
+    Grpc grpc = 6;
+  }
+
+  message Detect { google.protobuf.Duration timeout = 1; }
+
+  message Http1 {
+    // Disables the setting of informational headers on this server.
+    bool disable_informational_headers = 1;
+
+    // TODO: domains -> routes -> policy
+    // TODO: HTTP version? (and orig-proto upgrades)?
+  }
+
+  message Http2 {
+    // Disables the setting of informational headers on this server.
+    bool disable_informational_headers = 1;
+
+    // TODO: domains -> routes -> policy
+    // TODO: HTTP version? (and orig-proto upgrades)?
+  }
+
+  message Grpc {
+    // Disables the setting of informational headers on this server.
+    bool disable_informational_headers = 1;
+
+    // TODO: service -> endpoint -> policy
+  }
+
+  message Opaque {
+    // TODO: opaque TLS settings (versions, algorithms, SNI)
+  }
+
+  message Tls {}
+}
+
+message Authz {
+  // Limits this authorization to client addresses in the provided networks.
+  //
+  // Must have at least one network, otherwise the authorization must be
+  // ignored. An authorization matches all clients by including an explicit
+  // match on, i.e., `[0.0.0.0/0, 0::/0]``.
+  repeated Network networks = 1;
+
+  // Must be set.
+  Authn authentication = 2;
+
+  // Descriptive labels to be added to metrics, etc.
+  //
+  // A control plane SHOULD return the same keys in all authorizations. That is,
+  // we do NOT want to return arbitrary pod labels in this field.
+  map<string, string> labels = 3;
+}
+
+// Describes a network of authorized clients.
+message Network {
+  io.linkerd.proxy.net.IPNetwork net = 1;
+  repeated io.linkerd.proxy.net.IPNetwork except = 2;
+}
+
+message Authn {
+  oneof permit {
+    PermitUnauthenticated unauthenticated = 1;
+
+    // If set, requires that the connection is transported over mesh TLS.
+    PermitMeshTLS meshTLS = 2;
+  }
+
+  message PermitUnauthenticated {}
+
+  message PermitMeshTLS {
+    oneof clients {
+      // Indicates that client identities are not required.
+      PermitUnauthenticated unauthenticated = 1;
+
+      // Indicates that mutually-authenticated connections are permitted from
+      // clients with matching identities.
+      PermitClientIdentities identities = 2;
+    }
+
+    message PermitClientIdentities {
+      // A list of literal identities.
+      repeated Identity identities = 1;
+
+      // A list of identity suffixes.
+      //
+      // If this contains an empty suffix, all identities are matched.
+      repeated IdentitySuffix suffixes = 2;
+    }
+  }
+}
+
+message Identity { string name = 1; }
+
+// Encodes a DNS-like name suffix as sequence of parts.
+//
+// An empty list is equivalent to `.` (matching all names); the list `["foo",
+// "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
+message IdentitySuffix { repeated string parts = 1; }

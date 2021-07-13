@@ -1,7 +1,14 @@
 use std::error::Error;
 
 const DIR: &str = "../proto";
-const PROTOS: [&str; 5] = ["destination", "http_types", "identity", "net", "tap"];
+const PROTOS: [&str; 6] = [
+    "destination",
+    "http_types",
+    "identity",
+    "inbound",
+    "net",
+    "tap",
+];
 
 fn main() -> Result<(), Box<dyn Error>> {
     let files = PROTOS

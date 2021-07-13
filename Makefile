@@ -50,7 +50,7 @@ rs: Cargo.lock
 
 .PHONY: clippy
 clippy: Cargo.lock
-	for api in destination http_types identity net tap ; do \
+	for api in destination http_types identity inbound net tap ; do \
 		for kind in arbitrary client server ; do \
 			$(CARGO) clippy --locked $(RELEASE) --features=$$api,$$kind --all-targets ; \
 		done ; \
@@ -60,15 +60,17 @@ clippy: Cargo.lock
 .PHONY: go
 go: $(PROTOC)
 	@rm -rf go/*
-	mkdir -p ./go/destination ./go/http_types ./go/identity ./go/net ./go/tap
+	mkdir -p ./go/destination ./go/http_types ./go/identity ./go/inbound ./go/net ./go/tap
 	$(GO) get google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
 	$(GO) get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/destination proto/destination.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/http_types proto/http_types.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/identity proto/identity.proto
+	$(PROTOC) -I proto --go_out=paths=source_relative:./go/inbound proto/inbound.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/net proto/net.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/tap proto/tap.proto
 	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/destination proto/destination.proto
+	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/inbound proto/inbound.proto
 	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/identity proto/identity.proto
 	$(PROTOC) -I proto --go-grpc_out=paths=source_relative:./go/tap proto/tap.proto
 	$(GO) build ./go/...
