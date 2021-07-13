@@ -14,7 +14,7 @@ GIT = git
 GO = go
 UNZIP = unzip
 
-PROTOC_VERSION = 3.16.0
+PROTOC_VERSION = 3.17.3
 PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
 PROTOC ?= target/protoc-$(PROTOC_VERSION)
 
