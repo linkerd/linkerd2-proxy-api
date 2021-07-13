@@ -75,6 +75,7 @@ go: $(PROTOC)
 
 .PHONY: check-go
 check-go: go
+	$(GIT) diff-index -p HEAD -- go
 	@test 0 -eq $(shell $(GIT) diff-index -p HEAD -- go | wc -l)
 
 .PHONY: all
