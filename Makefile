@@ -41,7 +41,7 @@ $(PROTOC):
 	rm $(PROTOC).zip
 	chmod 755 $(PROTOC)
 
-Cargo.lock: Cargo.toml rs/Cargo.toml
+Cargo.lock: Cargo.toml
 	$(CARGO) fetch
 
 .PHONY: rs
