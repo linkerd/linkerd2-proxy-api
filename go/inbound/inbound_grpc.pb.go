@@ -14,37 +14,39 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// InboundServerDiscoveryClient is the client API for InboundServerDiscovery service.
+// InboundServerPoliciesClient is the client API for InboundServerPolicies service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type InboundServerDiscoveryClient interface {
+type InboundServerPoliciesClient interface {
+	/// Gets the inbound server policy for a given workload port.
 	GetPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (*Server, error)
-	WatchPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (InboundServerDiscovery_WatchPortClient, error)
+	/// Watches the inbound server policy for a given workload port.
+	WatchPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (InboundServerPolicies_WatchPortClient, error)
 }
 
-type inboundServerDiscoveryClient struct {
+type inboundServerPoliciesClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewInboundServerDiscoveryClient(cc grpc.ClientConnInterface) InboundServerDiscoveryClient {
-	return &inboundServerDiscoveryClient{cc}
+func NewInboundServerPoliciesClient(cc grpc.ClientConnInterface) InboundServerPoliciesClient {
+	return &inboundServerPoliciesClient{cc}
 }
 
-func (c *inboundServerDiscoveryClient) GetPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (*Server, error) {
+func (c *inboundServerPoliciesClient) GetPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (*Server, error) {
 	out := new(Server)
-	err := c.cc.Invoke(ctx, "/io.linkerd.proxy.inbound.InboundServerDiscovery/GetPort", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/io.linkerd.proxy.inbound.InboundServerPolicies/GetPort", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *inboundServerDiscoveryClient) WatchPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (InboundServerDiscovery_WatchPortClient, error) {
-	stream, err := c.cc.NewStream(ctx, &InboundServerDiscovery_ServiceDesc.Streams[0], "/io.linkerd.proxy.inbound.InboundServerDiscovery/WatchPort", opts...)
+func (c *inboundServerPoliciesClient) WatchPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (InboundServerPolicies_WatchPortClient, error) {
+	stream, err := c.cc.NewStream(ctx, &InboundServerPolicies_ServiceDesc.Streams[0], "/io.linkerd.proxy.inbound.InboundServerPolicies/WatchPort", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &inboundServerDiscoveryWatchPortClient{stream}
+	x := &inboundServerPoliciesWatchPortClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -54,16 +56,16 @@ func (c *inboundServerDiscoveryClient) WatchPort(ctx context.Context, in *PortSp
 	return x, nil
 }
 
-type InboundServerDiscovery_WatchPortClient interface {
+type InboundServerPolicies_WatchPortClient interface {
 	Recv() (*Server, error)
 	grpc.ClientStream
 }
 
-type inboundServerDiscoveryWatchPortClient struct {
+type inboundServerPoliciesWatchPortClient struct {
 	grpc.ClientStream
 }
 
-func (x *inboundServerDiscoveryWatchPortClient) Recv() (*Server, error) {
+func (x *inboundServerPoliciesWatchPortClient) Recv() (*Server, error) {
 	m := new(Server)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -71,94 +73,95 @@ func (x *inboundServerDiscoveryWatchPortClient) Recv() (*Server, error) {
 	return m, nil
 }
 
-// InboundServerDiscoveryServer is the server API for InboundServerDiscovery service.
-// All implementations must embed UnimplementedInboundServerDiscoveryServer
+// InboundServerPoliciesServer is the server API for InboundServerPolicies service.
+// All implementations must embed UnimplementedInboundServerPoliciesServer
 // for forward compatibility
-type InboundServerDiscoveryServer interface {
+type InboundServerPoliciesServer interface {
+	/// Gets the inbound server policy for a given workload port.
 	GetPort(context.Context, *PortSpec) (*Server, error)
-	WatchPort(*PortSpec, InboundServerDiscovery_WatchPortServer) error
-	mustEmbedUnimplementedInboundServerDiscoveryServer()
+	/// Watches the inbound server policy for a given workload port.
+	WatchPort(*PortSpec, InboundServerPolicies_WatchPortServer) error
+	mustEmbedUnimplementedInboundServerPoliciesServer()
 }
 
-// UnimplementedInboundServerDiscoveryServer must be embedded to have forward compatible implementations.
-type UnimplementedInboundServerDiscoveryServer struct {
+// UnimplementedInboundServerPoliciesServer must be embedded to have forward compatible implementations.
+type UnimplementedInboundServerPoliciesServer struct {
 }
 
-func (UnimplementedInboundServerDiscoveryServer) GetPort(context.Context, *PortSpec) (*Server, error) {
+func (UnimplementedInboundServerPoliciesServer) GetPort(context.Context, *PortSpec) (*Server, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPort not implemented")
 }
-func (UnimplementedInboundServerDiscoveryServer) WatchPort(*PortSpec, InboundServerDiscovery_WatchPortServer) error {
+func (UnimplementedInboundServerPoliciesServer) WatchPort(*PortSpec, InboundServerPolicies_WatchPortServer) error {
 	return status.Errorf(codes.Unimplemented, "method WatchPort not implemented")
 }
-func (UnimplementedInboundServerDiscoveryServer) mustEmbedUnimplementedInboundServerDiscoveryServer() {
-}
+func (UnimplementedInboundServerPoliciesServer) mustEmbedUnimplementedInboundServerPoliciesServer() {}
 
-// UnsafeInboundServerDiscoveryServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to InboundServerDiscoveryServer will
+// UnsafeInboundServerPoliciesServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to InboundServerPoliciesServer will
 // result in compilation errors.
-type UnsafeInboundServerDiscoveryServer interface {
-	mustEmbedUnimplementedInboundServerDiscoveryServer()
+type UnsafeInboundServerPoliciesServer interface {
+	mustEmbedUnimplementedInboundServerPoliciesServer()
 }
 
-func RegisterInboundServerDiscoveryServer(s grpc.ServiceRegistrar, srv InboundServerDiscoveryServer) {
-	s.RegisterService(&InboundServerDiscovery_ServiceDesc, srv)
+func RegisterInboundServerPoliciesServer(s grpc.ServiceRegistrar, srv InboundServerPoliciesServer) {
+	s.RegisterService(&InboundServerPolicies_ServiceDesc, srv)
 }
 
-func _InboundServerDiscovery_GetPort_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _InboundServerPolicies_GetPort_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PortSpec)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(InboundServerDiscoveryServer).GetPort(ctx, in)
+		return srv.(InboundServerPoliciesServer).GetPort(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/io.linkerd.proxy.inbound.InboundServerDiscovery/GetPort",
+		FullMethod: "/io.linkerd.proxy.inbound.InboundServerPolicies/GetPort",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InboundServerDiscoveryServer).GetPort(ctx, req.(*PortSpec))
+		return srv.(InboundServerPoliciesServer).GetPort(ctx, req.(*PortSpec))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _InboundServerDiscovery_WatchPort_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _InboundServerPolicies_WatchPort_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(PortSpec)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(InboundServerDiscoveryServer).WatchPort(m, &inboundServerDiscoveryWatchPortServer{stream})
+	return srv.(InboundServerPoliciesServer).WatchPort(m, &inboundServerPoliciesWatchPortServer{stream})
 }
 
-type InboundServerDiscovery_WatchPortServer interface {
+type InboundServerPolicies_WatchPortServer interface {
 	Send(*Server) error
 	grpc.ServerStream
 }
 
-type inboundServerDiscoveryWatchPortServer struct {
+type inboundServerPoliciesWatchPortServer struct {
 	grpc.ServerStream
 }
 
-func (x *inboundServerDiscoveryWatchPortServer) Send(m *Server) error {
+func (x *inboundServerPoliciesWatchPortServer) Send(m *Server) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-// InboundServerDiscovery_ServiceDesc is the grpc.ServiceDesc for InboundServerDiscovery service.
+// InboundServerPolicies_ServiceDesc is the grpc.ServiceDesc for InboundServerPolicies service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var InboundServerDiscovery_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "io.linkerd.proxy.inbound.InboundServerDiscovery",
-	HandlerType: (*InboundServerDiscoveryServer)(nil),
+var InboundServerPolicies_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "io.linkerd.proxy.inbound.InboundServerPolicies",
+	HandlerType: (*InboundServerPoliciesServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetPort",
-			Handler:    _InboundServerDiscovery_GetPort_Handler,
+			Handler:    _InboundServerPolicies_GetPort_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "WatchPort",
-			Handler:       _InboundServerDiscovery_WatchPort_Handler,
+			Handler:       _InboundServerPolicies_WatchPort_Handler,
 			ServerStreams: true,
 		},
 	},

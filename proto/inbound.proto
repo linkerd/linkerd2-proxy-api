@@ -7,9 +7,18 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
 import "google/protobuf/duration.proto";
 import "net.proto";
 
-service InboundServerDiscovery {
+/// An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
+///
+/// Proxies are expected to watch policies for each known port. As policies change, proxies update
+/// their behavior for newly accepted connections.
+///
+/// The unary `GetPort` endpoint is exposed as a convenience for clients to query policies for
+/// diagnostic purposes.
+service InboundServerPolicies {
+  /// Gets the inbound server policy for a given workload port.
   rpc GetPort(PortSpec) returns (Server) {}
 
+  /// Watches the inbound server policy for a given workload port.
   rpc WatchPort(PortSpec) returns (stream Server) {}
 }
 
