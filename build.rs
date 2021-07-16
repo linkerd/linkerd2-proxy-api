@@ -1,6 +1,6 @@
 use std::error::Error;
 
-const DIR: &str = "../proto";
+const DIR: &str = "proto";
 const PROTOS: [&str; 6] = [
     "destination",
     "http_types",
