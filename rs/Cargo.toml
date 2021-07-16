@@ -22,9 +22,10 @@ arbitrary = ["quickcheck"]
 client = ["transport"]
 server = ["transport"]
 
+destination = ["http_types", "net", "prost-types"]
 http_types = ["http", "thiserror"]
 identity = ["prost-types"]
-destination = ["http_types", "net", "prost-types"]
+inbound = ["net", "prost-types"]
 net = ["ipnet", "thiserror"]
 tap = ["h2", "http_types", "net", "prost-types"]
 

@@ -14,5 +14,10 @@ pub mod identity {
     tonic::include_proto!("io.linkerd.proxy.identity");
 }
 
+#[cfg(feature = "inbound")]
+pub mod inbound {
+    tonic::include_proto!("io.linkerd.proxy.inbound");
+}
+
 #[cfg(feature = "tap")]
 pub mod tap;
