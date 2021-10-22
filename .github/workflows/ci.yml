@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: docker://rust:1.52.1-buster
+      image: docker://rust:1.56.0-buster
     steps:
     # actions/checkout@v2
     - uses: actions/checkout@v2
@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: docker://rust:1.52.1-buster
+      image: docker://rust:1.56.0-buster
     steps:
       - uses: actions/checkout@v2
       - run: rustup component add clippy rustfmt
