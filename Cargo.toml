@@ -1,6 +1,6 @@
 [package]
 name = "linkerd2-proxy-api"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
@@ -33,11 +33,11 @@ tap = ["h2", "http_types", "net", "prost-types"]
 h2 = { version = "0.3", optional = true }
 http = { version = "0.2", optional = true }
 ipnet = { version = "2", optional = true }
-prost = "0.8"
-prost-types = { version = "0.8", optional = true }
+prost = "0.9"
+prost-types = { version = "0.9", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "1", optional = true }
-tonic = { version = "0.5", default-features = false, features = ["prost", "codegen"] }
+tonic = { version = "0.6", default-features = false, features = ["prost", "codegen"] }
 
 [build-dependencies]
-tonic-build = { version = "0.5", default-features = false, features = ["prost"] }
+tonic-build = { version = "0.6", default-features = false, features = ["prost"] }
