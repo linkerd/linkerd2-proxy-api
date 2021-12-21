@@ -83,6 +83,7 @@ impl<'a> From<&'a http::Method> for http_method::Type {
             http::Method::POST => Type::Registered(Registered::Post.into()),
             http::Method::PUT => Type::Registered(Registered::Put.into()),
             http::Method::DELETE => Type::Registered(Registered::Delete.into()),
+            http::Method::PATCH => Type::Registered(Registered::Patch.into()),
             http::Method::HEAD => Type::Registered(Registered::Head.into()),
             http::Method::OPTIONS => Type::Registered(Registered::Options.into()),
             http::Method::CONNECT => Type::Registered(Registered::Connect.into()),
