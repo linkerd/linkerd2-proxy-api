@@ -1,3 +1,12 @@
+## v0.3.1
+
+* Rust: Fix serialization of `http::Method::PATCH` to use a registered method
+
+## v0.3.0
+
+* Rust: Update `tonic` to v0.6 and `prost` to v0.9
+* Go: Update `google.golang.org/grpc` to v1.43.0
+
 ## v0.2.0
 
 * Add the `io.linkerd.proxy.inbound.InboundServerPolicies` API to support server-side configuration
