@@ -32,7 +32,7 @@ multiple-versions = "deny"
 wildcards = "allow"
 highlight = "all"
 deny = []
-skip = []
+skip = [{ name = "itoa", version = "0.4" }]
 skip-tree = []
 
 [sources]
