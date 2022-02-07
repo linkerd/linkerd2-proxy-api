@@ -9,7 +9,6 @@
         "samverschueren.final-newline",
         "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
-        "vadimcn.vscode-lldb",
         "zxh404.vscode-proto3"
     ],
     "runArgs": [
