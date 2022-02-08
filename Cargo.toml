@@ -8,7 +8,8 @@ description = "Linkerd2 Proxy API gRPC bindings and utilities"
 homepage = "https://linkerd.io"
 repository = "https://github.com/linkerd/linkerd2-proxy-api"
 documentation = "https://docs.rs/linkerd2-proxy-api"
-keyword = ["linkerd", "grpc", "servicemesh"]
+keywords = ["linkerd", "grpc", "servicemesh"]
+rust-version = "1.56"
 
 [features]
 default = []
