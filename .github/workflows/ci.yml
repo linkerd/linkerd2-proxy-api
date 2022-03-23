@@ -13,8 +13,8 @@ jobs:
     container:
       image: docker://rust:1.56.0-buster
     steps:
-    # actions/checkout@v2
-    - uses: actions/checkout@v2
+    # actions/checkout@v3
+    - uses: actions/checkout@v3
     - run: rustup component add rustfmt # Needed for the rustfmt feature.
     - run: make rs
 
@@ -30,7 +30,7 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing Ci.
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: EmbarkStudios/cargo-deny-action@v1
       with:
         command: check ${{ matrix.checks }}
@@ -42,7 +42,7 @@ jobs:
     container:
       image: docker://rust:1.56.0-buster
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: rustup component add clippy rustfmt
       - run: make clippy
 
@@ -51,8 +51,8 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-18.04
     steps:
-    # actions/checkout@v2
-    - uses: actions/checkout@v2
+    # actions/checkout@v3
+    - uses: actions/checkout@v3
     - name: Check go
       run: |
         export PATH="$(go env GOPATH)/bin:$PATH"
