@@ -17,9 +17,6 @@ default = []
 # Generate code that is compatible with Tonic's `transport` module.
 transport = ["tonic-build/transport", "tonic/transport"]
 
-# Generate code that is formatted.
-rustfmt = ["tonic-build/rustfmt"]
-
 # Enable generation of arbitrary protos with quickcheck.
 arbitrary = ["quickcheck"]
 
@@ -38,11 +35,11 @@ tap = ["h2", "http_types", "net", "prost-types"]
 h2 = { version = "0.3", optional = true }
 http = { version = "0.2", optional = true }
 ipnet = { version = "2", optional = true }
-prost = "0.9"
-prost-types = { version = "0.9", optional = true }
+prost = "0.10"
+prost-types = { version = "0.10", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "1", optional = true }
 tonic = { version = "0.7", default-features = false, features = ["prost", "codegen"] }
 
 [build-dependencies]
-tonic-build = { version = "0.6", default-features = false, features = ["prost"] }
+tonic-build = { version = "0.7", default-features = false, features = ["prost"] }
