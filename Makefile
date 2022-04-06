@@ -14,10 +14,11 @@ GIT = git
 GO = go
 UNZIP = unzip
 
-PROTOC_VERSION = 3.20.0
+PROTOC_VERSION := 3.20.0
 PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
-PROTOC_NO_VENDOR = 1
 PROTOC ?= target/protoc-$(PROTOC_VERSION)
+export PROTOC_NO_VENDOR := 1
+export PROTOC := $(PROTOC)
 
 MODULE_NAME = github.com/linkerd/linkerd2-proxy-api
 
@@ -48,7 +49,7 @@ fetch: Cargo.toml
 
 .PHONY: rs
 rs: fetch $(PROTOC)
-	cargo check --all-features --frozen $(RELASE)
+	cargo check --all-features --frozen $(RELEASE)
 
 .PHONY: clippy
 clippy: fetch $(PROTOC)
