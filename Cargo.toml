@@ -1,6 +1,6 @@
 [package]
 name = "linkerd2-proxy-api"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
@@ -9,7 +9,7 @@ homepage = "https://linkerd.io"
 repository = "https://github.com/linkerd/linkerd2-proxy-api"
 documentation = "https://docs.rs/linkerd2-proxy-api"
 keywords = ["linkerd", "grpc", "servicemesh"]
-rust-version = "1.56"
+rust-version = "1.59"
 
 [features]
 default = []
