@@ -1,9 +1,6 @@
 name: CI
 on:
   pull_request: {}
-  push:
-    branches:
-    - master
 
 jobs:
   rust_build:
@@ -13,7 +10,6 @@ jobs:
     container:
       image: docker://rust:1.59.0-buster
     steps:
-    # actions/checkout@v3
     - uses: actions/checkout@v3
     - run: rustup component add rustfmt # Needed for the rustfmt feature.
     - run: make rs
@@ -39,8 +35,6 @@ jobs:
     name: Rust lint
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    container:
-      image: docker://rust:1.59.0-buster
     steps:
       - uses: actions/checkout@v3
       - run: rustup component add clippy rustfmt
@@ -50,10 +44,10 @@ jobs:
     name: Go build
     timeout-minutes: 5
     runs-on: ubuntu-18.04
-    container:
-      image: golang:1.17
     steps:
-    # actions/checkout@v3
+    - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      with:
+        go-version: '1.17'
     - uses: actions/checkout@v3
     - name: Check go
       run: |
