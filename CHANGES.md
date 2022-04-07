@@ -1,3 +1,12 @@
+## v0.4.0
+
+* Go: Update `google.golang.org/protobuf` to v1.28
+* Go: Update `google.golang.org/grpc` to v1.45
+* Go: Update `protoc-gen-go` to v1.28
+* Go: Update `protoc-gen-go-grpc` to v1.2
+* Rust: Update `tonic` to v0.7 and `prost` to v0.10
+* Rust: Update the MSRV to 1.59
+
 ## v0.3.1
 
 * Rust: Fix serialization of `http::Method::PATCH` to use a registered method
