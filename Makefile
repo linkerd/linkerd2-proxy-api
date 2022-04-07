@@ -63,6 +63,7 @@ go: $(PROTOC)
 	@rm -rf go/*
 	mkdir -p ./go/destination ./go/http_types ./go/identity ./go/inbound ./go/net ./go/tap
 	$(GO) mod download
+	$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	$(GO) install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/destination proto/destination.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/http_types proto/http_types.proto
