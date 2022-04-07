@@ -14,9 +14,10 @@ GIT = git
 GO = go
 UNZIP = unzip
 
-PROTOC_VERSION = 3.17.3
+PROTOC_VERSION := 3.20.0
 PROTOC_BASE_URL = https://github.com/google/protobuf/releases/download/v$(PROTOC_VERSION)
-PROTOC ?= target/protoc-$(PROTOC_VERSION)
+export PROTOC ?= target/protoc-$(PROTOC_VERSION)
+export PROTOC_NO_VENDOR := 1
 
 MODULE_NAME = github.com/linkerd/linkerd2-proxy-api
 
@@ -36,33 +37,34 @@ endif
 
 $(PROTOC):
 	mkdir -p $(TARGET)
-	$(CURL) -Lo $(PROTOC).zip $(PROTOC_URL)
+	$(CURL) -fsSLo $(PROTOC).zip $(PROTOC_URL)
 	$(UNZIP) -p $(PROTOC).zip bin/protoc >$(PROTOC)
 	rm $(PROTOC).zip
 	chmod 755 $(PROTOC)
 
-Cargo.lock: Cargo.toml
+.PHONY: fetch
+fetch: Cargo.toml
 	$(CARGO) fetch
 
 .PHONY: rs
-rs: Cargo.lock
-	cargo check --all-features --locked $(RELASE)
+rs: fetch $(PROTOC)
+	cargo check --all-features --frozen $(RELEASE)
 
 .PHONY: clippy
-clippy: Cargo.lock
+clippy: fetch $(PROTOC)
 	for api in destination http_types identity inbound net tap ; do \
 		for kind in arbitrary client server ; do \
-			$(CARGO) clippy --locked $(RELEASE) --features=$$api,$$kind --all-targets ; \
+			$(CARGO) clippy --frozen $(RELEASE) --features=$$api,$$kind --all-targets ; \
 		done ; \
 	done
-
 
 .PHONY: go
 go: $(PROTOC)
 	@rm -rf go/*
 	mkdir -p ./go/destination ./go/http_types ./go/identity ./go/inbound ./go/net ./go/tap
-	$(GO) get google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
-	$(GO) get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
+	$(GO) mod download
+	$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+	$(GO) install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/destination proto/destination.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/http_types proto/http_types.proto
 	$(PROTOC) -I proto --go_out=paths=source_relative:./go/identity proto/identity.proto
