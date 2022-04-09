@@ -1,6 +1,6 @@
 [package]
 name = "linkerd2-proxy-api"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
@@ -14,22 +14,15 @@ rust-version = "1.59"
 [features]
 default = []
 
-# Generate code that is compatible with Tonic's `transport` module.
-transport = ["tonic-build/transport", "tonic/transport"]
-
 # Enable generation of arbitrary protos with quickcheck.
 arbitrary = ["quickcheck"]
 
-# Determines whether clients or servers are built
-client = ["transport"]
-server = ["transport"]
-
-destination = ["http_types", "net", "prost-types"]
+destination = ["http_types", "net", "prost-types", "tonic/codegen"]
 http_types = ["http", "thiserror"]
-identity = ["prost-types"]
-inbound = ["net", "prost-types"]
+identity = ["prost-types", "tonic/codegen"]
+inbound = ["net", "prost-types", "tonic/codegen"]
 net = ["ipnet", "thiserror"]
-tap = ["h2", "http_types", "net", "prost-types"]
+tap = ["h2", "http_types", "net", "prost-types", "tonic/codegen"]
 
 [dependencies]
 h2 = { version = "0.3", optional = true }
@@ -39,7 +32,13 @@ prost = "0.10"
 prost-types = { version = "0.10", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "1", optional = true }
-tonic = { version = "0.7", default-features = false, features = ["prost", "codegen"] }
 
-[build-dependencies]
-tonic-build = { version = "0.7", default-features = false, features = ["prost"] }
+[dependencies.tonic]
+version = "0.7"
+default-features = false
+features = ["prost"]
+
+[dev-dependencies.tonic-build]
+version = "0.7"
+default-features = false
+features = ["prost"]

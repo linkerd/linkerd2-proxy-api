@@ -1,3 +1,10 @@
+# `linkerd2-proxy-api` changes
+
+## v0.5.0
+
+* Rust: Remove the build-time dependency on `protoc`
+* Rust: Remove the `client`, `server`, and `transport` features
+
 ## v0.4.0
 
 * Go: Update `google.golang.org/protobuf` to v1.28

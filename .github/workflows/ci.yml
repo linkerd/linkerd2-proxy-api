@@ -10,9 +10,10 @@ jobs:
     container:
       image: docker://rust:1.59.0-buster
     steps:
+    - run: rustup component add clippy
     - uses: actions/checkout@v3
-    - run: rustup component add rustfmt # Needed for the rustfmt feature.
-    - run: make rs
+    - run: make fetch
+    - run: make clippy
 
   rust_audit:
     name: Rust audit
@@ -30,15 +31,6 @@ jobs:
     - uses: EmbarkStudios/cargo-deny-action@v1
       with:
         command: check ${{ matrix.checks }}
-
-  rust_lint:
-    name: Rust lint
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: rustup component add clippy rustfmt
-      - run: make clippy
 
   go_build:
     name: Go build

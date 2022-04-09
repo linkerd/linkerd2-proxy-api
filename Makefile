@@ -48,14 +48,13 @@ fetch: Cargo.toml
 
 .PHONY: rs
 rs: fetch $(PROTOC)
+	cargo test --test=bootstrap
 	cargo check --all-features --frozen $(RELEASE)
 
 .PHONY: clippy
-clippy: fetch $(PROTOC)
+clippy: rs
 	for api in destination http_types identity inbound net tap ; do \
-		for kind in arbitrary client server ; do \
-			$(CARGO) clippy --frozen $(RELEASE) --features=$$api,$$kind --all-targets ; \
-		done ; \
+		$(CARGO) clippy --frozen $(RELEASE) --features=$$api,arbitrary --all-targets ; \
 	done
 
 .PHONY: go

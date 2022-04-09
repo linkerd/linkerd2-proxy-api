@@ -1,4 +1,4 @@
-tonic::include_proto!("io.linkerd.proxy.tap");
+include!("gen/io.linkerd.proxy.tap.rs");
 
 // === impl Eos ===
 
@@ -19,7 +19,7 @@ impl Eos {
 #[cfg(feature = "arbitrary")]
 mod arbitary {
     use super::*;
-    use crate::gen::{http_types::*, net::*};
+    use crate::{http_types::*, net::*};
     use quickcheck::*;
 
     impl Arbitrary for ObserveRequest {

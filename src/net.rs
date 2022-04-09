@@ -1,7 +1,7 @@
 use std::convert::{TryFrom, TryInto};
 use thiserror::Error;
 
-tonic::include_proto!("io.linkerd.proxy.net");
+include!("gen/io.linkerd.proxy.net.rs");
 
 /// Indicates an IP address could not be decoded.
 #[derive(Clone, Debug, Error)]
