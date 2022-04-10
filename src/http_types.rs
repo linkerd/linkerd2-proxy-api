@@ -4,7 +4,7 @@ use std::{
 };
 use thiserror::Error;
 
-tonic::include_proto!("io.linkerd.proxy.http_types");
+include!("gen/io.linkerd.proxy.http_types.rs");
 
 /// Indicates an HTTP Method could not be decoded.
 #[derive(Clone, Debug, Error)]
