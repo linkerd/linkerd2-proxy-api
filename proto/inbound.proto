@@ -5,6 +5,7 @@ package io.linkerd.proxy.inbound;
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
 
 import "google/protobuf/duration.proto";
+import "http_route.proto";
 import "net.proto";
 
 /// An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
@@ -61,29 +62,35 @@ message ProxyProtocol {
     Grpc grpc = 6;
   }
 
-  message Detect { google.protobuf.Duration timeout = 1; }
+  message Detect {
+    google.protobuf.Duration timeout = 1;
+
+    bool http_disable_informational_headers = 2;
+
+    // If the protocol detected as HTTP, a list of HTTP routes that should be
+    // matched.
+    repeated HttpRoute http_routes = 3;
+  }
 
   message Http1 {
     // Disables the setting of informational headers on this server.
     bool disable_informational_headers = 1;
 
-    // TODO: domains -> routes -> policy
-    // TODO: HTTP version? (and orig-proto upgrades)?
+    repeated HttpRoute routes = 2;
   }
 
   message Http2 {
     // Disables the setting of informational headers on this server.
     bool disable_informational_headers = 1;
 
-    // TODO: domains -> routes -> policy
-    // TODO: HTTP version? (and orig-proto upgrades)?
+    repeated HttpRoute routes = 2;
   }
 
   message Grpc {
     // Disables the setting of informational headers on this server.
     bool disable_informational_headers = 1;
 
-    // TODO: service -> endpoint -> policy
+    // TODO add a gRPC from https://gateway-api.sigs.k8s.io/geps/gep-1016/
   }
 
   message Opaque {
@@ -156,3 +163,39 @@ message Identity { string name = 1; }
 // An empty list is equivalent to `.` (matching all names); the list `["foo",
 // "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 message IdentitySuffix { repeated string parts = 1; }
+
+// Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
+//
+// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
+message HttpRoute {
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 1;
+
+  // A list of rules that may apply to requests on this ruote.
+  //
+  // Rules must be ordered by preference so that if a rule's matches are
+  // otherwise equivalent, the earlier match is preferred.
+  repeated Rule rules = 2;
+
+  // Descriptive labels to be added to metrics, etc.
+  //
+  // A control plane SHOULD return the same keys in all policies. That is, we do
+  // NOT want to return arbitrary labels in this field.
+  map<string, string> labels = 3;
+
+  // The server MUST return at least one authorization, otherwise all requests
+  // to this route will fail with an unauthorized response.
+  repeated Authz authorizations = 4;
+
+  message Rule {
+    repeated io.linkerd.proxy.http_route.RouteMatch matches = 1;
+    repeated Filter filters = 2;
+
+    message Filter {
+        oneof kind {
+          io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 1;
+          io.linkerd.proxy.http_route.RequestRedirect request_redirect = 2;
+        }
+    }
+  }
+}

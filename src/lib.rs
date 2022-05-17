@@ -4,7 +4,12 @@
 #[cfg(feature = "net")]
 pub mod net;
 
-#[cfg(feature = "http_types")]
+#[cfg(feature = "http-route")]
+pub mod http_route {
+    include!("gen/io.linkerd.proxy.http_route.rs");
+}
+
+#[cfg(feature = "http-types")]
 pub mod http_types;
 
 #[cfg(feature = "destination")]

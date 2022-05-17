@@ -12,14 +12,23 @@ include!("gen/io.linkerd.proxy.http_types.rs");
 pub struct InvalidMethod;
 
 /// Indicates a URI Scheme could not be decoded.
-#[derive(Clone, Debug, Error)]
-#[error("invalid HTTP scheme")]
-pub struct InvalidScheme;
+#[derive(Debug, Error)]
+pub enum InvalidScheme {
+    #[error("scheme must have a type")]
+    MissingType,
+
+    #[error("unexpected registered scheme: {0}")]
+    UnexpectedRegistered(i32),
+
+    #[error("invalid unregistered scheme: {0}")]
+    InvalidUnregstered(#[from] http::uri::InvalidUri),
+}
 
 // === impl scheme::Type ===
 
 impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
     type Error = InvalidScheme;
+
     fn try_into(self) -> Result<Cow<'static, str>, Self::Error> {
         use scheme::*;
 
@@ -30,7 +39,7 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
                 } else if reg == Registered::Https.into() {
                     Ok(Cow::Borrowed("https"))
                 } else {
-                    Err(InvalidScheme)
+                    Err(InvalidScheme::UnexpectedRegistered(reg))
                 }
             }
             Type::Unregistered(ref s) => Ok(Cow::Owned(s.clone())),
@@ -125,6 +134,25 @@ impl<'a> From<&'a str> for Scheme {
     fn from(s: &'a str) -> Self {
         Scheme {
             r#type: Some(s.into()),
+        }
+    }
+}
+
+impl TryFrom<Scheme> for http::uri::Scheme {
+    type Error = InvalidScheme;
+
+    fn try_from(s: Scheme) -> Result<Self, Self::Error> {
+        match s.r#type.ok_or(InvalidScheme::MissingType)? {
+            scheme::Type::Registered(typ) => {
+                if typ == scheme::Registered::Http.into() {
+                    Ok(http::uri::Scheme::HTTP)
+                } else if typ == scheme::Registered::Https.into() {
+                    Ok(http::uri::Scheme::HTTPS)
+                } else {
+                    Err(InvalidScheme::UnexpectedRegistered(typ))
+                }
+            }
+            scheme::Type::Unregistered(typ) => Ok(typ.parse()?),
         }
     }
 }
