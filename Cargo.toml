@@ -4,7 +4,7 @@ version = "0.5.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
-description = "Linkerd2 Proxy API gRPC bindings and utilities"
+description = "Linkerd Proxy API gRPC bindings and utilities"
 homepage = "https://linkerd.io"
 repository = "https://github.com/linkerd/linkerd2-proxy-api"
 documentation = "https://docs.rs/linkerd2-proxy-api"
@@ -13,16 +13,17 @@ rust-version = "1.59"
 
 [features]
 default = []
-
-# Enable generation of arbitrary protos with quickcheck.
 arbitrary = ["quickcheck"]
-
 destination = ["http_types", "net", "prost-types", "tonic/codegen"]
 http_types = ["http", "thiserror"]
 identity = ["prost-types", "tonic/codegen"]
 inbound = ["net", "prost-types", "tonic/codegen"]
 net = ["ipnet", "thiserror"]
 tap = ["h2", "http_types", "net", "prost-types", "tonic/codegen"]
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--cfg", "docsrs"]
+all-features = true
 
 [dependencies]
 h2 = { version = "0.3", optional = true }

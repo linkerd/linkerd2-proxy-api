@@ -17,7 +17,7 @@ contribution. See the [DCO](DCO) file for details.
 
 In practice, just add a line to every git commit message:
 
-```
+```text
 Signed-off-by: Jane Smith <jane.smith@example.com>
 ```
 
@@ -32,11 +32,13 @@ Do you have an improvement?
 
 1. Submit an [issue][issue] describing your proposed change.
 2. We will try to respond to your issue promptly.
-3. Fork this repo, develop and test your code changes. See the project's [README](README.md) for further information about working in this repository.
+3. Fork this repo, develop and test your code changes. See the project's
+   [README](README.md) for further information about working in this repository.
 4. Submit a pull request against this repo's `master` branch.
 5. Your branch may be merged once all configured checks pass, including:
     - The branch has passed tests in CI.
-    - A review from appropriate maintainers (see [MAINTAINERS.md](MAINTAINERS.md) and [GOVERNANCE.md](GOVERNANCE.md))
+    - A review from appropriate maintainers (see
+      [MAINTAINERS.md](MAINTAINERS.md) and [GOVERNANCE.md](GOVERNANCE.md))
 
 ## Committing ##
 
@@ -49,7 +51,7 @@ message.
 
 Finalized commit messages should be in the following format:
 
-```
+```text
 Subject
 
 Problem
@@ -72,12 +74,12 @@ Fixes #[GitHub issue ID]
 
 ##### Examples #####
 
-```
+```text
 bad: server disconnects should cause dst client disconnects.
 good: Propagate disconnects from source to destination
 ```
 
-```
+```text
 bad: support tls servers
 good: Introduce support for server-side TLS (#347)
 ```
