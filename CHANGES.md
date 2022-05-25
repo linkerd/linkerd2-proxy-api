@@ -25,8 +25,8 @@
 
 ## v0.2.0
 
-* Add the `io.linkerd.proxy.inbound.InboundServerPolicies` API to support server-side configuration
-  and policy.
+* Add the `io.linkerd.proxy.inbound.InboundServerPolicies` API to support
+  server-side configuration and policy.
 * Go: Update dependencies, including protoc and grpc
 * Rust: Update dependencies, including tonic v0.5
 * Rust: Add features for all APIs
