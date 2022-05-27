@@ -367,9 +367,9 @@ pub mod destination_client {
             &mut self,
             request: impl tonic::IntoRequest<super::GetDestination>,
         ) -> Result<
-                tonic::Response<tonic::codec::Streaming<super::Update>>,
-                tonic::Status,
-            > {
+            tonic::Response<tonic::codec::Streaming<super::Update>>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
@@ -391,9 +391,9 @@ pub mod destination_client {
             &mut self,
             request: impl tonic::IntoRequest<super::GetDestination>,
         ) -> Result<
-                tonic::Response<tonic::codec::Streaming<super::DestinationProfile>>,
-                tonic::Status,
-            > {
+            tonic::Response<tonic::codec::Streaming<super::DestinationProfile>>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
