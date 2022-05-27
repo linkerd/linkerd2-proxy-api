@@ -1,0 +1,95 @@
+name: release
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/release.yml
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  RUSTUP_MAX_RETRIES: 10
+
+permissions:
+  contents: read
+
+jobs:
+  meta:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - id: meta
+        shell: bash
+        run: |
+          ref=${{ github.ref }}
+          if [[ "$ref" == refs/tags/release/* ]]; then
+            echo ::set-output name=publish::true
+            echo ::set-output name=version::"${ref##refs/tags/release/}"
+          else
+            sha=${{ github.sha }}
+            echo ::set-output name=version::"test-${sha:0:7}"
+          fi
+    outputs:
+      publish: ${{ steps.meta.outputs.publish }}
+      version: ${{ steps.meta.outputs.version }}
+
+  test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748
+      - uses: ./.github/actions/install-protoc
+      - run: just rs-fetch
+      - run: just rs-test-build
+      - run: just rs-test
+
+  # Publish a GitHub release with platform-specific static binaries.
+  release:
+    needs: [meta, test]
+    permissions:
+      contents: write
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - if: needs.meta.outputs.publish
+        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748
+      - if: needs.meta.outputs.publish
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.3 -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o $HOME/jq
+          chmod 755 $HOME/jq
+          version=$(cargo metadata --format-version=1 | $HOME/jq -r '.packages[] | select(.name == "linkerd2-proxy-api") | .version')
+          if [[ "v${version}" != "${{ needs.meta.outputs.version }}" ]]; then
+            echo "::error ::Crate version v${version} does not match tag ${{ needs.meta.outputs.version }}"
+            exit 1
+          fi
+      - if: needs.meta.outputs.publish
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          name: ${{ needs.meta.outputs.version }}
+          generate_release_notes: true
+
+  crate:
+    # Only publish the crate after the rest of the release succeeds.
+    needs: [meta, release]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60.0-bullseye
+    steps:
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748
+      - run: just rs-publish --dry-run
+      - if: needs.meta.outputs.publish
+        run: just rs-publish --token=${{ secrets.CRATESIO_TOKEN }}

@@ -1,13 +1,13 @@
 {
     "name": "linkerd2-proxy-api",
-    "image": "ghcr.io/linkerd/dev:v14",
+    "image": "ghcr.io/linkerd/dev:v15",
     "extensions": [
         "DavidAnson.vscode-markdownlint",
         "golang.go",
         "NathanRidley.autotrim",
         "rust-lang.rust-analyzer",
         "samverschueren.final-newline",
-        "streetsidesoftware.code-spell-checker",
+        "skellock.just",
         "tamasfe.even-better-toml",
         "zxh404.vscode-proto3"
     ],

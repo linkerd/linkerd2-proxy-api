@@ -1,6 +1,5 @@
 name: CI
-on:
-  pull_request: {}
+on: [pull_request]
 
 jobs:
   rust_build:
@@ -8,12 +7,17 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: docker://rust:1.59.0-buster
+      image: docker://rust:1.60
     steps:
-    - run: rustup component add clippy
-    - uses: actions/checkout@v3
-    - run: make fetch
-    - run: make clippy
+      - run: rustup component add clippy
+      - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: ./.github/actions/install-protoc
+      - run: just rs-fetch
+      - run: just rs-clippy
+      - run: just rs-test-build
+      - run: just rs-test
 
   rust_audit:
     name: Rust audit
@@ -27,22 +31,24 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing Ci.
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@v1
-      with:
-        command: check ${{ matrix.checks }}
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: EmbarkStudios/cargo-deny-action@30ecad1d5873c1cc2cad10a33637371ca094768b
+        with:
+          command: check ${{ matrix.checks }}
 
   go_build:
     name: Go build
     timeout-minutes: 5
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
-      with:
-        go-version: '1.17'
-    - uses: actions/checkout@v3
-    - name: Check go
-      run: |
-        export PATH="$(go env GOPATH)/bin:$PATH"
-        make check-go
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
+        with:
+          go-version: '1.17'
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: ./.github/actions/install-protoc
+      - name: Check go
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          just go-check
     
