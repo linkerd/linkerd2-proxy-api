@@ -4,8 +4,8 @@
     "extensions": [
         "DavidAnson.vscode-markdownlint",
         "golang.go",
-        "matklad.rust-analyzer",
         "NathanRidley.autotrim",
+        "rust-lang.rust-analyzer",
         "samverschueren.final-newline",
         "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
