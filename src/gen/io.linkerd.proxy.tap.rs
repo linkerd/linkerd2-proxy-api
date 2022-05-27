@@ -332,9 +332,9 @@ pub mod tap_client {
             &mut self,
             request: impl tonic::IntoRequest<super::ObserveRequest>,
         ) -> Result<
-                tonic::Response<tonic::codec::Streaming<super::TapEvent>>,
-                tonic::Status,
-            > {
+            tonic::Response<tonic::codec::Streaming<super::TapEvent>>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await

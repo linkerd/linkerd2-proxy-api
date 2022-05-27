@@ -256,9 +256,9 @@ pub mod inbound_server_policies_client {
             &mut self,
             request: impl tonic::IntoRequest<super::PortSpec>,
         ) -> Result<
-                tonic::Response<tonic::codec::Streaming<super::Server>>,
-                tonic::Status,
-            > {
+            tonic::Response<tonic::codec::Streaming<super::Server>>,
+            tonic::Status,
+        > {
             self.inner
                 .ready()
                 .await
