@@ -11,6 +11,14 @@
         "tamasfe.even-better-toml",
         "zxh404.vscode-proto3"
     ],
+    "settings": {
+        "protoc": {
+            "path": "/usr/local/bin/protoc",
+            "options": [
+                "--proto_path=proto",
+            ]
+        }
+    },
     "runArgs": [
         "--init"
     ],

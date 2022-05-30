@@ -1,0 +1,28 @@
+name: go
+
+on:
+  pull_request:
+    paths:
+      - go.*
+      - '**/*.go'
+      - '**/*.proto'
+      - justfile
+      - .github/workflows/go.yml
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
+        with:
+          go-version: '1.17'
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: ./.github/actions/install-protoc
+      - run: just go-mod-check
+      - run: just go-gen-check
+      - run: just go-build

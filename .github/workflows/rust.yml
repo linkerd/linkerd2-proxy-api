@@ -1,10 +1,25 @@
-name: CI
-on: [pull_request]
+name: rust
+
+on:
+  pull_request:
+    paths:
+      - Cargo.*
+      - '**/*.rs'
+      - '**/*.proto'
+      - justfile
+      - .github/workflows/rust.yml
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  RUSTUP_MAX_RETRIES: 10
+
+permissions:
+  contents: read
 
 jobs:
-  rust_build:
-    name: Rust build
-    timeout-minutes: 5
+  rust-build:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     container:
       image: docker://rust:1.60
@@ -15,12 +30,13 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: ./.github/actions/install-protoc
       - run: just rs-fetch
+      - run: just rs-gen-check
       - run: just rs-clippy
+      - run: just rs-docs
       - run: just rs-test-build
       - run: just rs-test
 
-  rust_audit:
-    name: Rust audit
+  rust-deps:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     strategy:
@@ -35,20 +51,3 @@ jobs:
       - uses: EmbarkStudios/cargo-deny-action@30ecad1d5873c1cc2cad10a33637371ca094768b
         with:
           command: check ${{ matrix.checks }}
-
-  go_build:
-    name: Go build
-    timeout-minutes: 5
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
-      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
-        with:
-          go-version: '1.17'
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: ./.github/actions/install-protoc
-      - name: Check go
-        run: |
-          export PATH="$(go env GOPATH)/bin:$PATH"
-          just go-check
-    
