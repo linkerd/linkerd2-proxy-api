@@ -3,6 +3,7 @@ name: release
 on:
   pull_request:
     paths:
+      - justfile
       - .github/workflows/release.yml
   push:
     tags:
@@ -49,6 +50,7 @@ jobs:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748
       - uses: ./.github/actions/install-protoc
       - run: just rs-fetch
+      - run: just rs-gen-check
       - run: just rs-test-build
       - run: just rs-test
 
