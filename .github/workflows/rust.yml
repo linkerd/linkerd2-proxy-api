@@ -18,7 +18,20 @@ permissions:
   contents: read
 
 jobs:
-  rust-build:
+  gen-check:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: ./.github/actions/install-protoc
+      - run: just rs-fetch
+      - run: just rs-gen-check
+
+  rust-clippy:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     container:
@@ -28,11 +41,31 @@ jobs:
       - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
       - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: ./.github/actions/install-protoc
       - run: just rs-fetch
-      - run: just rs-gen-check
       - run: just rs-clippy
+
+  rust-docs:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - run: just rs-fetch
       - run: just rs-docs
+
+  rust-test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container:
+      image: docker://rust:1.60
+    steps:
+      - uses: olix0r/cargo-action-fmt@ee1ef42932e44794821dab57ef1bf7a73df8b21f
+      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - run: just rs-fetch
       - run: just rs-test-build
       - run: just rs-test
 
