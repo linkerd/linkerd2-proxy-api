@@ -125,7 +125,7 @@ message PathModifier {
 }
 
 // Configures a route to respond with a fixed response.
-message RequestResponse {
+message Responder {
     // The status code to use in the HTTP response. Must be specified.
     uint32 status = 1;
 

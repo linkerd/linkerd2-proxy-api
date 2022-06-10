@@ -50,16 +50,8 @@ message Server {
   // A control plane SHOULD return the same keys in all policies. That is, we do
   // NOT want to return arbitrary pod labels in this field.
   map<string, string> labels = 4;
-
-
-  // Routes SHOULD only be returned if the protocol is HTTP or gRPC.
-  //
-  // While the controller is likely to support gRPC-native route configurations,
-  // the proxy is handles everything as HTTP routes.
-  repeated HttpRoute http_routes = 5;
 }
 
-// Configures how the proxy accepts connections on a Server.
 message ProxyProtocol {
   oneof kind {
     Detect detect = 1;
@@ -73,18 +65,34 @@ message ProxyProtocol {
   message Detect {
     google.protobuf.Duration timeout = 1;
 
+    // If the protocol detected as HTTP, a list of HTTP routes that should be
+    // matched.
+    repeated HttpRoute http_routes = 3;
+
+    // Never implemented.
     reserved 2;
   }
 
   message Http1 {
+    repeated HttpRoute routes = 2;
+
+    // Never implemented.
     reserved 1;
   }
 
   message Http2 {
+    repeated HttpRoute routes = 2;
+
+    // Never implemented.
     reserved 1;
   }
 
   message Grpc {
+    // While the controller is likely to support gRPC-native route
+    // configurations, the proxy is fine to handle everything as HTTP routes.
+    repeated HttpRoute routes = 2;
+
+    // Never implemented.
     reserved 1;
   }
 
@@ -189,7 +197,8 @@ message HttpRoute {
     message Filter {
         oneof kind {
           io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 1;
-          io.linkerd.proxy.http_route.RequestRedirect request_redirect = 2;
+          io.linkerd.proxy.http_route.RequestRedirect redirect = 2;
+          io.linkerd.proxy.http_route.Responder responder = 3;
         }
     }
   }

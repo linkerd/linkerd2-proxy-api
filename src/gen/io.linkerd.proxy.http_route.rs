@@ -164,7 +164,7 @@ pub mod path_modifier {
 }
 /// Configures a route to respond with a fixed response.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RequestResponse {
+pub struct Responder {
     /// The status code to use in the HTTP response. Must be specified.
     #[prost(uint32, tag="1")]
     pub status: u32,
