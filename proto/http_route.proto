@@ -123,3 +123,13 @@ message PathModifier {
         string prefix = 2;
     }
 }
+
+// Configures a route to respond with a fixed response.
+message RequestResponse {
+    // The status code to use in the HTTP response. Must be specified.
+    uint32 status = 1;
+
+    io.linkerd.proxy.http_types.Headers headers = 2;
+
+    bytes body = 3;
+}

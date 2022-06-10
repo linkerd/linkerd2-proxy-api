@@ -162,3 +162,14 @@ pub mod path_modifier {
         Prefix(::prost::alloc::string::String),
     }
 }
+/// Configures a route to respond with a fixed response.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RequestResponse {
+    /// The status code to use in the HTTP response. Must be specified.
+    #[prost(uint32, tag="1")]
+    pub status: u32,
+    #[prost(message, optional, tag="2")]
+    pub headers: ::core::option::Option<super::http_types::Headers>,
+    #[prost(bytes="vec", tag="3")]
+    pub body: ::prost::alloc::vec::Vec<u8>,
+}

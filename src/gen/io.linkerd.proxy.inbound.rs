@@ -28,7 +28,14 @@ pub struct Server {
     /// NOT want to return arbitrary pod labels in this field.
     #[prost(map="string, string", tag="4")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    /// Routes SHOULD only be returned if the protocol is HTTP or gRPC.
+    ///
+    /// While the controller is likely to support gRPC-native route configurations,
+    /// the proxy is handles everything as HTTP routes.
+    #[prost(message, repeated, tag="5")]
+    pub http_routes: ::prost::alloc::vec::Vec<HttpRoute>,
 }
+/// Configures how the proxy accepts connections on a Server.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProxyProtocol {
     #[prost(oneof="proxy_protocol::Kind", tags="1, 2, 3, 4, 5, 6")]
@@ -40,34 +47,15 @@ pub mod proxy_protocol {
     pub struct Detect {
         #[prost(message, optional, tag="1")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
-        #[prost(bool, tag="2")]
-        pub http_disable_informational_headers: bool,
-        /// If the protocol detected as HTTP, a list of HTTP routes that should be
-        /// matched.
-        #[prost(message, repeated, tag="3")]
-        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http1 {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
-        #[prost(message, repeated, tag="2")]
-        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
-        #[prost(message, repeated, tag="2")]
-        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
     }
     /// TODO: opaque TLS settings (versions, algorithms, SNI)
     #[derive(Clone, PartialEq, ::prost::Message)]

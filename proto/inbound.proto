@@ -50,8 +50,16 @@ message Server {
   // A control plane SHOULD return the same keys in all policies. That is, we do
   // NOT want to return arbitrary pod labels in this field.
   map<string, string> labels = 4;
+
+
+  // Routes SHOULD only be returned if the protocol is HTTP or gRPC.
+  //
+  // While the controller is likely to support gRPC-native route configurations,
+  // the proxy is handles everything as HTTP routes.
+  repeated HttpRoute http_routes = 5;
 }
 
+// Configures how the proxy accepts connections on a Server.
 message ProxyProtocol {
   oneof kind {
     Detect detect = 1;
@@ -65,32 +73,19 @@ message ProxyProtocol {
   message Detect {
     google.protobuf.Duration timeout = 1;
 
-    bool http_disable_informational_headers = 2;
-
-    // If the protocol detected as HTTP, a list of HTTP routes that should be
-    // matched.
-    repeated HttpRoute http_routes = 3;
+    reserved 2;
   }
 
   message Http1 {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
-
-    repeated HttpRoute routes = 2;
+    reserved 1;
   }
 
   message Http2 {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
-
-    repeated HttpRoute routes = 2;
+    reserved 1;
   }
 
   message Grpc {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
-
-    // TODO add a gRPC from https://gateway-api.sigs.k8s.io/geps/gep-1016/
+    reserved 1;
   }
 
   message Opaque {
