@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.grpc_route;
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/grpc_route";
+
+import "http_route.proto";
+
+message GrpcRouteMatch {
+  GrpcMethodMatch method = 1;
+
+  // A set of header value matches that must be satisified. This match is not
+  // comprehensive, so requests may include headers that are not covered by this
+  // match.
+  repeated io.linkerd.proxy.http_route.HeaderMatch header = 2;
+}
+
+message GrpcMethodMatch {
+    string service = 1;
+    string method = 2;
+}
+
+// Configures a route to respond with a fixed response.
+message GrpcErrorResponder {
+  // The status code to use in the `grpc-status` response. Must be specified.
+  uint32 code = 1;
+
+  // An error message to log and include in the `grpc-message` header.
+  string message = 2;
+}

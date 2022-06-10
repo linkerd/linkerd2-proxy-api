@@ -24,7 +24,7 @@ pub mod host_match {
 }
 /// Describes a set of matches, ALL of which must apply.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RouteMatch {
+pub struct HttpRouteMatch {
     /// Matches requests by path.
     #[prost(message, optional, tag="1")]
     pub path: ::core::option::Option<PathMatch>,
@@ -164,7 +164,7 @@ pub mod path_modifier {
 }
 /// Configures a route to respond with a fixed response.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ErrorResponder {
+pub struct HttpErrorResponder {
     /// The status code to use in the HTTP response. Must be specified.
     #[prost(uint32, tag="1")]
     pub status: u32,

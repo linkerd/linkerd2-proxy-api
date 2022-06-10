@@ -12,6 +12,11 @@ pub mod http_route {
 #[cfg(feature = "http-types")]
 pub mod http_types;
 
+#[cfg(feature = "grpc-route")]
+pub mod grpc_route {
+    include!("gen/io.linkerd.proxy.grpc_route.rs");
+}
+
 #[cfg(feature = "destination")]
 pub mod destination {
     include!("gen/io.linkerd.proxy.destination.rs");

@@ -5,6 +5,7 @@ package io.linkerd.proxy.inbound;
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
 
 import "google/protobuf/duration.proto";
+import "grpc_route.proto";
 import "http_route.proto";
 import "net.proto";
 
@@ -191,15 +192,49 @@ message HttpRoute {
   repeated Authz authorizations = 4;
 
   message Rule {
-    repeated io.linkerd.proxy.http_route.RouteMatch matches = 1;
+    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
+  }
 
-    message Filter {
-        oneof kind {
-          io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 1;
-          io.linkerd.proxy.http_route.RequestRedirect redirect = 2;
-          io.linkerd.proxy.http_route.ErrorResponder error = 3;
-        }
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.http_route.HttpErrorResponder error = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+      io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
+    }
+  }
+}
+
+// Inbound-specific gRPC route configuration.
+message GrpcRoute {
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 1;
+
+  // A list of rules that may apply to requests on this ruote.
+  //
+  // Rules must be ordered by preference so that if a rule's matches are
+  // otherwise equivalent, the earlier match is preferred.
+  repeated Rule rules = 2;
+
+  // Descriptive labels to be added to metrics, etc.
+  //
+  // A control plane SHOULD return the same keys in all policies. That is, we do
+  // NOT want to return arbitrary labels in this field.
+  map<string, string> labels = 3;
+
+  // The server MUST return at least one authorization, otherwise all requests
+  // to this route will fail with an unauthorized response.
+  repeated Authz authorizations = 4;
+
+  message Rule {
+    repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
+    repeated Filter filters = 2;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.grpc_route.GrpcErrorResponder error = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
     }
   }
 }

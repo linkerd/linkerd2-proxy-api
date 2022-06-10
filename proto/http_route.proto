@@ -20,7 +20,7 @@ message HostMatch {
 }
 
 // Describes a set of matches, ALL of which must apply.
-message RouteMatch {
+message HttpRouteMatch {
   // Matches requests by path.
   PathMatch path = 1;
 
@@ -125,7 +125,7 @@ message PathModifier {
 }
 
 // Configures a route to respond with a fixed response.
-message ErrorResponder {
+message HttpErrorResponder {
   // The status code to use in the HTTP response. Must be specified.
   uint32 status = 1;
 
