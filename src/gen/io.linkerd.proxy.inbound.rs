@@ -224,7 +224,7 @@ pub mod http_route {
                 #[prost(message, tag="2")]
                 Redirect(super::super::super::super::http_route::RequestRedirect),
                 #[prost(message, tag="3")]
-                Responder(super::super::super::super::http_route::Responder),
+                Error(super::super::super::super::http_route::ErrorResponder),
             }
         }
     }

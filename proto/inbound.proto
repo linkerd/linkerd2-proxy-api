@@ -198,7 +198,7 @@ message HttpRoute {
         oneof kind {
           io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 1;
           io.linkerd.proxy.http_route.RequestRedirect redirect = 2;
-          io.linkerd.proxy.http_route.Responder responder = 3;
+          io.linkerd.proxy.http_route.ErrorResponder error = 3;
         }
     }
   }

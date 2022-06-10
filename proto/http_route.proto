@@ -125,11 +125,10 @@ message PathModifier {
 }
 
 // Configures a route to respond with a fixed response.
-message Responder {
-    // The status code to use in the HTTP response. Must be specified.
-    uint32 status = 1;
+message ErrorResponder {
+  // The status code to use in the HTTP response. Must be specified.
+  uint32 status = 1;
 
-    io.linkerd.proxy.http_types.Headers headers = 2;
-
-    bytes body = 3;
+  // An error message to log and include in the `l5d-proxy-err` header.
+  string message = 2;
 }
