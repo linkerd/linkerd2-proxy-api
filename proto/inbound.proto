@@ -89,9 +89,7 @@ message ProxyProtocol {
   }
 
   message Grpc {
-    // While the controller is likely to support gRPC-native route
-    // configurations, the proxy is fine to handle everything as HTTP routes.
-    repeated HttpRoute routes = 2;
+    repeated GrpcRoute routes = 2;
 
     // Never implemented.
     reserved 1;

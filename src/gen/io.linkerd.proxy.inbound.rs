@@ -57,10 +57,8 @@ pub mod proxy_protocol {
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
-        /// While the controller is likely to support gRPC-native route
-        /// configurations, the proxy is fine to handle everything as HTTP routes.
         #[prost(message, repeated, tag="2")]
-        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
     }
     /// TODO: opaque TLS settings (versions, algorithms, SNI)
     #[derive(Clone, PartialEq, ::prost::Message)]
