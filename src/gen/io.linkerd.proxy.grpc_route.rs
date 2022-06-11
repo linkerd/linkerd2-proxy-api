@@ -1,7 +1,7 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRouteMatch {
     #[prost(message, optional, tag="1")]
-    pub method: ::core::option::Option<GrpcMethodMatch>,
+    pub rpc: ::core::option::Option<GrpcRpcMatch>,
     /// A set of header value matches that must be satisified. This match is not
     /// comprehensive, so requests may include headers that are not covered by this
     /// match.
@@ -9,7 +9,7 @@ pub struct GrpcRouteMatch {
     pub header: ::prost::alloc::vec::Vec<super::http_route::HeaderMatch>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GrpcMethodMatch {
+pub struct GrpcRpcMatch {
     #[prost(string, tag="1")]
     pub service: ::prost::alloc::string::String,
     #[prost(string, tag="2")]

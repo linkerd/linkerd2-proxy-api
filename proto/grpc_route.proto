@@ -6,7 +6,7 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/grpc_route";
 import "http_route.proto";
 
 message GrpcRouteMatch {
-  GrpcMethodMatch method = 1;
+  GrpcRpcMatch rpc = 1;
 
   // A set of header value matches that must be satisified. This match is not
   // comprehensive, so requests may include headers that are not covered by this
@@ -14,7 +14,7 @@ message GrpcRouteMatch {
   repeated io.linkerd.proxy.http_route.HeaderMatch header = 2;
 }
 
-message GrpcMethodMatch {
+message GrpcRpcMatch {
     string service = 1;
     string method = 2;
 }
