@@ -118,6 +118,8 @@ message Authz {
   // A control plane SHOULD return the same keys in all authorizations. That is,
   // we do NOT want to return arbitrary pod labels in this field.
   map<string, string> labels = 3;
+
+  ResourceMetadata metadata = 4;
 }
 
 // Describes a network of authorized clients.
@@ -133,6 +135,8 @@ message Authn {
     // If set, requires that the connection is transported over mesh TLS.
     PermitMeshTLS meshTLS = 2;
   }
+
+  ResourceMetadata metadata = 3;
 
   message PermitUnauthenticated {}
 
@@ -166,28 +170,27 @@ message Identity { string name = 1; }
 // "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 message IdentitySuffix { repeated string parts = 1; }
 
+message ResourceMetadata {
+  string group = 1;
+  string kind = 2;
+  string name = 3;
+}
+
 // Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
 //
 // [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
 message HttpRoute {
+  ResourceMetadata metadata = 1;
+
   // If empty, the host value is ignored.
-  repeated io.linkerd.proxy.http_route.HostMatch hosts = 1;
-
-  // A list of rules that may apply to requests on this ruote.
-  //
-  // Rules must be ordered by preference so that if a rule's matches are
-  // otherwise equivalent, the earlier match is preferred.
-  repeated Rule rules = 2;
-
-  // Descriptive labels to be added to metrics, etc.
-  //
-  // A control plane SHOULD return the same keys in all policies. That is, we do
-  // NOT want to return arbitrary labels in this field.
-  map<string, string> labels = 3;
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
 
   // The server MUST return at least one authorization, otherwise all requests
   // to this route will fail with an unauthorized response.
-  repeated Authz authorizations = 4;
+  repeated Authz authorizations = 3;
+
+  // Must have at least one rule.
+  repeated Rule rules = 4;
 
   message Rule {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
@@ -205,24 +208,17 @@ message HttpRoute {
 
 // Inbound-specific gRPC route configuration.
 message GrpcRoute {
+  ResourceMetadata metadata = 1;
+
   // If empty, the host value is ignored.
-  repeated io.linkerd.proxy.http_route.HostMatch hosts = 1;
-
-  // A list of rules that may apply to requests on this ruote.
-  //
-  // Rules must be ordered by preference so that if a rule's matches are
-  // otherwise equivalent, the earlier match is preferred.
-  repeated Rule rules = 2;
-
-  // Descriptive labels to be added to metrics, etc.
-  //
-  // A control plane SHOULD return the same keys in all policies. That is, we do
-  // NOT want to return arbitrary labels in this field.
-  map<string, string> labels = 3;
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
 
   // The server MUST return at least one authorization, otherwise all requests
   // to this route will fail with an unauthorized response.
-  repeated Authz authorizations = 4;
+  repeated Authz authorizations = 3;
+
+  // Must have at least one rule.
+  repeated Rule rules = 4;
 
   message Rule {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;

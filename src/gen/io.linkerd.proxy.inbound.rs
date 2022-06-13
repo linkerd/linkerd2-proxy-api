@@ -101,6 +101,8 @@ pub struct Authz {
     /// we do NOT want to return arbitrary pod labels in this field.
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    #[prost(message, optional, tag="4")]
+    pub metadata: ::core::option::Option<ResourceMetadata>,
 }
 /// Describes a network of authorized clients.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -112,6 +114,8 @@ pub struct Network {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Authn {
+    #[prost(message, optional, tag="3")]
+    pub metadata: ::core::option::Option<ResourceMetadata>,
     #[prost(oneof="authn::Permit", tags="1, 2")]
     pub permit: ::core::option::Option<authn::Permit>,
 }
@@ -172,30 +176,32 @@ pub struct IdentitySuffix {
     #[prost(string, repeated, tag="1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ResourceMetadata {
+    #[prost(string, tag="1")]
+    pub group: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub kind: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
+}
 /// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
 /// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
+    #[prost(message, optional, tag="1")]
+    pub metadata: ::core::option::Option<ResourceMetadata>,
     /// If empty, the host value is ignored.
-    #[prost(message, repeated, tag="1")]
-    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    /// A list of rules that may apply to requests on this ruote.
-    ///
-    /// Rules must be ordered by preference so that if a rule's matches are
-    /// otherwise equivalent, the earlier match is preferred.
     #[prost(message, repeated, tag="2")]
-    pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
-    /// Descriptive labels to be added to metrics, etc.
-    ///
-    /// A control plane SHOULD return the same keys in all policies. That is, we do
-    /// NOT want to return arbitrary labels in this field.
-    #[prost(map="string, string", tag="3")]
-    pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
     /// The server MUST return at least one authorization, otherwise all requests
     /// to this route will fail with an unauthorized response.
-    #[prost(message, repeated, tag="4")]
+    #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag="4")]
+    pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
 }
 /// Nested message and enum types in `HttpRoute`.
 pub mod http_route {
@@ -227,25 +233,18 @@ pub mod http_route {
 /// Inbound-specific gRPC route configuration.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRoute {
+    #[prost(message, optional, tag="1")]
+    pub metadata: ::core::option::Option<ResourceMetadata>,
     /// If empty, the host value is ignored.
-    #[prost(message, repeated, tag="1")]
-    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    /// A list of rules that may apply to requests on this ruote.
-    ///
-    /// Rules must be ordered by preference so that if a rule's matches are
-    /// otherwise equivalent, the earlier match is preferred.
     #[prost(message, repeated, tag="2")]
-    pub rules: ::prost::alloc::vec::Vec<grpc_route::Rule>,
-    /// Descriptive labels to be added to metrics, etc.
-    ///
-    /// A control plane SHOULD return the same keys in all policies. That is, we do
-    /// NOT want to return arbitrary labels in this field.
-    #[prost(map="string, string", tag="3")]
-    pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
     /// The server MUST return at least one authorization, otherwise all requests
     /// to this route will fail with an unauthorized response.
-    #[prost(message, repeated, tag="4")]
+    #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag="4")]
+    pub rules: ::prost::alloc::vec::Vec<grpc_route::Rule>,
 }
 /// Nested message and enum types in `GrpcRoute`.
 pub mod grpc_route {
