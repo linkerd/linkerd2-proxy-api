@@ -49,6 +49,14 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
 
 // === impl http::HttpMethod ===
 
+impl TryFrom<HttpMethod> for http::Method {
+    type Error = InvalidMethod;
+
+    fn try_from(proto: HttpMethod) -> Result<http::Method, Self::Error> {
+        proto.r#type.ok_or(InvalidMethod)?.try_into()
+    }
+}
+
 impl TryFrom<http_method::Type> for http::Method {
     type Error = InvalidMethod;
 
