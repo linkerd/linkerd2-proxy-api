@@ -32,7 +32,7 @@ pub struct HttpRouteMatch {
     /// comprehensive, so requests may include headers that are not covered by this
     /// match.
     #[prost(message, repeated, tag="2")]
-    pub header: ::prost::alloc::vec::Vec<HeaderMatch>,
+    pub headers: ::prost::alloc::vec::Vec<HeaderMatch>,
     /// A set of query parmaeter value matches that must be satisified. This match
     /// is not comprehensive, so requests may include query parameters that are not
     /// covered by this match.

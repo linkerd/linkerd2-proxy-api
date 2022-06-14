@@ -11,7 +11,7 @@ message GrpcRouteMatch {
   // A set of header value matches that must be satisified. This match is not
   // comprehensive, so requests may include headers that are not covered by this
   // match.
-  repeated io.linkerd.proxy.http_route.HeaderMatch header = 2;
+  repeated io.linkerd.proxy.http_route.HeaderMatch headers = 2;
 }
 
 message GrpcRpcMatch {

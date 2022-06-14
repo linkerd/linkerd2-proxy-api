@@ -27,7 +27,7 @@ message HttpRouteMatch {
   // A set of header value matches that must be satisified. This match is not
   // comprehensive, so requests may include headers that are not covered by this
   // match.
-  repeated HeaderMatch header = 2;
+  repeated HeaderMatch headers = 2;
 
   // A set of query parmaeter value matches that must be satisified. This match
   // is not comprehensive, so requests may include query parameters that are not

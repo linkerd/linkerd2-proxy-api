@@ -6,7 +6,7 @@ pub struct GrpcRouteMatch {
     /// comprehensive, so requests may include headers that are not covered by this
     /// match.
     #[prost(message, repeated, tag="2")]
-    pub header: ::prost::alloc::vec::Vec<super::http_route::HeaderMatch>,
+    pub headers: ::prost::alloc::vec::Vec<super::http_route::HeaderMatch>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRpcMatch {
