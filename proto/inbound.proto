@@ -119,7 +119,7 @@ message Authz {
   // we do NOT want to return arbitrary pod labels in this field.
   map<string, string> labels = 3;
 
-  ResourceMetadata metadata = 4;
+  Metadata metadata = 4;
 }
 
 // Describes a network of authorized clients.
@@ -136,7 +136,7 @@ message Authn {
     PermitMeshTLS meshTLS = 2;
   }
 
-  ResourceMetadata metadata = 3;
+  Metadata metadata = 3;
 
   message PermitUnauthenticated {}
 
@@ -170,17 +170,24 @@ message Identity { string name = 1; }
 // "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 message IdentitySuffix { repeated string parts = 1; }
 
-message ResourceMetadata {
-  string group = 1;
-  string kind = 2;
-  string name = 3;
+message Metadata {
+  oneof kind {
+    string default = 1;
+    Resource resource = 2;
+  }
+
+  message Resource {
+    string group = 1;
+    string kind = 2;
+    string name = 3;
+  }
 }
 
 // Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
 //
 // [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
 message HttpRoute {
-  ResourceMetadata metadata = 1;
+  Metadata metadata = 1;
 
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
@@ -208,7 +215,7 @@ message HttpRoute {
 
 // Inbound-specific gRPC route configuration.
 message GrpcRoute {
-  ResourceMetadata metadata = 1;
+  Metadata metadata = 1;
 
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;

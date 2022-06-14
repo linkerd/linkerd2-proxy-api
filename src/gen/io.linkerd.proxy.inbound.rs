@@ -102,7 +102,7 @@ pub struct Authz {
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
     #[prost(message, optional, tag="4")]
-    pub metadata: ::core::option::Option<ResourceMetadata>,
+    pub metadata: ::core::option::Option<Metadata>,
 }
 /// Describes a network of authorized clients.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -115,7 +115,7 @@ pub struct Network {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Authn {
     #[prost(message, optional, tag="3")]
-    pub metadata: ::core::option::Option<ResourceMetadata>,
+    pub metadata: ::core::option::Option<Metadata>,
     #[prost(oneof="authn::Permit", tags="1, 2")]
     pub permit: ::core::option::Option<authn::Permit>,
 }
@@ -177,13 +177,28 @@ pub struct IdentitySuffix {
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ResourceMetadata {
-    #[prost(string, tag="1")]
-    pub group: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub kind: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub name: ::prost::alloc::string::String,
+pub struct Metadata {
+    #[prost(oneof="metadata::Kind", tags="1, 2")]
+    pub kind: ::core::option::Option<metadata::Kind>,
+}
+/// Nested message and enum types in `Metadata`.
+pub mod metadata {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Resource {
+        #[prost(string, tag="1")]
+        pub group: ::prost::alloc::string::String,
+        #[prost(string, tag="2")]
+        pub kind: ::prost::alloc::string::String,
+        #[prost(string, tag="3")]
+        pub name: ::prost::alloc::string::String,
+    }
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(string, tag="1")]
+        Default(::prost::alloc::string::String),
+        #[prost(message, tag="2")]
+        Resource(Resource),
+    }
 }
 /// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
@@ -191,7 +206,7 @@ pub struct ResourceMetadata {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
     #[prost(message, optional, tag="1")]
-    pub metadata: ::core::option::Option<ResourceMetadata>,
+    pub metadata: ::core::option::Option<Metadata>,
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
@@ -234,7 +249,7 @@ pub mod http_route {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRoute {
     #[prost(message, optional, tag="1")]
-    pub metadata: ::core::option::Option<ResourceMetadata>,
+    pub metadata: ::core::option::Option<Metadata>,
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
