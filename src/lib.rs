@@ -32,5 +32,10 @@ pub mod inbound {
     include!("gen/io.linkerd.proxy.inbound.rs");
 }
 
+#[cfg(feature = "meta")]
+pub mod meta {
+    include!("gen/io.linkerd.proxy.meta.rs");
+}
+
 #[cfg(feature = "tap")]
 pub mod tap;
