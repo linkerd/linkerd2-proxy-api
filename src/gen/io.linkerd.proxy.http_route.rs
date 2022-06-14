@@ -37,7 +37,7 @@ pub struct HttpRouteMatch {
     /// is not comprehensive, so requests may include query parameters that are not
     /// covered by this match.
     #[prost(message, repeated, tag="3")]
-    pub query_param: ::prost::alloc::vec::Vec<QueryParamMatch>,
+    pub query_params: ::prost::alloc::vec::Vec<QueryParamMatch>,
     /// If specified, restricts the match to a single HTTP method.
     #[prost(message, optional, tag="4")]
     pub method: ::core::option::Option<super::http_types::HttpMethod>,

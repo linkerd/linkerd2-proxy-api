@@ -32,7 +32,7 @@ message HttpRouteMatch {
   // A set of query parmaeter value matches that must be satisified. This match
   // is not comprehensive, so requests may include query parameters that are not
   // covered by this match.
-  repeated QueryParamMatch query_param = 3;
+  repeated QueryParamMatch query_params = 3;
 
   // If specified, restricts the match to a single HTTP method.
   io.linkerd.proxy.http_types.HttpMethod method  = 4;
