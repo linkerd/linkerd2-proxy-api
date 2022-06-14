@@ -7,6 +7,7 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
 import "google/protobuf/duration.proto";
 import "grpc_route.proto";
 import "http_route.proto";
+import "meta.proto";
 import "net.proto";
 
 /// An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
@@ -117,9 +118,13 @@ message Authz {
   //
   // A control plane SHOULD return the same keys in all authorizations. That is,
   // we do NOT want to return arbitrary pod labels in this field.
+  //
+  // `labels` should be considered deprecated. `metadata` is preferred.
   map<string, string> labels = 3;
 
-  Metadata metadata = 4;
+  // If set describes an Authorization configuration resource/implicit. Replaces
+  // the free-from `labels` field.
+  io.linkerd.proxy.meta.Metadata metadata = 4;
 }
 
 // Describes a network of authorized clients.
@@ -136,7 +141,8 @@ message Authn {
     PermitMeshTLS meshTLS = 2;
   }
 
-  Metadata metadata = 3;
+  // TODO(ver) identify authentication resources?
+  // io.linkerd.proxy.meta.Metadata metadata = 3;
 
   message PermitUnauthenticated {}
 
@@ -170,24 +176,11 @@ message Identity { string name = 1; }
 // "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 message IdentitySuffix { repeated string parts = 1; }
 
-message Metadata {
-  oneof kind {
-    string default = 1;
-    Resource resource = 2;
-  }
-
-  message Resource {
-    string group = 1;
-    string kind = 2;
-    string name = 3;
-  }
-}
-
 // Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
 //
 // [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
 message HttpRoute {
-  Metadata metadata = 1;
+  io.linkerd.proxy.meta.Metadata metadata = 1;
 
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
@@ -215,7 +208,7 @@ message HttpRoute {
 
 // Inbound-specific gRPC route configuration.
 message GrpcRoute {
-  Metadata metadata = 1;
+  io.linkerd.proxy.meta.Metadata metadata = 1;
 
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;

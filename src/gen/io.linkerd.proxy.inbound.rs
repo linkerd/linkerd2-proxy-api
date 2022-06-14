@@ -99,10 +99,14 @@ pub struct Authz {
     ///
     /// A control plane SHOULD return the same keys in all authorizations. That is,
     /// we do NOT want to return arbitrary pod labels in this field.
+    ///
+    /// `labels` should be considered deprecated. `metadata` is preferred.
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    /// If set describes an Authorization configuration resource/implicit. Replaces
+    /// the free-from `labels` field.
     #[prost(message, optional, tag="4")]
-    pub metadata: ::core::option::Option<Metadata>,
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
 }
 /// Describes a network of authorized clients.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -114,13 +118,14 @@ pub struct Network {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Authn {
-    #[prost(message, optional, tag="3")]
-    pub metadata: ::core::option::Option<Metadata>,
     #[prost(oneof="authn::Permit", tags="1, 2")]
     pub permit: ::core::option::Option<authn::Permit>,
 }
 /// Nested message and enum types in `Authn`.
 pub mod authn {
+    // TODO(ver) identify authentication resources?
+    // io.linkerd.proxy.meta.Metadata metadata = 3;
+
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct PermitUnauthenticated {
     }
@@ -176,37 +181,13 @@ pub struct IdentitySuffix {
     #[prost(string, repeated, tag="1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Metadata {
-    #[prost(oneof="metadata::Kind", tags="1, 2")]
-    pub kind: ::core::option::Option<metadata::Kind>,
-}
-/// Nested message and enum types in `Metadata`.
-pub mod metadata {
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Resource {
-        #[prost(string, tag="1")]
-        pub group: ::prost::alloc::string::String,
-        #[prost(string, tag="2")]
-        pub kind: ::prost::alloc::string::String,
-        #[prost(string, tag="3")]
-        pub name: ::prost::alloc::string::String,
-    }
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Kind {
-        #[prost(string, tag="1")]
-        Default(::prost::alloc::string::String),
-        #[prost(message, tag="2")]
-        Resource(Resource),
-    }
-}
 /// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
 /// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
     #[prost(message, optional, tag="1")]
-    pub metadata: ::core::option::Option<Metadata>,
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
@@ -249,7 +230,7 @@ pub mod http_route {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRoute {
     #[prost(message, optional, tag="1")]
-    pub metadata: ::core::option::Option<Metadata>,
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
