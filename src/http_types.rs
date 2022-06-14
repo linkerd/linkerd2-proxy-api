@@ -49,12 +49,13 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
 
 // === impl http::HttpMethod ===
 
-impl TryInto<http::Method> for &'_ http_method::Type {
+impl TryFrom<http_method::Type> for http::Method {
     type Error = InvalidMethod;
-    fn try_into(self) -> Result<http::Method, Self::Error> {
+
+    fn try_from(proto: http_method::Type) -> Result<http::Method, Self::Error> {
         use http_method::*;
 
-        match *self {
+        match proto {
             Type::Registered(reg) => {
                 if reg == Registered::Get.into() {
                     Ok(http::Method::GET)
@@ -78,16 +79,16 @@ impl TryInto<http::Method> for &'_ http_method::Type {
                     Err(InvalidMethod)
                 }
             }
-            Type::Unregistered(ref m) => TryFrom::try_from(m.as_str()).map_err(|_| InvalidMethod),
+            Type::Unregistered(ref m) => m.parse().map_err(|_| InvalidMethod),
         }
     }
 }
 
-impl<'a> From<&'a http::Method> for http_method::Type {
-    fn from(m: &'a http::Method) -> Self {
+impl From<http::Method> for http_method::Type {
+    fn from(m: http::Method) -> Self {
         use http_method::*;
 
-        match *m {
+        match m {
             http::Method::GET => Type::Registered(Registered::Get.into()),
             http::Method::POST => Type::Registered(Registered::Post.into()),
             http::Method::PUT => Type::Registered(Registered::Put.into()),
@@ -102,8 +103,8 @@ impl<'a> From<&'a http::Method> for http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for HttpMethod {
-    fn from(m: &'a http::Method) -> Self {
+impl From<http::Method> for HttpMethod {
+    fn from(m: http::Method) -> Self {
         HttpMethod {
             r#type: Some(m.into()),
         }
