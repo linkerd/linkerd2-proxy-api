@@ -34,9 +34,9 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
 
         match *self {
             Type::Registered(reg) => {
-                if reg == Registered::Http.into() {
+                if reg == Registered::Http as i32 {
                     Ok(Cow::Borrowed("http"))
-                } else if reg == Registered::Https.into() {
+                } else if reg == Registered::Https as i32 {
                     Ok(Cow::Borrowed("https"))
                 } else {
                     Err(InvalidScheme::UnexpectedRegistered(reg))
@@ -65,23 +65,23 @@ impl TryFrom<http_method::Type> for http::Method {
 
         match proto {
             Type::Registered(reg) => {
-                if reg == Registered::Get.into() {
+                if reg == Registered::Get as i32 {
                     Ok(http::Method::GET)
-                } else if reg == Registered::Post.into() {
+                } else if reg == Registered::Post as i32 {
                     Ok(http::Method::POST)
-                } else if reg == Registered::Put.into() {
+                } else if reg == Registered::Put as i32 {
                     Ok(http::Method::PUT)
-                } else if reg == Registered::Delete.into() {
+                } else if reg == Registered::Delete as i32 {
                     Ok(http::Method::DELETE)
-                } else if reg == Registered::Patch.into() {
+                } else if reg == Registered::Patch as i32 {
                     Ok(http::Method::PATCH)
-                } else if reg == Registered::Options.into() {
+                } else if reg == Registered::Options as i32 {
                     Ok(http::Method::OPTIONS)
-                } else if reg == Registered::Connect.into() {
+                } else if reg == Registered::Connect as i32 {
                     Ok(http::Method::CONNECT)
-                } else if reg == Registered::Head.into() {
+                } else if reg == Registered::Head as i32 {
                     Ok(http::Method::HEAD)
-                } else if reg == Registered::Trace.into() {
+                } else if reg == Registered::Trace as i32 {
                     Ok(http::Method::TRACE)
                 } else {
                     Err(InvalidMethod)
@@ -153,9 +153,9 @@ impl TryFrom<Scheme> for http::uri::Scheme {
     fn try_from(s: Scheme) -> Result<Self, Self::Error> {
         match s.r#type.ok_or(InvalidScheme::MissingType)? {
             scheme::Type::Registered(typ) => {
-                if typ == scheme::Registered::Http.into() {
+                if typ == scheme::Registered::Http as i32 {
                     Ok(http::uri::Scheme::HTTP)
-                } else if typ == scheme::Registered::Https.into() {
+                } else if typ == scheme::Registered::Https as i32 {
                     Ok(http::uri::Scheme::HTTPS)
                 } else {
                     Err(InvalidScheme::UnexpectedRegistered(typ))
