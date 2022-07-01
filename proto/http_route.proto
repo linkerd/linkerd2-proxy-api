@@ -125,10 +125,24 @@ message PathModifier {
 }
 
 // Configures a route to respond with a fixed response.
-message HttpErrorResponder {
+message HttpFailureInjector {
   // The status code to use in the HTTP response. Must be specified.
   uint32 status = 1;
 
   // An error message to log and include in the `l5d-proxy-err` header.
   string message = 2;
+
+  // If specified, the rate of requests that should be failed. If not specified,
+  // ALL requests are failed.
+  Ratio ratio = 3;
+}
+
+// A ratio (i.e., of requests) to which an filter should be applied.
+//
+// Represents fractional values on [0, 1].
+message Ratio {
+  uint32 numerator = 1;
+
+  // MUST not be zero.
+  uint32 denominator = 2;
 }

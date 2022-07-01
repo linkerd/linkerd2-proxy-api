@@ -164,11 +164,26 @@ pub mod path_modifier {
 }
 /// Configures a route to respond with a fixed response.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct HttpErrorResponder {
+pub struct HttpFailureInjector {
     /// The status code to use in the HTTP response. Must be specified.
     #[prost(uint32, tag="1")]
     pub status: u32,
     /// An error message to log and include in the `l5d-proxy-err` header.
     #[prost(string, tag="2")]
     pub message: ::prost::alloc::string::String,
+    /// If specified, the rate of requests that should be failed. If not specified,
+    /// ALL requests are failed.
+    #[prost(message, optional, tag="3")]
+    pub ratio: ::core::option::Option<Ratio>,
+}
+/// A ratio (i.e., of requests) to which an filter should be applied.
+///
+/// Represents fractional values on [0, 1].
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Ratio {
+    #[prost(uint32, tag="1")]
+    pub numerator: u32,
+    /// MUST not be zero.
+    #[prost(uint32, tag="2")]
+    pub denominator: u32,
 }

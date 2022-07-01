@@ -199,7 +199,7 @@ message HttpRoute {
 
   message Filter {
     oneof kind {
-      io.linkerd.proxy.http_route.HttpErrorResponder error = 1;
+      io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
       io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
       io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
     }
@@ -227,7 +227,7 @@ message GrpcRoute {
 
   message Filter {
     oneof kind {
-      io.linkerd.proxy.grpc_route.GrpcErrorResponder error = 1;
+      io.linkerd.proxy.grpc_route.GrpcFailureInjector failure_injector = 1;
       io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
     }
   }

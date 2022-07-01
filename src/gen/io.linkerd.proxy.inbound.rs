@@ -218,7 +218,7 @@ pub mod http_route {
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Kind {
             #[prost(message, tag="1")]
-            Error(super::super::super::http_route::HttpErrorResponder),
+            FailureInjector(super::super::super::http_route::HttpFailureInjector),
             #[prost(message, tag="2")]
             RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
             #[prost(message, tag="3")]
@@ -261,7 +261,7 @@ pub mod grpc_route {
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Kind {
             #[prost(message, tag="1")]
-            Error(super::super::super::grpc_route::GrpcErrorResponder),
+            FailureInjector(super::super::super::grpc_route::GrpcFailureInjector),
             #[prost(message, tag="2")]
             RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
         }

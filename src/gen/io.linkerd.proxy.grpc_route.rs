@@ -17,11 +17,15 @@ pub struct GrpcRpcMatch {
 }
 /// Configures a route to respond with a fixed response.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GrpcErrorResponder {
+pub struct GrpcFailureInjector {
     /// The status code to use in the `grpc-status` response. Must be specified.
     #[prost(uint32, tag="1")]
     pub code: u32,
     /// An error message to log and include in the `grpc-message` header.
     #[prost(string, tag="2")]
     pub message: ::prost::alloc::string::String,
+    /// If specified, the rate of requests that should be failed. If not specified,
+    /// ALL requests are failed.
+    #[prost(message, optional, tag="3")]
+    pub ratio: ::core::option::Option<super::http_route::Ratio>,
 }

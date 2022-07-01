@@ -20,10 +20,14 @@ message GrpcRpcMatch {
 }
 
 // Configures a route to respond with a fixed response.
-message GrpcErrorResponder {
+message GrpcFailureInjector {
   // The status code to use in the `grpc-status` response. Must be specified.
   uint32 code = 1;
 
   // An error message to log and include in the `grpc-message` header.
   string message = 2;
+
+  // If specified, the rate of requests that should be failed. If not specified,
+  // ALL requests are failed.
+  io.linkerd.proxy.http_route.Ratio ratio = 3;
 }
