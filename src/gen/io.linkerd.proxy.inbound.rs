@@ -100,12 +100,12 @@ pub struct Authz {
     /// we do NOT want to return arbitrary pod labels in this field.
     ///
     /// `labels` should be considered deprecated. `metadata` is preferred. However,
-    /// controllers should continue to set `labels` for compatbility with older
+    /// controllers should continue to set `labels` for compatibility with older
     /// proxies.
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
-    /// If set describes an Authorization configuration resource/implicit. Replaces
-    /// the free-from `labels` field.
+    /// If set, describes an Authorization configuration. Replaces the free-from
+    /// `labels` field.
     #[prost(message, optional, tag="4")]
     pub metadata: ::core::option::Option<super::meta::Metadata>,
 }

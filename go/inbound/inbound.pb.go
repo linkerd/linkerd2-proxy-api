@@ -317,11 +317,11 @@ type Authz struct {
 	// we do NOT want to return arbitrary pod labels in this field.
 	//
 	// `labels` should be considered deprecated. `metadata` is preferred. However,
-	// controllers should continue to set `labels` for compatbility with older
+	// controllers should continue to set `labels` for compatibility with older
 	// proxies.
 	Labels map[string]string `protobuf:"bytes,3,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// If set describes an Authorization configuration resource/implicit. Replaces
-	// the free-from `labels` field.
+	// If set, describes an Authorization configuration. Replaces the free-from
+	// `labels` field.
 	Metadata *meta.Metadata `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
 }
 

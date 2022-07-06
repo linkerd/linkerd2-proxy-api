@@ -91,6 +91,11 @@ type isMetadata_Kind interface {
 }
 
 type Metadata_Default struct {
+	// A name describing a default/implicit configuration bool.
+	//
+	// For example, a policy default name like `all-authenticated` describes an
+	// implicit controller-implementedc policy that does not exist as a cluster
+	// resource.
 	Default string `protobuf:"bytes,1,opt,name=default,proto3,oneof"`
 }
 

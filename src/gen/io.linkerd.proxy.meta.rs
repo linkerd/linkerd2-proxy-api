@@ -9,6 +9,11 @@ pub struct Metadata {
 pub mod metadata {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
+        /// A name describing a default/implicit configuration bool.
+        ///
+        /// For example, a policy default name like `all-authenticated` describes an
+        /// implicit controller-implementedc policy that does not exist as a cluster
+        /// resource.
         #[prost(string, tag="1")]
         Default(::prost::alloc::string::String),
         #[prost(message, tag="2")]
