@@ -24,7 +24,6 @@ export PROTOC_NO_VENDOR := "1"
 ##
 
 export RUST_BACKTRACE := env_var_or_default("RUST_BACKTRACE", "short")
-export RUSTFLAGS := env_var_or_default("RUSTFLAGS", "-D warnings -A deprecated")
 
 cargo_toolchain := ""
 cargo := "cargo" + if cargo_toolchain != "" { " +" + cargo_toolchain } else { "" }
