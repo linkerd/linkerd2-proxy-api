@@ -8,14 +8,20 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/meta";
 // implicit default configuration or a Kubernetes resource.
 message Metadata {
   oneof kind {
+    // A name describing a default/implicit configuration.
+    //
+    // For example, a policy default name like `all-authenticated` describes an
+    // implicit controller-implementedc policy that does not exist as a cluster
+    // resource.
     string default = 1;
-    Resource resource = 2;
-  }
 
-  message Resource {
-    string group = 1;
-    string kind = 2;
-    string name = 3;
+    Resource resource = 2;
   }
 }
 
+// References a (e.g., Kubernetes) resource.
+message Resource {
+  string group = 1;
+  string kind = 2;
+  string name = 3;
+}

@@ -7,20 +7,26 @@ pub struct Metadata {
 }
 /// Nested message and enum types in `Metadata`.
 pub mod metadata {
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Resource {
-        #[prost(string, tag="1")]
-        pub group: ::prost::alloc::string::String,
-        #[prost(string, tag="2")]
-        pub kind: ::prost::alloc::string::String,
-        #[prost(string, tag="3")]
-        pub name: ::prost::alloc::string::String,
-    }
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
+        /// A name describing a default/implicit configuration.
+        ///
+        /// For example, a policy default name like `all-authenticated` describes an
+        /// implicit controller-implementedc policy that does not exist as a cluster
+        /// resource.
         #[prost(string, tag="1")]
         Default(::prost::alloc::string::String),
         #[prost(message, tag="2")]
-        Resource(Resource),
+        Resource(super::Resource),
     }
+}
+/// References a (e.g., Kubernetes) resource.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Resource {
+    #[prost(string, tag="1")]
+    pub group: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub kind: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
 }

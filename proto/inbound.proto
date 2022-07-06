@@ -119,11 +119,13 @@ message Authz {
   // A control plane SHOULD return the same keys in all authorizations. That is,
   // we do NOT want to return arbitrary pod labels in this field.
   //
-  // `labels` should be considered deprecated. `metadata` is preferred.
+  // `labels` should be considered deprecated. `metadata` is preferred. However,
+  // controllers should continue to set `labels` for compatibility with older
+  // proxies.
   map<string, string> labels = 3;
 
-  // If set describes an Authorization configuration resource/implicit. Replaces
-  // the free-from `labels` field.
+  // If set, describes an Authorization configuration. Replaces the free-from
+  // `labels` field.
   io.linkerd.proxy.meta.Metadata metadata = 4;
 }
 
