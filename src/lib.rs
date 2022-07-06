@@ -4,7 +4,7 @@
 #[cfg(feature = "net")]
 pub mod net;
 
-#[cfg(feature = "http_types")]
+#[cfg(feature = "http-types")]
 pub mod http_types;
 
 #[cfg(feature = "destination")]
