@@ -11,7 +11,7 @@ message Metadata {
     // A name describing a default/implicit configuration.
     //
     // For example, a policy default name like `all-authenticated` describes an
-    // implicit controller-implementedc policy that does not exist as a cluster
+    // implicit controller-implemented policy that does not exist as a cluster
     // resource.
     string default = 1;
 
