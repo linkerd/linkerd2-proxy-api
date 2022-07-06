@@ -1,9 +1,6 @@
 #![deny(warnings, rust_2018_idioms)]
 #![forbid(unsafe_code)]
 
-#[cfg(feature = "net")]
-pub mod net;
-
 #[cfg(feature = "http-types")]
 pub mod http_types;
 
@@ -21,6 +18,14 @@ pub mod identity {
 pub mod inbound {
     include!("gen/io.linkerd.proxy.inbound.rs");
 }
+
+#[cfg(feature = "meta")]
+pub mod meta {
+    include!("gen/io.linkerd.proxy.meta.rs");
+}
+
+#[cfg(feature = "net")]
+pub mod net;
 
 #[cfg(feature = "tap")]
 pub mod tap;

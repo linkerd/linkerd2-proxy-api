@@ -18,6 +18,7 @@ destination = ["http-types", "net", "prost-types", "tonic/codegen"]
 http-types = ["http", "thiserror"]
 identity = ["prost-types", "tonic/codegen"]
 inbound = ["net", "prost-types", "tonic/codegen"]
+meta = []
 net = ["ipnet", "thiserror"]
 tap = ["h2", "http-types", "net", "prost-types", "tonic/codegen"]
 
