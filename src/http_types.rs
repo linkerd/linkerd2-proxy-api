@@ -12,14 +12,23 @@ include!("gen/io.linkerd.proxy.http_types.rs");
 pub struct InvalidMethod;
 
 /// Indicates a URI Scheme could not be decoded.
-#[derive(Clone, Debug, Error)]
-#[error("invalid HTTP scheme")]
-pub struct InvalidScheme;
+#[derive(Debug, Error)]
+pub enum InvalidScheme {
+    #[error("scheme must have a type")]
+    MissingType,
+
+    #[error("unexpected registered scheme: {0}")]
+    Registered(i32),
+
+    #[error("invalid unregistered scheme: {0}")]
+    Unregistered(#[from] http::uri::InvalidUri),
+}
 
 // === impl scheme::Type ===
 
 impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
     type Error = InvalidScheme;
+
     fn try_into(self) -> Result<Cow<'static, str>, Self::Error> {
         use scheme::*;
 
@@ -30,7 +39,7 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
                 } else if reg == Registered::Https as i32 {
                     Ok(Cow::Borrowed("https"))
                 } else {
-                    Err(InvalidScheme)
+                    Err(InvalidScheme::Registered(reg))
                 }
             }
             Type::Unregistered(ref s) => Ok(Cow::Owned(s.clone())),
@@ -40,12 +49,21 @@ impl TryInto<Cow<'static, str>> for &'_ scheme::Type {
 
 // === impl http::HttpMethod ===
 
-impl TryInto<http::Method> for &'_ http_method::Type {
+impl TryFrom<HttpMethod> for http::Method {
     type Error = InvalidMethod;
-    fn try_into(self) -> Result<http::Method, Self::Error> {
+
+    fn try_from(proto: HttpMethod) -> Result<http::Method, Self::Error> {
+        proto.r#type.ok_or(InvalidMethod)?.try_into()
+    }
+}
+
+impl TryFrom<http_method::Type> for http::Method {
+    type Error = InvalidMethod;
+
+    fn try_from(proto: http_method::Type) -> Result<http::Method, Self::Error> {
         use http_method::*;
 
-        match *self {
+        match proto {
             Type::Registered(reg) => {
                 if reg == Registered::Get as i32 {
                     Ok(http::Method::GET)
@@ -69,16 +87,16 @@ impl TryInto<http::Method> for &'_ http_method::Type {
                     Err(InvalidMethod)
                 }
             }
-            Type::Unregistered(ref m) => TryFrom::try_from(m.as_str()).map_err(|_| InvalidMethod),
+            Type::Unregistered(ref m) => m.parse().map_err(|_| InvalidMethod),
         }
     }
 }
 
-impl<'a> From<&'a http::Method> for http_method::Type {
-    fn from(m: &'a http::Method) -> Self {
+impl From<http::Method> for http_method::Type {
+    fn from(m: http::Method) -> Self {
         use http_method::*;
 
-        match *m {
+        match m {
             http::Method::GET => Type::Registered(Registered::Get.into()),
             http::Method::POST => Type::Registered(Registered::Post.into()),
             http::Method::PUT => Type::Registered(Registered::Put.into()),
@@ -93,8 +111,8 @@ impl<'a> From<&'a http::Method> for http_method::Type {
     }
 }
 
-impl<'a> From<&'a http::Method> for HttpMethod {
-    fn from(m: &'a http::Method) -> Self {
+impl From<http::Method> for HttpMethod {
+    fn from(m: http::Method) -> Self {
         HttpMethod {
             r#type: Some(m.into()),
         }
@@ -125,6 +143,25 @@ impl<'a> From<&'a str> for Scheme {
     fn from(s: &'a str) -> Self {
         Scheme {
             r#type: Some(s.into()),
+        }
+    }
+}
+
+impl TryFrom<Scheme> for http::uri::Scheme {
+    type Error = InvalidScheme;
+
+    fn try_from(s: Scheme) -> Result<Self, Self::Error> {
+        match s.r#type.ok_or(InvalidScheme::MissingType)? {
+            scheme::Type::Registered(typ) => {
+                if typ == scheme::Registered::Http as i32 {
+                    Ok(http::uri::Scheme::HTTP)
+                } else if typ == scheme::Registered::Https as i32 {
+                    Ok(http::uri::Scheme::HTTPS)
+                } else {
+                    Err(InvalidScheme::Registered(typ))
+                }
+            }
+            scheme::Type::Unregistered(typ) => Ok(typ.parse()?),
         }
     }
 }
