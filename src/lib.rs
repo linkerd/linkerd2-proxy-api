@@ -1,7 +1,7 @@
 #![deny(warnings, rust_2018_idioms)]
 #![forbid(unsafe_code)]
 
-#[cfg(feature = "http_types")]
+#[cfg(feature = "http-types")]
 pub mod http_types;
 
 #[cfg(feature = "destination")]
