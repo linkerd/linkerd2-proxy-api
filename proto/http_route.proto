@@ -52,7 +52,7 @@ message HeaderMatch {
   string name = 1;
 
   oneof value {
-    string exact = 2;
+    bytes exact = 2;
     string regex = 3;
   }
 }
