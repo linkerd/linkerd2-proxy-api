@@ -28,6 +28,9 @@ export RUST_BACKTRACE := env_var_or_default("RUST_BACKTRACE", "short")
 cargo_toolchain := ""
 cargo := "cargo" + if cargo_toolchain != "" { " +" + cargo_toolchain } else { "" }
 
+features := "all"
+_features := if features == "all" { "--all-features" } else { "--features=" + features }
+
 # If we're running in Github Actions and cargo-action-fmt is installed, then add
 # a command suffix that formats errors.
 _fmt_cargo := if env_var_or_default("GITHUB_ACTIONS", "") != "true" { "" } else {
@@ -48,19 +51,19 @@ rs-check-fmt:
 
 # Check Rust code compilation
 rs-check *flags:
-    {{ cargo }} check --frozen --all-targets {{ flags }} {{ _fmt_cargo }}
+    {{ cargo }} check --frozen --all-targets {{ _features }} {{ flags }} {{ _fmt_cargo }}
 
 # Lint Rust code
 rs-clippy *flags:
-    {{ cargo }} clippy --frozen --all-targets {{ flags }} {{ _fmt_cargo }}
+    {{ cargo }} clippy --frozen --all-targets {{ _features }} {{ flags }} {{ _fmt_cargo }}
 
 # Audit Rust dependencies with `cargo-deny`
 rs-deny *args:
-    {{ cargo }} deny --all-features check {{ args}}
+    {{ cargo }} deny {{ _features }} check {{ args}}
 
 # Generate Rust documentation for this crate.
 rs-docs:
-    {{ cargo }} doc --frozen --no-deps --all-features {{ _fmt_cargo }}
+    {{ cargo }} doc --frozen --no-deps {{ _features }} {{ _fmt_cargo }}
 
 # Generate Rust bindings from protobuf.
 rs-gen:
@@ -78,15 +81,15 @@ rs-gen-check: rs-gen
 
 # Build Rust tests.
 rs-test-build *flags:
-    {{ cargo }} test --no-run --frozen {{ flags }} {{ _fmt_cargo }}
+    {{ cargo }} test --no-run --frozen {{ _features }} {{ flags }} {{ _fmt_cargo }}
 
 # Run Rust tests.
 rs-test *flags:
-    {{ cargo }} test --frozen {{ flags }}
+    {{ cargo }} test --frozen {{ _features }} {{ flags }}
 
 # Public the Rust crate to crates.io.
 rs-publish *flags:
-    {{ cargo }} publish --all-features {{ flags }}
+    {{ cargo }} publish {{ _features }} {{ flags }}
 
 ##
 ## Go recipes
