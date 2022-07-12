@@ -153,7 +153,9 @@ impl TryFrom<Scheme> for http::uri::Scheme {
                     Err(InvalidScheme::Registered(typ))
                 }
             }
-            scheme::Type::Unregistered(typ) => Ok(typ.parse()?),
+            scheme::Type::Unregistered(typ) => typ
+                .parse()
+                .map_err(|e| InvalidScheme::Unregistered(Arc::new(e))),
         }
     }
 }
