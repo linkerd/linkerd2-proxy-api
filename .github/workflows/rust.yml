@@ -43,7 +43,7 @@ jobs:
       - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - run: just rs-fetch
-      - run: just rs-clippy --all-features
+      - run: just rs-clippy
 
   rust-docs:
     timeout-minutes: 10
@@ -67,8 +67,8 @@ jobs:
       - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - run: just rs-fetch
-      - run: just rs-test-build --all-features
-      - run: just rs-test --all-features
+      - run: just rs-test-build
+      - run: just rs-test
 
   rust-deps:
     timeout-minutes: 5
