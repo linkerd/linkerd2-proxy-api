@@ -1,13 +1,14 @@
 use std::{
     borrow::Cow,
     convert::{TryFrom, TryInto},
+    sync::Arc,
 };
 use thiserror::Error;
 
 include!("gen/io.linkerd.proxy.http_types.rs");
 
 /// Indicates an HTTP Method could not be decoded.
-#[derive(Debug, Error)]
+#[derive(Clone, Debug, Error)]
 pub enum InvalidMethod {
     #[error("missing HTTP method type")]
     MissingType,
@@ -16,11 +17,11 @@ pub enum InvalidMethod {
     Registered(i32),
 
     #[error("invalid unregistered method: {0}")]
-    Unregistered(#[from] http::method::InvalidMethod),
+    Unregistered(#[source] Arc<http::method::InvalidMethod>),
 }
 
 /// Indicates a URI Scheme could not be decoded.
-#[derive(Debug, Error)]
+#[derive(Clone, Debug, Error)]
 pub enum InvalidScheme {
     #[error("scheme must have a type")]
     MissingType,
@@ -29,7 +30,7 @@ pub enum InvalidScheme {
     Registered(i32),
 
     #[error("invalid unregistered scheme: {0}")]
-    Unregistered(#[from] http::uri::InvalidUri),
+    Unregistered(#[source] Arc<http::uri::InvalidUri>),
 }
 
 // === impl scheme::Type ===
@@ -76,7 +77,9 @@ impl TryFrom<http_method::Type> for http::Method {
             Type::Registered(m) if m == Registered::Put as i32 => Ok(http::Method::PUT),
             Type::Registered(m) if m == Registered::Trace as i32 => Ok(http::Method::TRACE),
             Type::Registered(m) => Err(InvalidMethod::Registered(m)),
-            Type::Unregistered(ref m) => m.parse().map_err(Into::into),
+            Type::Unregistered(ref m) => m
+                .parse()
+                .map_err(|e| InvalidMethod::Unregistered(Arc::new(e))),
         }
     }
 }
@@ -150,7 +153,9 @@ impl TryFrom<Scheme> for http::uri::Scheme {
                     Err(InvalidScheme::Registered(typ))
                 }
             }
-            scheme::Type::Unregistered(typ) => Ok(typ.parse()?),
+            scheme::Type::Unregistered(typ) => typ
+                .parse()
+                .map_err(|e| InvalidScheme::Unregistered(Arc::new(e))),
         }
     }
 }
