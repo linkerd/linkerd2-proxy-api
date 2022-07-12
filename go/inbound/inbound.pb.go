@@ -633,8 +633,8 @@ type HttpRoute struct {
 	Metadata *meta.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// If empty, the host value is ignored.
 	Hosts []*http_route.HostMatch `protobuf:"bytes,2,rep,name=hosts,proto3" json:"hosts,omitempty"`
-	// The server MUST return at least one authorization, otherwise all requests
-	// to this route will fail with an unauthorized response.
+	// Extends the list of authorizations on the `Server` with authorizations
+	// specific to this route.
 	Authorizations []*Authz `protobuf:"bytes,3,rep,name=authorizations,proto3" json:"authorizations,omitempty"`
 	// Must have at least one rule.
 	Rules []*HttpRoute_Rule `protobuf:"bytes,4,rep,name=rules,proto3" json:"rules,omitempty"`

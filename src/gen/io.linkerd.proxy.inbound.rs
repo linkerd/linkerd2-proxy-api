@@ -193,8 +193,8 @@ pub struct HttpRoute {
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    /// The server MUST return at least one authorization, otherwise all requests
-    /// to this route will fail with an unauthorized response.
+    /// Extends the list of authorizations on the `Server` with authorizations
+    /// specific to this route.
     #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
     /// Must have at least one rule.

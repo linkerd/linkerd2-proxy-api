@@ -187,8 +187,8 @@ message HttpRoute {
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
 
-  // The server MUST return at least one authorization, otherwise all requests
-  // to this route will fail with an unauthorized response.
+  // Extends the list of authorizations on the `Server` with authorizations
+  // specific to this route.
   repeated Authz authorizations = 3;
 
   // Must have at least one rule.
