@@ -72,8 +72,8 @@ pub struct HeaderMatch {
 pub mod header_match {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Value {
-        #[prost(string, tag="2")]
-        Exact(::prost::alloc::string::String),
+        #[prost(bytes, tag="2")]
+        Exact(::prost::alloc::vec::Vec<u8>),
         #[prost(string, tag="3")]
         Regex(::prost::alloc::string::String),
     }
