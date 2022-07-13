@@ -1,5 +1,14 @@
 # `linkerd2-proxy-api` changes
 
+## v0.6.0
+
+* Add HTTP and gRPC Route types
+* Add a resource Metadata type
+* Go: update `google.golang.org/grpc` to v1.48
+* Rust: Make error types cloneable
+* Rust: Update `http_types` converters and enum matching
+* Rust: Rename the `http_types` feature to `http-types`
+
 ## v0.5.0
 
 * Rust: Remove the build-time dependency on `protoc`
