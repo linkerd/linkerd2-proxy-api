@@ -40,24 +40,25 @@ pub mod proxy_protocol {
     pub struct Detect {
         #[prost(message, optional, tag="1")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
+        /// If the protocol detected as HTTP, a list of HTTP routes that should be
+        /// matched.
+        #[prost(message, repeated, tag="3")]
+        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http1 {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
+        #[prost(message, repeated, tag="2")]
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
+        #[prost(message, repeated, tag="2")]
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
-        /// Disables the setting of informational headers on this server.
-        #[prost(bool, tag="1")]
-        pub disable_informational_headers: bool,
+        #[prost(message, repeated, tag="2")]
+        pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
     }
     /// TODO: opaque TLS settings (versions, algorithms, SNI)
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -124,6 +125,9 @@ pub struct Authn {
 }
 /// Nested message and enum types in `Authn`.
 pub mod authn {
+    // TODO(ver) identify authentication resources?
+    // io.linkerd.proxy.meta.Metadata metadata = 3;
+
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct PermitUnauthenticated {
     }
@@ -178,6 +182,92 @@ pub struct Identity {
 pub struct IdentitySuffix {
     #[prost(string, repeated, tag="1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+/// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
+///
+/// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct HttpRoute {
+    #[prost(message, optional, tag="1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// If empty, the host value is ignored.
+    #[prost(message, repeated, tag="2")]
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
+    /// Extends the list of authorizations on the `Server` with authorizations
+    /// specific to this route.
+    #[prost(message, repeated, tag="3")]
+    pub authorizations: ::prost::alloc::vec::Vec<Authz>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag="4")]
+    pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
+}
+/// Nested message and enum types in `HttpRoute`.
+pub mod http_route {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rule {
+        #[prost(message, repeated, tag="1")]
+        pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
+        #[prost(message, repeated, tag="2")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Filter {
+        #[prost(oneof="filter::Kind", tags="1, 2, 3")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag="1")]
+            FailureInjector(super::super::super::http_route::HttpFailureInjector),
+            #[prost(message, tag="2")]
+            RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
+            #[prost(message, tag="3")]
+            Redirect(super::super::super::http_route::RequestRedirect),
+        }
+    }
+}
+/// Inbound-specific gRPC route configuration.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GrpcRoute {
+    #[prost(message, optional, tag="1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// If empty, the host value is ignored.
+    #[prost(message, repeated, tag="2")]
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
+    /// The server MUST return at least one authorization, otherwise all requests
+    /// to this route will fail with an unauthorized response.
+    #[prost(message, repeated, tag="3")]
+    pub authorizations: ::prost::alloc::vec::Vec<Authz>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag="4")]
+    pub rules: ::prost::alloc::vec::Vec<grpc_route::Rule>,
+}
+/// Nested message and enum types in `GrpcRoute`.
+pub mod grpc_route {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rule {
+        #[prost(message, repeated, tag="1")]
+        pub matches: ::prost::alloc::vec::Vec<super::super::grpc_route::GrpcRouteMatch>,
+        #[prost(message, repeated, tag="2")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Filter {
+        #[prost(oneof="filter::Kind", tags="1, 2")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag="1")]
+            FailureInjector(super::super::super::grpc_route::GrpcFailureInjector),
+            #[prost(message, tag="2")]
+            RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
+        }
+    }
 }
 /// Generated client implementations.
 pub mod inbound_server_policies_client {

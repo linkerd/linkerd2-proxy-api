@@ -5,6 +5,8 @@ package io.linkerd.proxy.inbound;
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/inbound";
 
 import "google/protobuf/duration.proto";
+import "grpc_route.proto";
+import "http_route.proto";
 import "meta.proto";
 import "net.proto";
 
@@ -62,29 +64,36 @@ message ProxyProtocol {
     Grpc grpc = 6;
   }
 
-  message Detect { google.protobuf.Duration timeout = 1; }
+  message Detect {
+    google.protobuf.Duration timeout = 1;
+
+    // If the protocol detected as HTTP, a list of HTTP routes that should be
+    // matched.
+    repeated HttpRoute http_routes = 3;
+
+    // Never implemented.
+    reserved 2;
+  }
 
   message Http1 {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
+    repeated HttpRoute routes = 2;
 
-    // TODO: domains -> routes -> policy
-    // TODO: HTTP version? (and orig-proto upgrades)?
+    // Never implemented.
+    reserved 1;
   }
 
   message Http2 {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
+    repeated HttpRoute routes = 2;
 
-    // TODO: domains -> routes -> policy
-    // TODO: HTTP version? (and orig-proto upgrades)?
+    // Never implemented.
+    reserved 1;
   }
 
   message Grpc {
-    // Disables the setting of informational headers on this server.
-    bool disable_informational_headers = 1;
+    repeated GrpcRoute routes = 2;
 
-    // TODO: service -> endpoint -> policy
+    // Never implemented.
+    reserved 1;
   }
 
   message Opaque {
@@ -134,6 +143,9 @@ message Authn {
     PermitMeshTLS meshTLS = 2;
   }
 
+  // TODO(ver) identify authentication resources?
+  // io.linkerd.proxy.meta.Metadata metadata = 3;
+
   message PermitUnauthenticated {}
 
   message PermitMeshTLS {
@@ -165,3 +177,60 @@ message Identity { string name = 1; }
 // An empty list is equivalent to `.` (matching all names); the list `["foo",
 // "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 message IdentitySuffix { repeated string parts = 1; }
+
+// Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
+//
+// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
+message HttpRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // Extends the list of authorizations on the `Server` with authorizations
+  // specific to this route.
+  repeated Authz authorizations = 3;
+
+  // Must have at least one rule.
+  repeated Rule rules = 4;
+
+  message Rule {
+    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
+    repeated Filter filters = 2;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+      io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
+    }
+  }
+}
+
+// Inbound-specific gRPC route configuration.
+message GrpcRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // The server MUST return at least one authorization, otherwise all requests
+  // to this route will fail with an unauthorized response.
+  repeated Authz authorizations = 3;
+
+  // Must have at least one rule.
+  repeated Rule rules = 4;
+
+  message Rule {
+    repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
+    repeated Filter filters = 2;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.grpc_route.GrpcFailureInjector failure_injector = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+    }
+  }
+}

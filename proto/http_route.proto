@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.http_route;
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/http_route";
+
+import "http_types.proto";
+
+// Describes how to match an `:authority` or `host` header.
+message HostMatch {
+    oneof match {
+        // Match an exact hostname, e.g. www.example.com.
+        string exact = 1;
+
+        // Match a hostname as a wildcard suffix, e.g. *.example.com.
+        Suffix suffix = 2;
+    }
+
+    // A match like `*.example.com` is encoded as [com, example].
+    message Suffix { repeated string reverse_labels = 1; }
+}
+
+// Describes a set of matches, ALL of which must apply.
+message HttpRouteMatch {
+  // Matches requests by path.
+  PathMatch path = 1;
+
+  // A set of header value matches that must be satisified. This match is not
+  // comprehensive, so requests may include headers that are not covered by this
+  // match.
+  repeated HeaderMatch headers = 2;
+
+  // A set of query parmaeter value matches that must be satisified. This match
+  // is not comprehensive, so requests may include query parameters that are not
+  // covered by this match.
+  repeated QueryParamMatch query_params = 3;
+
+  // If specified, restricts the match to a single HTTP method.
+  io.linkerd.proxy.http_types.HttpMethod method  = 4;
+}
+
+// Describes how to match a path.
+message PathMatch {
+  oneof kind {
+    string exact = 1;
+    string prefix = 2;
+    string regex = 3;
+  }
+}
+
+// Describes how to match a header by name and value.
+message HeaderMatch {
+  string name = 1;
+
+  oneof value {
+    bytes exact = 2;
+    string regex = 3;
+  }
+}
+
+// Describes how to match a query parameter by name and value.
+message QueryParamMatch {
+  string name = 1;
+
+  oneof value {
+    string exact = 2;
+    string regex = 3;
+  }
+}
+
+// Configures a route to modify a request's headers.
+//
+// Modifications are to be applied in the order they are described here:
+// additions apply first, then sets, and then removals.
+message RequestHeaderModifier {
+    // A list of headers name-value pairs to set on requests, augmenting any
+    // existing values for the header.
+    io.linkerd.proxy.http_types.Headers add = 1;
+
+    // A list of headers name-value pairs to set on requests, replacing any
+    // existing values for the header.
+    io.linkerd.proxy.http_types.Headers set = 2;
+
+    // A list of headers names to be removed from requests.
+    repeated string remove = 3;
+}
+
+// Configures a route to respond with a redirect response. The `location` header
+// is set with the given URL parameters.
+message RequestRedirect {
+    // The scheme value to be used in the `location` header. If not specified,
+    // the original request's scheme is used.
+    io.linkerd.proxy.http_types.Scheme scheme = 1;
+
+    // The host value to be used in the `location` header. If not specified, the
+    // original request's host is used.
+    string host = 2;
+
+    // If set, configures how the request's path should be modified for use in
+    // the `location` header. If not specified, the original request's path is
+    // used.
+    PathModifier path = 3;
+
+    // If set, specifies the port to use in the `location` header.
+    uint32 port = 4;
+
+    // The status code to use in the HTTP response. If not specified, 301 is
+    // used.
+    uint32 status = 5;
+}
+
+// Describes how a path value may be rewritten in a route.
+message PathModifier {
+    oneof replace {
+        // Indicates that the path should be replaced with the given value.
+        string full = 1;
+
+        // Indicates that the path prefix should be replaced with the given
+        // value. When used, the route MUST match the request with PathMatch
+        // prefix match. Server implementations SHOULD prevent the useof prefix
+        // modifiers on routes that do use a PathMatch prefix match. Proxyies
+        // MUST not process requests for routes where this condition is not
+        // satisfied.
+        string prefix = 2;
+    }
+}
+
+// Configures a route to respond with a fixed response.
+message HttpFailureInjector {
+  // The status code to use in the HTTP response. Must be specified.
+  uint32 status = 1;
+
+  // An error message to log and include in the `l5d-proxy-err` header.
+  string message = 2;
+
+  // If specified, the rate of requests that should be failed. If not specified,
+  // ALL requests are failed.
+  Ratio ratio = 3;
+}
+
+// A ratio (i.e., of requests) to which an filter should be applied.
+//
+// Represents fractional values on [0, 1].
+message Ratio {
+  uint32 numerator = 1;
+
+  // MUST not be zero.
+  uint32 denominator = 2;
+}
