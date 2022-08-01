@@ -18,6 +18,25 @@ pub mod http_method {
         Head = 7,
         Trace = 8,
     }
+    impl Registered {
+        /// String value of the enum field names used in the ProtoBuf definition.
+        ///
+        /// The values are not transformed in any way and thus are considered stable
+        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+        pub fn as_str_name(&self) -> &'static str {
+            match self {
+                Registered::Get => "GET",
+                Registered::Post => "POST",
+                Registered::Put => "PUT",
+                Registered::Delete => "DELETE",
+                Registered::Patch => "PATCH",
+                Registered::Options => "OPTIONS",
+                Registered::Connect => "CONNECT",
+                Registered::Head => "HEAD",
+                Registered::Trace => "TRACE",
+            }
+        }
+    }
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Type {
         #[prost(enumeration="Registered", tag="1")]
@@ -38,6 +57,18 @@ pub mod scheme {
     pub enum Registered {
         Http = 0,
         Https = 1,
+    }
+    impl Registered {
+        /// String value of the enum field names used in the ProtoBuf definition.
+        ///
+        /// The values are not transformed in any way and thus are considered stable
+        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+        pub fn as_str_name(&self) -> &'static str {
+            match self {
+                Registered::Http => "HTTP",
+                Registered::Https => "HTTPS",
+            }
+        }
     }
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Type {

@@ -4,12 +4,12 @@ pub struct GetDestination {
     pub scheme: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub path: ::prost::alloc::string::String,
-    /// An opaque value that is set at injection-time and sent with destintion
-    /// lookups.
+    ///  An opaque value that is set at injection-time and sent with destintion
+    ///  lookups.
     ///
-    /// If, for instance, the token encodes a namespace or some locality
-    /// information, the service may alter its results to take this locality into
-    /// account.
+    ///  If, for instance, the token encodes a namespace or some locality
+    ///  information, the service may alter its results to take this locality into
+    ///  account.
     #[prost(string, tag="3")]
     pub context_token: ::prost::alloc::string::String,
 }
@@ -22,18 +22,18 @@ pub struct Update {
 pub mod update {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Update {
-        /// A new set of endpoints are available for the service. The set might be
-        /// empty.
+        ///  A new set of endpoints are available for the service. The set might be
+        ///  empty.
         #[prost(message, tag="1")]
         Add(super::WeightedAddrSet),
-        /// Some endpoints have been removed from the service.
+        ///  Some endpoints have been removed from the service.
         #[prost(message, tag="2")]
         Remove(super::AddrSet),
-        /// `no_endpoints{exists: false}` indicates that the service does not exist
-        /// and the client MAY try an alternate service discovery method (e.g. DNS).
+        ///  `no_endpoints{exists: false}` indicates that the service does not exist
+        ///  and the client MAY try an alternate service discovery method (e.g. DNS).
         ///
-        /// `no_endpoints(exists: true)` indicates that the service does exist and
-        /// the client MUST NOT fall back to an alternate service discovery method.
+        ///  `no_endpoints(exists: true)` indicates that the service does exist and
+        ///  the client MUST NOT fall back to an alternate service discovery method.
         #[prost(message, tag="3")]
         NoEndpoints(super::NoEndpoints),
     }
@@ -65,7 +65,7 @@ pub struct WeightedAddr {
     #[prost(message, optional, tag="7")]
     pub authority_override: ::core::option::Option<AuthorityOverride>,
 }
-/// Which strategy should be used for verifying TLS.
+///  Which strategy should be used for verifying TLS.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TlsIdentity {
     #[prost(oneof="tls_identity::Strategy", tags="1")]
@@ -73,13 +73,13 @@ pub struct TlsIdentity {
 }
 /// Nested message and enum types in `TlsIdentity`.
 pub mod tls_identity {
-    /// Verify the certificate based on the Kubernetes pod identity.
+    ///  Verify the certificate based on the Kubernetes pod identity.
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct DnsLikeIdentity {
-        /// A DNS-like name that encodes workload coordinates.
+        ///  A DNS-like name that encodes workload coordinates.
         ///
-        /// For example:
-        ///    {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
+        ///  For example:
+        ///     {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
         #[prost(string, tag="1")]
         pub name: ::prost::alloc::string::String,
     }
@@ -99,12 +99,12 @@ pub struct NoEndpoints {
     #[prost(bool, tag="1")]
     pub exists: bool,
 }
-/// A hint of what protocol the service knows. The default value is
-/// for the `hint` field to be not be set, essentially meaning "unknown".
+///  A hint of what protocol the service knows. The default value is
+///  for the `hint` field to be not be set, essentially meaning "unknown".
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProtocolHint {
-    /// When set, indicates that the target supports receiving opaque traffic
-    /// wrapped with the Linkerd connection header on the specified port.
+    ///  When set, indicates that the target supports receiving opaque traffic
+    ///  wrapped with the Linkerd connection header on the specified port.
     #[prost(message, optional, tag="2")]
     pub opaque_transport: ::core::option::Option<protocol_hint::OpaqueTransport>,
     #[prost(oneof="protocol_hint::Protocol", tags="1")]
@@ -117,114 +117,114 @@ pub mod protocol_hint {
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct OpaqueTransport {
-        /// The target proxy's inbound port.
+        ///  The target proxy's inbound port.
         #[prost(uint32, tag="1")]
         pub inbound_port: u32,
     }
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Protocol {
-        /// Hints that the service understands HTTP2 and the proxy's internal
-        /// http2-upgrade mechanism.
+        ///  Hints that the service understands HTTP2 and the proxy's internal
+        ///  http2-upgrade mechanism.
         #[prost(message, tag="1")]
         H2(H2),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DestinationProfile {
-    /// The fully-qualified service name, if one exists.
+    ///  The fully-qualified service name, if one exists.
     ///
-    /// When resolving (especially by IP), this field provides the fully-qualified
-    /// name of the resolved service, if one exists. This field does NOT include
-    /// any port information. E.g. a lookup for 10.2.3.4:8080 might have a name
-    /// like `foo.bar.svc.cluster.local`.
+    ///  When resolving (especially by IP), this field provides the fully-qualified
+    ///  name of the resolved service, if one exists. This field does NOT include
+    ///  any port information. E.g. a lookup for 10.2.3.4:8080 might have a name
+    ///  like `foo.bar.svc.cluster.local`.
     ///
-    /// Implementations MAY provide names for non-service IP-lookups (e.g., pod or
-    /// node dns names), but this is not required.
+    ///  Implementations MAY provide names for non-service IP-lookups (e.g., pod or
+    ///  node dns names), but this is not required.
     ///
-    /// If the lookup does not refer to a known named entity, this field MUST be
-    /// left empty.
+    ///  If the lookup does not refer to a known named entity, this field MUST be
+    ///  left empty.
     #[prost(string, tag="5")]
     pub fully_qualified_name: ::prost::alloc::string::String,
-    /// Indicates that connections on this service address should be handled as
-    /// opaque TCP streams. HTTP routes returned on for such services will be
-    /// ignored.
+    ///  Indicates that connections on this service address should be handled as
+    ///  opaque TCP streams. HTTP routes returned on for such services will be
+    ///  ignored.
     #[prost(bool, tag="4")]
     pub opaque_protocol: bool,
-    /// A list of routes, each with a RequestMatch.  If a request matches
-    /// more than one route, the first match wins.
+    ///  A list of routes, each with a RequestMatch.  If a request matches
+    ///  more than one route, the first match wins.
     #[prost(message, repeated, tag="1")]
     pub routes: ::prost::alloc::vec::Vec<Route>,
-    /// The retry budget controls how much additional load the proxy can generate
-    /// as retries. Failured requests on retryable routes will not be retried if
-    /// there is no available budget.
+    ///  The retry budget controls how much additional load the proxy can generate
+    ///  as retries. Failured requests on retryable routes will not be retried if
+    ///  there is no available budget.
     #[prost(message, optional, tag="2")]
     pub retry_budget: ::core::option::Option<RetryBudget>,
-    /// If this list is non-empty, requests to this destination should instead be
-    /// split between the destinations in this list.  Each destination should
-    /// receive a portion of the requests proportional to its weight.  If this
-    /// list is empty, requests should be sent to this destination as normal.
+    ///  If this list is non-empty, requests to this destination should instead be
+    ///  split between the destinations in this list.  Each destination should
+    ///  receive a portion of the requests proportional to its weight.  If this
+    ///  list is empty, requests should be sent to this destination as normal.
     #[prost(message, repeated, tag="3")]
     pub dst_overrides: ::prost::alloc::vec::Vec<WeightedDst>,
-    /// If this field is set, it indicates that the target is a known endpoint (and
-    /// not a service address). The values of `fully_qualified_name` and
-    /// `dst_overrides` will be ignored for the purposes of service discovery--
-    /// traffic split and load balancing will be skipped and the single endpoint
-    /// are used.
+    ///  If this field is set, it indicates that the target is a known endpoint (and
+    ///  not a service address). The values of `fully_qualified_name` and
+    ///  `dst_overrides` will be ignored for the purposes of service discovery--
+    ///  traffic split and load balancing will be skipped and the single endpoint
+    ///  are used.
     ///
-    /// No endpoint should be set If the target is unknown.
+    ///  No endpoint should be set If the target is unknown.
     #[prost(message, optional, tag="6")]
     pub endpoint: ::core::option::Option<WeightedAddr>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Route {
-    /// This route contains requests which match this condition.
+    ///  This route contains requests which match this condition.
     #[prost(message, optional, tag="1")]
     pub condition: ::core::option::Option<RequestMatch>,
-    /// A list of response classes for this route.  If a response matches
-    /// more than one ResponseClass, the first match wins.  If a response does not
-    /// match any ResponseClasses, it is considered to be a successful response.
+    ///  A list of response classes for this route.  If a response matches
+    ///  more than one ResponseClass, the first match wins.  If a response does not
+    ///  match any ResponseClasses, it is considered to be a successful response.
     #[prost(message, repeated, tag="2")]
     pub response_classes: ::prost::alloc::vec::Vec<ResponseClass>,
-    /// Metric labels to attach to requests and responses that match this route.
+    ///  Metric labels to attach to requests and responses that match this route.
     #[prost(map="string, string", tag="3")]
     pub metrics_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
-    /// If a route is retryable, any failed requests on that route may be retried
-    /// by the proxy.
+    ///  If a route is retryable, any failed requests on that route may be retried
+    ///  by the proxy.
     #[prost(bool, tag="4")]
     pub is_retryable: bool,
-    /// After this time has elapsed since receiving the initial request, any
-    /// outstanding request will be cancelled, a timeout error response will be
-    /// returned, and no more retries will be attempted.
+    ///  After this time has elapsed since receiving the initial request, any
+    ///  outstanding request will be cancelled, a timeout error response will be
+    ///  returned, and no more retries will be attempted.
     #[prost(message, optional, tag="5")]
     pub timeout: ::core::option::Option<::prost_types::Duration>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RetryBudget {
-    /// The ratio of additional traffic that may be added by retries.  A
-    /// retry_ratio of 0.1 means that 1 retry may be attempted for every 10 regular
-    /// requests.  A retry_ratio of 1.0 means that 1 retry may be attempted for
-    /// every 1 regular request (in other words, total request load may be doubled
-    /// as a result of retries).
+    ///  The ratio of additional traffic that may be added by retries.  A
+    ///  retry_ratio of 0.1 means that 1 retry may be attempted for every 10 regular
+    ///  requests.  A retry_ratio of 1.0 means that 1 retry may be attempted for
+    ///  every 1 regular request (in other words, total request load may be doubled
+    ///  as a result of retries).
     #[prost(float, tag="1")]
     pub retry_ratio: f32,
-    /// The proxy may always attempt this number of retries per second, even if it
-    /// would violate the retry_ratio.  This is to allow retries to happen even
-    /// when the request rate is very low.
+    ///  The proxy may always attempt this number of retries per second, even if it
+    ///  would violate the retry_ratio.  This is to allow retries to happen even
+    ///  when the request rate is very low.
     #[prost(uint32, tag="2")]
     pub min_retries_per_second: u32,
-    /// This duration indicates for how long requests should be considered for the
-    /// purposes of enforcing the retry_ratio.  A higher value considers a larger
-    /// window and therefore allows burstier retries.
+    ///  This duration indicates for how long requests should be considered for the
+    ///  purposes of enforcing the retry_ratio.  A higher value considers a larger
+    ///  window and therefore allows burstier retries.
     #[prost(message, optional, tag="3")]
     pub ttl: ::core::option::Option<::prost_types::Duration>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResponseClass {
-    /// This class contains responses which match this condition.
+    ///  This class contains responses which match this condition.
     #[prost(message, optional, tag="1")]
     pub condition: ::core::option::Option<ResponseMatch>,
-    /// If responses in this class should be considered failures.  This defaults
-    /// to false (success).
+    ///  If responses in this class should be considered failures.  This defaults
+    ///  to false (success).
     #[prost(bool, tag="2")]
     pub is_failure: bool,
 }
@@ -250,14 +250,14 @@ pub mod request_match {
         Not(::prost::alloc::boxed::Box<super::RequestMatch>),
         #[prost(message, tag="4")]
         Path(super::PathMatch),
-        /// TODO: match on arbitrary header
+        ///  TODO: match on arbitrary header
         #[prost(message, tag="5")]
         Method(super::super::http_types::HttpMethod),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PathMatch {
-    /// Match if the request path matches this regex.
+    ///  Match if the request path matches this regex.
     #[prost(string, tag="1")]
     pub regex: ::prost::alloc::string::String,
 }
@@ -281,30 +281,30 @@ pub mod response_match {
         Any(Seq),
         #[prost(message, tag="3")]
         Not(::prost::alloc::boxed::Box<super::ResponseMatch>),
-        /// TODO: match on arbitrary header or trailer
+        ///  TODO: match on arbitrary header or trailer
         #[prost(message, tag="4")]
         Status(super::HttpStatusRange),
     }
 }
-/// If either a minimum or maximum is not specified, the range is considered to
-/// be over a discrete value.
+///  If either a minimum or maximum is not specified, the range is considered to
+///  be over a discrete value.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpStatusRange {
-    /// Minimum matching http status code (inclusive), if specified.
+    ///  Minimum matching http status code (inclusive), if specified.
     #[prost(uint32, tag="1")]
     pub min: u32,
-    /// Maximum matching http status code (inclusive), if specified.
+    ///  Maximum matching http status code (inclusive), if specified.
     #[prost(uint32, tag="2")]
     pub max: u32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WeightedDst {
-    /// This authority will be used as the `path` in a call to the Destination.Get
-    /// rpc.
+    ///  This authority will be used as the `path` in a call to the Destination.Get
+    ///  rpc.
     #[prost(string, tag="1")]
     pub authority: ::prost::alloc::string::String,
-    /// The proportion of requests to send to this destination.  This value is
-    /// relative to other weights in the same dst_overrides list.
+    ///  The proportion of requests to send to this destination.  This value is
+    ///  relative to other weights in the same dst_overrides list.
     #[prost(uint32, tag="2")]
     pub weight: u32,
 }
@@ -312,6 +312,7 @@ pub struct WeightedDst {
 pub mod destination_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct DestinationClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -325,6 +326,10 @@ pub mod destination_client {
     {
         pub fn new(inner: T) -> Self {
             let inner = tonic::client::Grpc::new(inner);
+            Self { inner }
+        }
+        pub fn with_origin(inner: T, origin: Uri) -> Self {
+            let inner = tonic::client::Grpc::with_origin(inner, origin);
             Self { inner }
         }
         pub fn with_interceptor<F>(
@@ -346,19 +351,19 @@ pub mod destination_client {
         {
             DestinationClient::new(InterceptedService::new(inner, interceptor))
         }
-        /// Compress requests with `gzip`.
+        /// Compress requests with the given encoding.
         ///
         /// This requires the server to support it otherwise it might respond with an
         /// error.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.inner = self.inner.send_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.send_compressed(encoding);
             self
         }
-        /// Enable decompressing responses with `gzip`.
+        /// Enable decompressing responses.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.inner = self.inner.accept_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.accept_compressed(encoding);
             self
         }
         /// Given a destination, return all addresses in that destination as a long-
@@ -444,8 +449,8 @@ pub mod destination_server {
     #[derive(Debug)]
     pub struct DestinationServer<T: Destination> {
         inner: _Inner<T>,
-        accept_compression_encodings: (),
-        send_compression_encodings: (),
+        accept_compression_encodings: EnabledCompressionEncodings,
+        send_compression_encodings: EnabledCompressionEncodings,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: Destination> DestinationServer<T> {
@@ -468,6 +473,18 @@ pub mod destination_server {
             F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
+        }
+        /// Enable decompressing requests with the given encoding.
+        #[must_use]
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.accept_compression_encodings.enable(encoding);
+            self
+        }
+        /// Compress responses with the given encoding, if the client supports it.
+        #[must_use]
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.send_compression_encodings.enable(encoding);
+            self
         }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for DestinationServer<T>
@@ -600,5 +617,8 @@ pub mod destination_server {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{:?}", self.0)
         }
+    }
+    impl<T: Destination> tonic::server::NamedService for DestinationServer<T> {
+        const NAME: &'static str = "io.linkerd.proxy.destination.Destination";
     }
 }
