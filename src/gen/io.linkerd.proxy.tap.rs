@@ -1,13 +1,13 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObserveRequest {
-    ///  Limits the number of event keys that will be returned by this tap.
+    /// Limits the number of event keys that will be returned by this tap.
     #[prost(uint32, tag="1")]
     pub limit: u32,
-    ///  Encodes request-matching logic.
+    /// Encodes request-matching logic.
     #[prost(message, optional, tag="2")]
     pub r#match: ::core::option::Option<observe_request::Match>,
-    ///  Conditionally extracts components from requests and responses to include
-    ///  in tap events
+    /// Conditionally extracts components from requests and responses to include
+    /// in tap events
     #[prost(message, optional, tag="3")]
     pub extract: ::core::option::Option<observe_request::Extract>,
 }
@@ -46,14 +46,14 @@ pub mod observe_request {
                 #[prost(uint32, tag="2")]
                 pub mask: u32,
             }
-            ///  If either a minimum or maximum is not specified, the range is
-            ///  considered to be over a discrete value.
+            /// If either a minimum or maximum is not specified, the range is
+            /// considered to be over a discrete value.
             #[derive(Clone, PartialEq, ::prost::Message)]
             pub struct PortRange {
-                ///  Minimum matching port value (inclusive), if specified.
+                /// Minimum matching port value (inclusive), if specified.
                 #[prost(uint32, tag="1")]
                 pub min: u32,
-                ///  Maximum matching port value (inclusive), if specified.
+                /// Maximum matching port value (inclusive), if specified.
                 #[prost(uint32, tag="2")]
                 pub max: u32,
             }
@@ -95,7 +95,7 @@ pub mod observe_request {
                 Method(super::super::super::super::http_types::HttpMethod),
                 #[prost(message, tag="2")]
                 Authority(StringMatch),
-                ///  TODO Header        header    = 4;
+                /// TODO Header        header    = 4;
                 #[prost(message, tag="4")]
                 Path(StringMatch),
             }
@@ -203,10 +203,10 @@ pub mod tap_event {
     pub mod http {
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct StreamId {
-            ///  A randomized base (stable across a process's runtime)
+            /// A randomized base (stable across a process's runtime)
             #[prost(uint32, tag="1")]
             pub base: u32,
-            ///  A stream id unique within the lifetime of `base`.
+            /// A stream id unique within the lifetime of `base`.
             #[prost(uint64, tag="2")]
             pub stream: u64,
         }
