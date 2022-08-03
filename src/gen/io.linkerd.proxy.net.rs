@@ -22,10 +22,10 @@ pub struct IpNetwork {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct IPv6 {
-    ///  hextets 1-4
+    /// hextets 1-4
     #[prost(fixed64, tag="1")]
     pub first: u64,
-    ///  hextets 5-8
+    /// hextets 5-8
     #[prost(fixed64, tag="2")]
     pub last: u64,
 }

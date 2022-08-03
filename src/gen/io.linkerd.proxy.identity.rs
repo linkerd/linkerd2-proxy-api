@@ -2,23 +2,23 @@
 pub struct CertifyRequest {
     #[prost(string, tag="1")]
     pub identity: ::prost::alloc::string::String,
-    ///  Proof of the requester's identity.
+    /// Proof of the requester's identity.
     ///
-    ///  In Kubernetes, for instance, this is the contents of a service account
-    ///  token.
+    /// In Kubernetes, for instance, this is the contents of a service account
+    /// token.
     #[prost(bytes="vec", tag="2")]
     pub token: ::prost::alloc::vec::Vec<u8>,
-    ///  A PEM-encoded x509 Certificate Signing Request.
+    /// A PEM-encoded x509 Certificate Signing Request.
     #[prost(bytes="vec", tag="3")]
     pub certificate_signing_request: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CertifyResponse {
-    ///  A PEM-encoded x509 Certificate.
+    /// A PEM-encoded x509 Certificate.
     #[prost(bytes="vec", tag="1")]
     pub leaf_certificate: ::prost::alloc::vec::Vec<u8>,
-    ///  A list of PEM-encoded x509 Certificates that establish the trust chain
-    ///  between the leaf_certificate and the well-known trust anchors.
+    /// A list of PEM-encoded x509 Certificates that establish the trust chain
+    /// between the leaf_certificate and the well-known trust anchors.
     #[prost(bytes="vec", repeated, tag="2")]
     pub intermediate_certificates: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
     #[prost(message, optional, tag="3")]

@@ -1,5 +1,5 @@
-///  General metadata about a configuration object. Typically references either an
-///  implicit default configuration or a Kubernetes resource.
+/// General metadata about a configuration object. Typically references either an
+/// implicit default configuration or a Kubernetes resource.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Metadata {
     #[prost(oneof="metadata::Kind", tags="1, 2")]
@@ -9,18 +9,18 @@ pub struct Metadata {
 pub mod metadata {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
-        ///  A name describing a default/implicit configuration.
+        /// A name describing a default/implicit configuration.
         ///
-        ///  For example, a policy default name like `all-authenticated` describes an
-        ///  implicit controller-implementedc policy that does not exist as a cluster
-        ///  resource.
+        /// For example, a policy default name like `all-authenticated` describes an
+        /// implicit controller-implementedc policy that does not exist as a cluster
+        /// resource.
         #[prost(string, tag="1")]
         Default(::prost::alloc::string::String),
         #[prost(message, tag="2")]
         Resource(super::Resource),
     }
 }
-///  References a (e.g., Kubernetes) resource.
+/// References a (e.g., Kubernetes) resource.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Resource {
     #[prost(string, tag="1")]
