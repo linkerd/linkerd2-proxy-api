@@ -273,6 +273,7 @@ pub mod grpc_route {
 pub mod inbound_server_policies_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     //// An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
     ////
     //// Proxies are expected to watch policies for each known port. As policies change, proxies update
@@ -295,6 +296,10 @@ pub mod inbound_server_policies_client {
             let inner = tonic::client::Grpc::new(inner);
             Self { inner }
         }
+        pub fn with_origin(inner: T, origin: Uri) -> Self {
+            let inner = tonic::client::Grpc::with_origin(inner, origin);
+            Self { inner }
+        }
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
@@ -314,19 +319,19 @@ pub mod inbound_server_policies_client {
         {
             InboundServerPoliciesClient::new(InterceptedService::new(inner, interceptor))
         }
-        /// Compress requests with `gzip`.
+        /// Compress requests with the given encoding.
         ///
         /// This requires the server to support it otherwise it might respond with an
         /// error.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.inner = self.inner.send_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.send_compressed(encoding);
             self
         }
-        /// Enable decompressing responses with `gzip`.
+        /// Enable decompressing responses.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.inner = self.inner.accept_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.accept_compressed(encoding);
             self
         }
         //// Gets the inbound server policy for a given workload port.
@@ -408,8 +413,8 @@ pub mod inbound_server_policies_server {
     #[derive(Debug)]
     pub struct InboundServerPoliciesServer<T: InboundServerPolicies> {
         inner: _Inner<T>,
-        accept_compression_encodings: (),
-        send_compression_encodings: (),
+        accept_compression_encodings: EnabledCompressionEncodings,
+        send_compression_encodings: EnabledCompressionEncodings,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: InboundServerPolicies> InboundServerPoliciesServer<T> {
@@ -432,6 +437,18 @@ pub mod inbound_server_policies_server {
             F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
+        }
+        /// Enable decompressing requests with the given encoding.
+        #[must_use]
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.accept_compression_encodings.enable(encoding);
+            self
+        }
+        /// Compress responses with the given encoding, if the client supports it.
+        #[must_use]
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.send_compression_encodings.enable(encoding);
+            self
         }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>>
@@ -563,5 +580,9 @@ pub mod inbound_server_policies_server {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{:?}", self.0)
         }
+    }
+    impl<T: InboundServerPolicies> tonic::server::NamedService
+    for InboundServerPoliciesServer<T> {
+        const NAME: &'static str = "io.linkerd.proxy.inbound.InboundServerPolicies";
     }
 }
