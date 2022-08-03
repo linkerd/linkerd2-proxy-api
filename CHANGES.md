@@ -1,5 +1,9 @@
 # `linkerd2-proxy-api` changes
 
+## v0.7.0
+
+* Rust: Update `tonic` to v0.8 and `prost` to v0.11
+
 ## v0.6.0
 
 * Add HTTP and gRPC Route types
