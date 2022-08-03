@@ -1,31 +1,31 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PortSpec {
-    ///  Identifies a proxy workload (e.g., pod name).
+    /// Identifies a proxy workload (e.g., pod name).
     #[prost(string, tag="1")]
     pub workload: ::prost::alloc::string::String,
-    ///  An inbound port on _workload_.
+    /// An inbound port on _workload_.
     #[prost(uint32, tag="2")]
     pub port: u32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Server {
-    ///  If set, indicates how the proxy should proxy connections on the specified
-    ///  port.
+    /// If set, indicates how the proxy should proxy connections on the specified
+    /// port.
     #[prost(message, optional, tag="1")]
     pub protocol: ::core::option::Option<ProxyProtocol>,
-    ///  Indicates the IP addresses on which the proxy may receive connections.
-    ///  Connections targetting other IP addresses will be dropped.
+    /// Indicates the IP addresses on which the proxy may receive connections.
+    /// Connections targetting other IP addresses will be dropped.
     #[prost(message, repeated, tag="2")]
     pub server_ips: ::prost::alloc::vec::Vec<super::net::IpAddress>,
-    ///  Configures a proxy to allow connections from the specified clients.
+    /// Configures a proxy to allow connections from the specified clients.
     ///
-    ///  If unset, no connections are permitted.
+    /// If unset, no connections are permitted.
     #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
-    ///  Descriptive labels to be added to metrics, etc.
+    /// Descriptive labels to be added to metrics, etc.
     ///
-    ///  A control plane SHOULD return the same keys in all policies. That is, we do
-    ///  NOT want to return arbitrary pod labels in this field.
+    /// A control plane SHOULD return the same keys in all policies. That is, we do
+    /// NOT want to return arbitrary pod labels in this field.
     #[prost(map="string, string", tag="4")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
@@ -40,8 +40,8 @@ pub mod proxy_protocol {
     pub struct Detect {
         #[prost(message, optional, tag="1")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
-        ///  If the protocol detected as HTTP, a list of HTTP routes that should be
-        ///  matched.
+        /// If the protocol detected as HTTP, a list of HTTP routes that should be
+        /// matched.
         #[prost(message, repeated, tag="3")]
         pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
@@ -60,7 +60,7 @@ pub mod proxy_protocol {
         #[prost(message, repeated, tag="2")]
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
     }
-    ///  TODO: opaque TLS settings (versions, algorithms, SNI)
+    /// TODO: opaque TLS settings (versions, algorithms, SNI)
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Opaque {
     }
@@ -85,32 +85,32 @@ pub mod proxy_protocol {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Authz {
-    ///  Limits this authorization to client addresses in the provided networks.
+    /// Limits this authorization to client addresses in the provided networks.
     ///
-    ///  Must have at least one network, otherwise the authorization must be
-    ///  ignored. An authorization matches all clients by including an explicit
-    ///  match on, i.e., `[0.0.0.0/0, 0::/0]``.
+    /// Must have at least one network, otherwise the authorization must be
+    /// ignored. An authorization matches all clients by including an explicit
+    /// match on, i.e., `[0.0.0.0/0, 0::/0]``.
     #[prost(message, repeated, tag="1")]
     pub networks: ::prost::alloc::vec::Vec<Network>,
-    ///  Must be set.
+    /// Must be set.
     #[prost(message, optional, tag="2")]
     pub authentication: ::core::option::Option<Authn>,
-    ///  Descriptive labels to be added to metrics, etc.
+    /// Descriptive labels to be added to metrics, etc.
     ///
-    ///  A control plane SHOULD return the same keys in all authorizations. That is,
-    ///  we do NOT want to return arbitrary pod labels in this field.
+    /// A control plane SHOULD return the same keys in all authorizations. That is,
+    /// we do NOT want to return arbitrary pod labels in this field.
     ///
-    ///  `labels` should be considered deprecated. `metadata` is preferred. However,
-    ///  controllers should continue to set `labels` for compatibility with older
-    ///  proxies.
+    /// `labels` should be considered deprecated. `metadata` is preferred. However,
+    /// controllers should continue to set `labels` for compatibility with older
+    /// proxies.
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
-    ///  If set, describes an Authorization configuration. Replaces the free-from
-    ///  `labels` field.
+    /// If set, describes an Authorization configuration. Replaces the free-from
+    /// `labels` field.
     #[prost(message, optional, tag="4")]
     pub metadata: ::core::option::Option<super::meta::Metadata>,
 }
-///  Describes a network of authorized clients.
+/// Describes a network of authorized clients.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Network {
     #[prost(message, optional, tag="1")]
@@ -125,8 +125,8 @@ pub struct Authn {
 }
 /// Nested message and enum types in `Authn`.
 pub mod authn {
-    //  TODO(ver) identify authentication resources?
-    //  io.linkerd.proxy.meta.Metadata metadata = 3;
+    // TODO(ver) identify authentication resources?
+    // io.linkerd.proxy.meta.Metadata metadata = 3;
 
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct PermitUnauthenticated {
@@ -140,22 +140,22 @@ pub mod authn {
     pub mod permit_mesh_tls {
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct PermitClientIdentities {
-            ///  A list of literal identities.
+            /// A list of literal identities.
             #[prost(message, repeated, tag="1")]
             pub identities: ::prost::alloc::vec::Vec<super::super::Identity>,
-            ///  A list of identity suffixes.
+            /// A list of identity suffixes.
             ///
-            ///  If this contains an empty suffix, all identities are matched.
+            /// If this contains an empty suffix, all identities are matched.
             #[prost(message, repeated, tag="2")]
             pub suffixes: ::prost::alloc::vec::Vec<super::super::IdentitySuffix>,
         }
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Clients {
-            ///  Indicates that client identities are not required.
+            /// Indicates that client identities are not required.
             #[prost(message, tag="1")]
             Unauthenticated(super::PermitUnauthenticated),
-            ///  Indicates that mutually-authenticated connections are permitted from
-            ///  clients with matching identities.
+            /// Indicates that mutually-authenticated connections are permitted from
+            /// clients with matching identities.
             #[prost(message, tag="2")]
             Identities(PermitClientIdentities),
         }
@@ -164,7 +164,7 @@ pub mod authn {
     pub enum Permit {
         #[prost(message, tag="1")]
         Unauthenticated(PermitUnauthenticated),
-        ///  If set, requires that the connection is transported over mesh TLS.
+        /// If set, requires that the connection is transported over mesh TLS.
         #[prost(message, tag="2")]
         MeshTls(PermitMeshTls),
     }
@@ -174,30 +174,30 @@ pub struct Identity {
     #[prost(string, tag="1")]
     pub name: ::prost::alloc::string::String,
 }
-///  Encodes a DNS-like name suffix as sequence of parts.
+/// Encodes a DNS-like name suffix as sequence of parts.
 ///
-///  An empty list is equivalent to `.` (matching all names); the list `["foo",
-///  "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
+/// An empty list is equivalent to `.` (matching all names); the list `["foo",
+/// "bar"]` is equivalent to "foo.bar." (matching `*.foo.bar`), etc.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct IdentitySuffix {
     #[prost(string, repeated, tag="1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-///  Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
+/// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
-///  \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
+/// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
     #[prost(message, optional, tag="1")]
     pub metadata: ::core::option::Option<super::meta::Metadata>,
-    ///  If empty, the host value is ignored.
+    /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    ///  Extends the list of authorizations on the `Server` with authorizations
-    ///  specific to this route.
+    /// Extends the list of authorizations on the `Server` with authorizations
+    /// specific to this route.
     #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
-    ///  Must have at least one rule.
+    /// Must have at least one rule.
     #[prost(message, repeated, tag="4")]
     pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
 }
@@ -228,19 +228,19 @@ pub mod http_route {
         }
     }
 }
-///  Inbound-specific gRPC route configuration.
+/// Inbound-specific gRPC route configuration.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GrpcRoute {
     #[prost(message, optional, tag="1")]
     pub metadata: ::core::option::Option<super::meta::Metadata>,
-    ///  If empty, the host value is ignored.
+    /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    ///  The server MUST return at least one authorization, otherwise all requests
-    ///  to this route will fail with an unauthorized response.
+    /// The server MUST return at least one authorization, otherwise all requests
+    /// to this route will fail with an unauthorized response.
     #[prost(message, repeated, tag="3")]
     pub authorizations: ::prost::alloc::vec::Vec<Authz>,
-    ///  Must have at least one rule.
+    /// Must have at least one rule.
     #[prost(message, repeated, tag="4")]
     pub rules: ::prost::alloc::vec::Vec<grpc_route::Rule>,
 }
