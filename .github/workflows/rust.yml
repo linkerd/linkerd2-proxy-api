@@ -22,25 +22,17 @@ jobs:
   gen-check:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container:
-      image: docker://rust:1.60
+    container: docker://ghcr.io/linkerd/dev:v22-rust
     steps:
-      - uses: olix0r/cargo-action-fmt@ed3530f0739c46ffa0dd983f8746b8c4a3d0a01c
-      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: ./.github/actions/install-protoc
       - run: just rs-fetch
       - run: just rs-gen-check
 
   rust-clippy:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container:
-      image: docker://rust:1.60
+    container: docker://ghcr.io/linkerd/dev:v22-rust
     steps:
-      - run: rustup component add clippy
-      - uses: olix0r/cargo-action-fmt@ed3530f0739c46ffa0dd983f8746b8c4a3d0a01c
-      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - run: just rs-fetch
       - run: just rs-clippy
@@ -48,11 +40,8 @@ jobs:
   rust-docs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container:
-      image: docker://rust:1.60
+    container: docker://ghcr.io/linkerd/dev:v22-rust
     steps:
-      - uses: olix0r/cargo-action-fmt@ed3530f0739c46ffa0dd983f8746b8c4a3d0a01c
-      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - run: just rs-fetch
       - run: just rs-docs
@@ -60,11 +49,8 @@ jobs:
   rust-test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container:
-      image: docker://rust:1.60
+    container: docker://ghcr.io/linkerd/dev:v22-rust
     steps:
-      - uses: olix0r/cargo-action-fmt@ed3530f0739c46ffa0dd983f8746b8c4a3d0a01c
-      - uses: extractions/setup-just@aa5d15c144db4585980a44ebfdd2cf337c4f14cb
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - run: just rs-fetch
       - run: just rs-test-build
