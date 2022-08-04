@@ -30,7 +30,7 @@ jobs:
             echo ::set-output name=publish::true
             echo ::set-output name=version::"${ref##refs/tags/release/}"
           else
-            #sha=${{ github.sha }}
+            sha=${{ github.sha }}
             echo ::set-output name=version::"test-${sha:0:7}"
           fi
     outputs:
