@@ -86,5 +86,3 @@ Issues may be opened in the [**linkerd2** repository][new-issue].
 [rs-crate-url]: https://crates.io/crates/linkerd2-proxy-api
 [rs-docs-badge]: https://docs.rs/linkerd2-proxy-api/badge.svg
 [rs-docs-url]: https://docs.rs/linkerd2-proxy-api
-[rs-docs-url]: https://img.shields.io/crates/l/linkerd2-proxy-api
-[rs-lic-badge]: https://img.shields.io/crates/l/linkerd2-proxy-api

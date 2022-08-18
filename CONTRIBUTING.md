@@ -100,8 +100,5 @@ Describe the testing you've done to validate your change.  Performance-related
 changes should include before- and after- benchmark results.
 
 [discourse]: https://discourse.linkerd.io/c/conduit
-[governance]: GOVERNANCE.md
 [issue]: https://github.com/linkerd/linkerd2/issues/new
-[maintainers]: MAINTAINERS.md
-[members]: https://github.com/orgs/linkerd/people
 [slack]: http://slack.linkerd.io/

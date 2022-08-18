@@ -4,7 +4,12 @@
 ## General recipes
 ##
 
-default: rs-fetch rs-deny gen rs-check-fmt rs-clippy rs-docs rs-test
+default: rs-fetch rs-deny gen lint rs-test
+
+lint: md-lint gen-check rs-clippy rs-docs
+
+md-lint:
+    markdownlint-cli2 '**/*.md' '!**/node_modules' '!**/target'
 
 # Generate Go & Rust bindings from protobuf.
 gen: rs-gen go-gen
