@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.client_policy;
+
+import "destination.proto";
+import "google/protobuf/duration.proto";
+
+service Destination {
+  // Given a destination, return all Endpoints for that destination as a long-
+  // running stream of updates.
+  rpc GetEndpoints(destination.GetDestination) returns(stream destination.Update) {}
+
+  // Given a destination, return the ClientPolicy that is attached to that
+  // destination and send an update whenever it changes.
+  rpc GetClientPolicy(destination.GetDestination) returns(stream ClientPolicy) {}
+}
+
+message ClientPolicy {
+  // The fully-qualifed service name if one exists.
+  string fully_qualifed_name = 1;
+
+  // A list of routes, each with a RequestMatch. If a request matches more
+  // than one route, the first match wins.
+  repeated destination.Route routes = 2;
+
+  // A list of filters that should be considered when sending traffic to the
+  // destination.
+  repeated Filter filters = 3;
+
+  // The following fields are part of destination.DestinationProfile. Do we
+  // need them here as well — and as part of the prototype?
+  //
+  // Indicates that connections to this destination should be handled as
+  // opaque TCP streams.
+  // bool opaque_protocol =
+  //
+  // If this list is non-empty, requests to this destination should instead be
+  // split between the destinations in this list.
+  //
+  // PROTOTYPE: This should be handled by filters.traffic_split.
+  //
+  // repeated destination.WeightedDst dst_overrides =
+  //
+  // If this field is set, it indicates that the target is a known endpoint
+  // and not a service address.
+  // destination.WeightedAddr endpoint =
+}
+
+message Filter {
+  oneof filter {
+    // The timeout that should be used for requests.
+    google.protobuf.Duration timeout = 1;
+
+    // The load a proxy can generate as retries. Failed requests on retryable
+    // routes will not be retried if there is no available budget
+    destination.RetryBudget retry_budget = 2;
+
+    // The TrafficSplit that should be used for requests.
+    TrafficSplit traffic_split = 3;
+
+    // The ExtensionReference that should be used for requests.
+    ExtensionReference extension_reference = 4;
+  }
+}
+
+// TrafficSplit allows clients to dynamically shift arbitrary portions of
+// traffic for one destination to a list of other destinations.
+message TrafficSplit {
+  // The list of destinations that each receive a portion of requests
+  // proportional to their weight.
+  repeated destination.WeightedDst destination_overrides = 1;
+}
+
+// ExtensionReference allows clients to use an arbitrary extension for
+// specifying certain traffic behaviors that should be used.
+message ExtensionReference {
+  string group = 1;
+  string kind = 2;
+  string name = 3;
+}
