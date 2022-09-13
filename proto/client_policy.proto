@@ -2,79 +2,110 @@ syntax = "proto3";
 
 package io.linkerd.proxy.client_policy;
 
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/client-policy";
+
 import "destination.proto";
 import "google/protobuf/duration.proto";
+import "meta.proto";
+import "http_route.proto";
 
-service Destination {
-  // Given a destination, return all Endpoints for that destination as a long-
-  // running stream of updates.
-  rpc GetEndpoints(destination.GetDestination) returns(stream destination.Update) {}
-
+service ClientPolicies {
   // Given a destination, return the ClientPolicy that is attached to that
   // destination and send an update whenever it changes.
   rpc GetClientPolicy(destination.GetDestination) returns(stream ClientPolicy) {}
 }
 
 message ClientPolicy {
-  // The fully-qualifed service name if one exists.
-  string fully_qualifed_name = 1;
+  // The fully-qualified service name, if one exists.
+  //
+  // When resolving (especially by IP), this field provides the fully-qualified
+  // name of the resolved service, if one exists. This field does NOT include
+  // any port information. E.g. a lookup for 10.2.3.4:8080 might have a name
+  // like `foo.bar.svc.cluster.local`.
+  //
+  // Implementations MAY provide names for non-service IP-lookups (e.g., pod or
+  // node dns names), but this is not required.
+  //
+  // If the lookup does not refer to a known named entity, this field MUST be
+  // left empty.
+  string fully_qualified_name = 1;
 
-  // A list of routes, each with a RequestMatch. If a request matches more
-  // than one route, the first match wins.
-  repeated destination.Route routes = 2;
+  ProxyProtocol protocol = 2;
 
   // A list of filters that should be considered when sending traffic to the
   // destination.
   repeated Filter filters = 3;
 
-  // The following fields are part of destination.DestinationProfile. Do we
-  // need them here as well — and as part of the prototype?
+  // If this field is set, it indicates that the target is a known endpoint (and
+  // not a service address). The values of `fully_qualified_name` and
+  // `dst_overrides` will be ignored for the purposes of service discovery--
+  // traffic split and load balancing will be skipped and the single endpoint
+  // are used.
   //
-  // Indicates that connections to this destination should be handled as
-  // opaque TCP streams.
-  // bool opaque_protocol =
-  //
-  // If this list is non-empty, requests to this destination should instead be
-  // split between the destinations in this list.
-  //
-  // PROTOTYPE: This should be handled by filters.traffic_split.
-  //
-  // repeated destination.WeightedDst dst_overrides =
-  //
-  // If this field is set, it indicates that the target is a known endpoint
-  // and not a service address.
-  // destination.WeightedAddr endpoint =
+  // No endpoint should be set If the target is unknown.
+  destination.WeightedAddr endpoint = 4;
+}
+
+message ProxyProtocol {
+  oneof kind {
+    Detect detect = 1;
+    Opaque opaque = 2;
+    Tls tls = 3;
+    Http1 http1 = 4;
+    Http2 http2 = 5;
+  }
+
+  message Detect {
+    google.protobuf.Duration timeout = 1;
+
+    // If the protocol detected as HTTP, a list of HTTP routes that should be
+    // matched.
+    repeated HttpRoute http_routes = 3;
+
+    // Never implemented.
+    reserved 2;
+  }
+
+  message Http1 {
+    repeated HttpRoute routes = 2;
+
+    // Never implemented.
+    reserved 1;
+  }
+
+  message Http2 {
+    repeated HttpRoute routes = 2;
+
+    // Never implemented.
+    reserved 1;
+  }
+
+  message Opaque {
+    // TODO: opaque TLS settings (versions, algorithms, SNI)
+  }
+
+  message Tls {}
+}
+
+
+message HttpRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+
+  message Rule {
+    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
+    repeated Filter filters = 2;
+  }
 }
 
 message Filter {
   oneof filter {
     // The timeout that should be used for requests.
     google.protobuf.Duration timeout = 1;
-
-    // The load a proxy can generate as retries. Failed requests on retryable
-    // routes will not be retried if there is no available budget
-    destination.RetryBudget retry_budget = 2;
-
-    // The TrafficSplit that should be used for requests.
-    TrafficSplit traffic_split = 3;
-
-    // The ExtensionReference that should be used for requests.
-    ExtensionReference extension_reference = 4;
   }
-}
-
-// TrafficSplit allows clients to dynamically shift arbitrary portions of
-// traffic for one destination to a list of other destinations.
-message TrafficSplit {
-  // The list of destinations that each receive a portion of requests
-  // proportional to their weight.
-  repeated destination.WeightedDst destination_overrides = 1;
-}
-
-// ExtensionReference allows clients to use an arbitrary extension for
-// specifying certain traffic behaviors that should be used.
-message ExtensionReference {
-  string group = 1;
-  string kind = 2;
-  string name = 3;
 }

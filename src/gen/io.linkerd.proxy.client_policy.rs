@@ -1,20 +1,106 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientPolicy {
-    /// The fully-qualifed service name if one exists.
+    /// The fully-qualified service name, if one exists.
+    ///
+    /// When resolving (especially by IP), this field provides the fully-qualified
+    /// name of the resolved service, if one exists. This field does NOT include
+    /// any port information. E.g. a lookup for 10.2.3.4:8080 might have a name
+    /// like `foo.bar.svc.cluster.local`.
+    ///
+    /// Implementations MAY provide names for non-service IP-lookups (e.g., pod or
+    /// node dns names), but this is not required.
+    ///
+    /// If the lookup does not refer to a known named entity, this field MUST be
+    /// left empty.
     #[prost(string, tag="1")]
-    pub fully_qualifed_name: ::prost::alloc::string::String,
-    /// A list of routes, each with a RequestMatch. If a request matches more
-    /// than one route, the first match wins.
-    #[prost(message, repeated, tag="2")]
-    pub routes: ::prost::alloc::vec::Vec<super::destination::Route>,
+    pub fully_qualified_name: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub protocol: ::core::option::Option<ProxyProtocol>,
     /// A list of filters that should be considered when sending traffic to the
     /// destination.
     #[prost(message, repeated, tag="3")]
     pub filters: ::prost::alloc::vec::Vec<Filter>,
+    /// If this field is set, it indicates that the target is a known endpoint (and
+    /// not a service address). The values of `fully_qualified_name` and
+    /// `dst_overrides` will be ignored for the purposes of service discovery--
+    /// traffic split and load balancing will be skipped and the single endpoint
+    /// are used.
+    ///
+    /// No endpoint should be set If the target is unknown.
+    #[prost(message, optional, tag="4")]
+    pub endpoint: ::core::option::Option<super::destination::WeightedAddr>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ProxyProtocol {
+    #[prost(oneof="proxy_protocol::Kind", tags="1, 2, 3, 4, 5")]
+    pub kind: ::core::option::Option<proxy_protocol::Kind>,
+}
+/// Nested message and enum types in `ProxyProtocol`.
+pub mod proxy_protocol {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Detect {
+        #[prost(message, optional, tag="1")]
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
+        /// If the protocol detected as HTTP, a list of HTTP routes that should be
+        /// matched.
+        #[prost(message, repeated, tag="3")]
+        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Http1 {
+        #[prost(message, repeated, tag="2")]
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Http2 {
+        #[prost(message, repeated, tag="2")]
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+    }
+    /// TODO: opaque TLS settings (versions, algorithms, SNI)
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Opaque {
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Tls {
+    }
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag="1")]
+        Detect(Detect),
+        #[prost(message, tag="2")]
+        Opaque(Opaque),
+        #[prost(message, tag="3")]
+        Tls(Tls),
+        #[prost(message, tag="4")]
+        Http1(Http1),
+        #[prost(message, tag="5")]
+        Http2(Http2),
+    }
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct HttpRoute {
+    #[prost(message, optional, tag="1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// If empty, the host value is ignored.
+    #[prost(message, repeated, tag="2")]
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag="3")]
+    pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
+}
+/// Nested message and enum types in `HttpRoute`.
+pub mod http_route {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rule {
+        #[prost(message, repeated, tag="1")]
+        pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
+        #[prost(message, repeated, tag="2")]
+        pub filters: ::prost::alloc::vec::Vec<super::Filter>,
+    }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Filter {
-    #[prost(oneof="filter::Filter", tags="1, 2, 3, 4")]
+    #[prost(oneof="filter::Filter", tags="1")]
     pub filter: ::core::option::Option<filter::Filter>,
 }
 /// Nested message and enum types in `Filter`.
@@ -24,48 +110,18 @@ pub mod filter {
         /// The timeout that should be used for requests.
         #[prost(message, tag="1")]
         Timeout(::prost_types::Duration),
-        /// The load a proxy can generate as retries. Failed requests on retryable
-        /// routes will not be retried if there is no available budget
-        #[prost(message, tag="2")]
-        RetryBudget(super::super::destination::RetryBudget),
-        /// The TrafficSplit that should be used for requests.
-        #[prost(message, tag="3")]
-        TrafficSplit(super::TrafficSplit),
-        /// The ExtensionReference that should be used for requests.
-        #[prost(message, tag="4")]
-        ExtensionReference(super::ExtensionReference),
     }
 }
-/// TrafficSplit allows clients to dynamically shift arbitrary portions of
-/// traffic for one destination to a list of other destinations.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TrafficSplit {
-    /// The list of destinations that each receive a portion of requests
-    /// proportional to their weight.
-    #[prost(message, repeated, tag="1")]
-    pub destination_overrides: ::prost::alloc::vec::Vec<super::destination::WeightedDst>,
-}
-/// ExtensionReference allows clients to use an arbitrary extension for
-/// specifying certain traffic behaviors that should be used.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ExtensionReference {
-    #[prost(string, tag="1")]
-    pub group: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub kind: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub name: ::prost::alloc::string::String,
-}
 /// Generated client implementations.
-pub mod destination_client {
+pub mod client_policies_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct DestinationClient<T> {
+    pub struct ClientPoliciesClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl<T> DestinationClient<T>
+    impl<T> ClientPoliciesClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -83,7 +139,7 @@ pub mod destination_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> DestinationClient<InterceptedService<T, F>>
+        ) -> ClientPoliciesClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -97,7 +153,7 @@ pub mod destination_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            DestinationClient::new(InterceptedService::new(inner, interceptor))
+            ClientPoliciesClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -113,30 +169,6 @@ pub mod destination_client {
         pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
             self.inner = self.inner.accept_compressed(encoding);
             self
-        }
-        /// Given a destination, return all Endpoints for that destination as a long-
-        /// running stream of updates.
-        pub async fn get_endpoints(
-            &mut self,
-            request: impl tonic::IntoRequest<super::super::destination::GetDestination>,
-        ) -> Result<
-            tonic::Response<tonic::codec::Streaming<super::super::destination::Update>>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/io.linkerd.proxy.client_policy.Destination/GetEndpoints",
-            );
-            self.inner.server_streaming(request.into_request(), path, codec).await
         }
         /// Given a destination, return the ClientPolicy that is attached to that
         /// destination and send an update whenever it changes.
@@ -158,31 +190,19 @@ pub mod destination_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/io.linkerd.proxy.client_policy.Destination/GetClientPolicy",
+                "/io.linkerd.proxy.client_policy.ClientPolicies/GetClientPolicy",
             );
             self.inner.server_streaming(request.into_request(), path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod destination_server {
+pub mod client_policies_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with DestinationServer.
+    ///Generated trait containing gRPC methods that should be implemented for use with ClientPoliciesServer.
     #[async_trait]
-    pub trait Destination: Send + Sync + 'static {
-        ///Server streaming response type for the GetEndpoints method.
-        type GetEndpointsStream: futures_core::Stream<
-                Item = Result<super::super::destination::Update, tonic::Status>,
-            >
-            + Send
-            + 'static;
-        /// Given a destination, return all Endpoints for that destination as a long-
-        /// running stream of updates.
-        async fn get_endpoints(
-            &self,
-            request: tonic::Request<super::super::destination::GetDestination>,
-        ) -> Result<tonic::Response<Self::GetEndpointsStream>, tonic::Status>;
+    pub trait ClientPolicies: Send + Sync + 'static {
         ///Server streaming response type for the GetClientPolicy method.
         type GetClientPolicyStream: futures_core::Stream<
                 Item = Result<super::ClientPolicy, tonic::Status>,
@@ -197,13 +217,13 @@ pub mod destination_server {
         ) -> Result<tonic::Response<Self::GetClientPolicyStream>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct DestinationServer<T: Destination> {
+    pub struct ClientPoliciesServer<T: ClientPolicies> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: Destination> DestinationServer<T> {
+    impl<T: ClientPolicies> ClientPoliciesServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -237,9 +257,9 @@ pub mod destination_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for DestinationServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for ClientPoliciesServer<T>
     where
-        T: Destination,
+        T: ClientPolicies,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -255,55 +275,11 @@ pub mod destination_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/io.linkerd.proxy.client_policy.Destination/GetEndpoints" => {
+                "/io.linkerd.proxy.client_policy.ClientPolicies/GetClientPolicy" => {
                     #[allow(non_camel_case_types)]
-                    struct GetEndpointsSvc<T: Destination>(pub Arc<T>);
+                    struct GetClientPolicySvc<T: ClientPolicies>(pub Arc<T>);
                     impl<
-                        T: Destination,
-                    > tonic::server::ServerStreamingService<
-                        super::super::destination::GetDestination,
-                    > for GetEndpointsSvc<T> {
-                        type Response = super::super::destination::Update;
-                        type ResponseStream = T::GetEndpointsStream;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::ResponseStream>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<
-                                super::super::destination::GetDestination,
-                            >,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move {
-                                (*inner).get_endpoints(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetEndpointsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
-                        let res = grpc.server_streaming(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/io.linkerd.proxy.client_policy.Destination/GetClientPolicy" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetClientPolicySvc<T: Destination>(pub Arc<T>);
-                    impl<
-                        T: Destination,
+                        T: ClientPolicies,
                     > tonic::server::ServerStreamingService<
                         super::super::destination::GetDestination,
                     > for GetClientPolicySvc<T> {
@@ -358,7 +334,7 @@ pub mod destination_server {
             }
         }
     }
-    impl<T: Destination> Clone for DestinationServer<T> {
+    impl<T: ClientPolicies> Clone for ClientPoliciesServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -368,7 +344,7 @@ pub mod destination_server {
             }
         }
     }
-    impl<T: Destination> Clone for _Inner<T> {
+    impl<T: ClientPolicies> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone())
         }
@@ -378,7 +354,7 @@ pub mod destination_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: Destination> tonic::server::NamedService for DestinationServer<T> {
-        const NAME: &'static str = "io.linkerd.proxy.client_policy.Destination";
+    impl<T: ClientPolicies> tonic::server::NamedService for ClientPoliciesServer<T> {
+        const NAME: &'static str = "io.linkerd.proxy.client_policy.ClientPolicies";
     }
 }
