@@ -7,6 +7,11 @@ pub mod destination {
     include!("gen/io.linkerd.proxy.destination.rs");
 }
 
+#[cfg(feature = "client-policy")]
+pub mod client_policy {
+    include!("gen/io.linkerd.proxy.client_proxy.rs");
+}
+
 #[cfg(feature = "grpc-route")]
 pub mod grpc_route {
     include!("gen/io.linkerd.proxy.grpc_route.rs");
