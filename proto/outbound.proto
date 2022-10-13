@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.outbound;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/outbound";
+
+import "google/protobuf/duration.proto";
+import "net.proto";
+import "destination.proto";
+import "inbound.proto";
+
+service OutboundPolicies {
+  rpc Get(TargetSpec) returns (Service) {}
+
+  rpc Watch(TargetSpec) returns (stream Service) {}
+}
+
+message TargetSpec {
+  // Identifies the source proxy workload (e.g., pod name).
+  string workload = 1;
+
+  // Target address
+  io.linkerd.proxy.net.IPAddress address = 2;
+
+  // Target port
+  uint32 port = 3;
+}
+
+message Service {
+        ProxyProtocol protocol = 1;
+
+        io.linkerd.proxy.destination.RetryBudget retry_budget = 2;
+
+        // Use these backends if no routes match or if the matching route has
+        // no backends defined.
+        repeated io.linkerd.proxy.destination.WeightedDst backends = 3;
+}
+
+message ProxyProtocol {
+    oneof kind {
+      Detect detect = 1;
+      Opaque opaque = 2;
+      Tls tls = 3;
+      Http1 http1 = 4;
+      Http2 http2 = 5;
+    }
+  
+    message Detect {
+      google.protobuf.Duration timeout = 1;
+  
+      // If the protocol detected as HTTP, a list of HTTP routes that should be
+      // matched.
+      repeated HttpRoute http_routes = 2;
+    }
+  
+    message Http1 {
+      repeated HttpRoute routes = 1;
+    }
+  
+    message Http2 {
+      repeated HttpRoute routes = 1;
+    }
+  
+    message Opaque {
+      // TODO: opaque TLS settings (versions, algorithms, SNI)
+      repeated io.linkerd.proxy.destination.WeightedDst backends = 1;
+    }
+  
+    message Tls {
+      repeated io.linkerd.proxy.destination.WeightedDst backends = 1;
+    }
+  }
+
+message HttpRoute {
+    io.linkerd.proxy.inbound.HttpRoute route = 1;
+    repeated io.linkerd.proxy.destination.ResponseClass response_classes = 2;
+    // Metric labels to attach to requests and responses that match this route.
+    map<string, string> metrics_labels = 3;
+    // If a route is retryable, any failed requests on that route may be retried
+    // by the proxy.
+    bool is_retryable = 4;
+    // After this time has elapsed since receiving the initial request, any
+    // outstanding request will be cancelled, a timeout error response will be
+    // returned, and no more retries will be attempted.
+    google.protobuf.Duration timeout = 5;
+}

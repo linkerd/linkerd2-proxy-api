@@ -9,6 +9,7 @@ import "grpc_route.proto";
 import "http_route.proto";
 import "meta.proto";
 import "net.proto";
+import "destination.proto";
 
 /// An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
 ///
@@ -197,6 +198,7 @@ message HttpRoute {
   message Rule {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
+    repeated io.linkerd.proxy.destination.WeightedDst backends = 3;
   }
 
   message Filter {
