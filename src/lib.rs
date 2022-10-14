@@ -1,5 +1,4 @@
 #![deny(warnings, rust_2018_idioms)]
-#![allow(clippy::derive_partial_eq_without_eq)]
 #![forbid(unsafe_code)]
 
 #[cfg(feature = "destination")]

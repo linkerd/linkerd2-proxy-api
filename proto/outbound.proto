@@ -7,7 +7,8 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/outbound";
 import "google/protobuf/duration.proto";
 import "net.proto";
 import "destination.proto";
-import "inbound.proto";
+import "meta.proto";
+import "http_route.proto";
 
 service OutboundPolicies {
   rpc Get(TargetSpec) returns (Service) {}
@@ -31,9 +32,9 @@ message Service {
 
         io.linkerd.proxy.destination.RetryBudget retry_budget = 2;
 
-        // Use these backends if no routes match or if the matching route has
-        // no backends defined.
-        repeated io.linkerd.proxy.destination.WeightedDst backends = 3;
+        // Backends for this service. Can be overridden by backends specified
+        // in a matching route.
+        repeated Backend backends = 3;
 }
 
 message ProxyProtocol {
@@ -63,24 +64,32 @@ message ProxyProtocol {
   
     message Opaque {
       // TODO: opaque TLS settings (versions, algorithms, SNI)
-      repeated io.linkerd.proxy.destination.WeightedDst backends = 1;
     }
   
-    message Tls {
-      repeated io.linkerd.proxy.destination.WeightedDst backends = 1;
-    }
+    message Tls {}
   }
 
+// Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
+//
+// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
 message HttpRoute {
-    io.linkerd.proxy.inbound.HttpRoute route = 1;
-    repeated io.linkerd.proxy.destination.ResponseClass response_classes = 2;
-    // Metric labels to attach to requests and responses that match this route.
-    map<string, string> metrics_labels = 3;
-    // If a route is retryable, any failed requests on that route may be retried
-    // by the proxy.
-    bool is_retryable = 4;
-    // After this time has elapsed since receiving the initial request, any
-    // outstanding request will be cancelled, a timeout error response will be
-    // returned, and no more retries will be attempted.
-    google.protobuf.Duration timeout = 5;
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // Must have at least one rule.
+  repeated Rule rules = 4;
+
+  message Rule {
+    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
+    repeated Backend backends = 3;
+  }
+}
+
+message Backend {
+  oneof backend {
+    io.linkerd.proxy.destination.WeightedDst dst = 1;
+    io.linkerd.proxy.destination.WeightedAddr endpoint = 2;
+  }
 }
