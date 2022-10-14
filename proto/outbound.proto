@@ -87,15 +87,14 @@ message HttpRoute {
   }
 
   repeated io.linkerd.proxy.destination.ResponseClass response_classes = 4;
-  // Metric labels to attach to requests and responses that match this route.
-  map<string, string> metrics_labels = 5;
+
   // If a route is retryable, any failed requests on that route may be retried
   // by the proxy.
-  bool is_retryable = 6;
+  bool is_retryable = 5;
   // After this time has elapsed since receiving the initial request, any
   // outstanding request will be cancelled, a timeout error response will be
   // returned, and no more retries will be attempted.
-  google.protobuf.Duration timeout = 7;
+  google.protobuf.Duration timeout = 6;
 }
 
 message Backend {

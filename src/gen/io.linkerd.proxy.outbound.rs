@@ -83,17 +83,14 @@ pub struct HttpRoute {
     pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
     #[prost(message, repeated, tag="4")]
     pub response_classes: ::prost::alloc::vec::Vec<super::destination::ResponseClass>,
-    /// Metric labels to attach to requests and responses that match this route.
-    #[prost(map="string, string", tag="5")]
-    pub metrics_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
     /// If a route is retryable, any failed requests on that route may be retried
     /// by the proxy.
-    #[prost(bool, tag="6")]
+    #[prost(bool, tag="5")]
     pub is_retryable: bool,
     /// After this time has elapsed since receiving the initial request, any
     /// outstanding request will be cancelled, a timeout error response will be
     /// returned, and no more retries will be attempted.
-    #[prost(message, optional, tag="7")]
+    #[prost(message, optional, tag="6")]
     pub timeout: ::core::option::Option<::prost_types::Duration>,
 }
 /// Nested message and enum types in `HttpRoute`.
