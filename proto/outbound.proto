@@ -38,36 +38,36 @@ message Service {
 }
 
 message ProxyProtocol {
-    oneof kind {
-      Detect detect = 1;
-      Opaque opaque = 2;
-      Tls tls = 3;
-      Http1 http1 = 4;
-      Http2 http2 = 5;
-    }
-  
-    message Detect {
-      google.protobuf.Duration timeout = 1;
-  
-      // If the protocol detected as HTTP, a list of HTTP routes that should be
-      // matched.
-      repeated HttpRoute http_routes = 2;
-    }
-  
-    message Http1 {
-      repeated HttpRoute routes = 1;
-    }
-  
-    message Http2 {
-      repeated HttpRoute routes = 1;
-    }
-  
-    message Opaque {
-      // TODO: opaque TLS settings (versions, algorithms, SNI)
-    }
-  
-    message Tls {}
+  oneof kind {
+    Detect detect = 1;
+    Opaque opaque = 2;
+    Tls tls = 3;
+    Http1 http1 = 4;
+    Http2 http2 = 5;
   }
+
+  message Detect {
+    google.protobuf.Duration timeout = 1;
+
+    // If the protocol detected as HTTP, a list of HTTP routes that should be
+    // matched.
+    repeated HttpRoute http_routes = 2;
+  }
+
+  message Http1 {
+    repeated HttpRoute routes = 1;
+  }
+
+  message Http2 {
+    repeated HttpRoute routes = 1;
+  }
+
+  message Opaque {
+    // TODO: opaque TLS settings (versions, algorithms, SNI)
+  }
+
+  message Tls {}
+}
 
 // Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
 //
