@@ -78,24 +78,43 @@ message HttpRoute {
   // If empty, the host value is ignored.
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
 
-  // Must have at least one rule.
-  repeated Rule rules = 3;
-
-  message Rule {
-    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
-    repeated Backend backends = 3;
+  oneof rule {
+    // This route was configured by an HTTPRoute resource.
+    HttpRouteRule http_route = 3;
+    // This route was configured by a ServiceProfile resource.
+    ServiceProfileRule service_profile = 4;
   }
 
-  repeated io.linkerd.proxy.destination.ResponseClass response_classes = 4;
+  repeated io.linkerd.proxy.destination.ResponseClass response_classes = 5;
 
   // If a route is retryable, any failed requests on that route may be retried
   // by the proxy.
-  bool is_retryable = 5;
+  bool is_retryable = 6;
   // After this time has elapsed since receiving the initial request, any
   // outstanding request will be cancelled, a timeout error response will be
   // returned, and no more retries will be attempted.
-  google.protobuf.Duration timeout = 6;
+  google.protobuf.Duration timeout = 7;
+
+  message HttpRouteRule {
+    // Must have at least one rule.
+    repeated Rule rules = 3;
+  
+    message Rule {
+      repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
+      repeated Backend backends = 3;
+    }
+  }
+
+  message ServiceProfileRule {
+    // The condition for matching this route.
+    io.linkerd.proxy.destination.RequestMatch condition = 1;
+    // Metric labels to attach to requests and responses that match this route.
+    // TODO(eliza): do we want the HTTPRoute configuration to also be able to
+    // specify arbitrary metrics labels?
+    map<string, string> metrics_labels = 3;
 }
+}
+
 
 message Backend {
   oneof backend {
