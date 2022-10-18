@@ -78,29 +78,57 @@ pub struct HttpRoute {
     /// If empty, the host value is ignored.
     #[prost(message, repeated, tag="2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
-    /// Must have at least one rule.
-    #[prost(message, repeated, tag="3")]
-    pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
-    #[prost(message, repeated, tag="4")]
+    #[prost(message, repeated, tag="5")]
     pub response_classes: ::prost::alloc::vec::Vec<super::destination::ResponseClass>,
     /// If a route is retryable, any failed requests on that route may be retried
     /// by the proxy.
-    #[prost(bool, tag="5")]
+    #[prost(bool, tag="6")]
     pub is_retryable: bool,
     /// After this time has elapsed since receiving the initial request, any
     /// outstanding request will be cancelled, a timeout error response will be
     /// returned, and no more retries will be attempted.
-    #[prost(message, optional, tag="6")]
+    #[prost(message, optional, tag="7")]
     pub timeout: ::core::option::Option<::prost_types::Duration>,
+    #[prost(oneof="http_route::Rule", tags="3, 4")]
+    pub rule: ::core::option::Option<http_route::Rule>,
 }
 /// Nested message and enum types in `HttpRoute`.
 pub mod http_route {
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Rule {
-        #[prost(message, repeated, tag="1")]
-        pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
+    pub struct HttpRouteRule {
+        /// Must have at least one rule.
         #[prost(message, repeated, tag="3")]
-        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+        pub rules: ::prost::alloc::vec::Vec<http_route_rule::Rule>,
+    }
+    /// Nested message and enum types in `HttpRouteRule`.
+    pub mod http_route_rule {
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Rule {
+            #[prost(message, repeated, tag="1")]
+            pub matches: ::prost::alloc::vec::Vec<super::super::super::http_route::HttpRouteMatch>,
+            #[prost(message, repeated, tag="3")]
+            pub backends: ::prost::alloc::vec::Vec<super::super::Backend>,
+        }
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ServiceProfileRule {
+        /// The condition for matching this route.
+        #[prost(message, optional, tag="1")]
+        pub condition: ::core::option::Option<super::super::destination::RequestMatch>,
+        /// Metric labels to attach to requests and responses that match this route.
+        /// TODO(eliza): do we want the HTTPRoute configuration to also be able to
+        /// specify arbitrary metrics labels?
+        #[prost(map="string, string", tag="3")]
+        pub metrics_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Rule {
+        /// This route was configured by an HTTPRoute resource.
+        #[prost(message, tag="3")]
+        HttpRoute(HttpRouteRule),
+        /// This route was configured by a ServiceProfile resource.
+        #[prost(message, tag="4")]
+        ServiceProfile(ServiceProfileRule),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
