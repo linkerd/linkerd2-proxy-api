@@ -12,61 +12,12 @@ pub struct TargetSpec {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Service {
-    #[prost(message, optional, tag="1")]
-    pub protocol: ::core::option::Option<ProxyProtocol>,
-    #[prost(message, optional, tag="2")]
-    pub retry_budget: ::core::option::Option<super::destination::RetryBudget>,
+    #[prost(message, repeated, tag="1")]
+    pub http_routes: ::prost::alloc::vec::Vec<HttpRoute>,
     /// Backends for this service. Can be overridden by backends specified
     /// in a matching route.
-    #[prost(message, repeated, tag="3")]
+    #[prost(message, repeated, tag="2")]
     pub backends: ::prost::alloc::vec::Vec<Backend>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ProxyProtocol {
-    #[prost(oneof="proxy_protocol::Kind", tags="1, 2, 3, 4, 5")]
-    pub kind: ::core::option::Option<proxy_protocol::Kind>,
-}
-/// Nested message and enum types in `ProxyProtocol`.
-pub mod proxy_protocol {
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Detect {
-        #[prost(message, optional, tag="1")]
-        pub timeout: ::core::option::Option<::prost_types::Duration>,
-        /// If the protocol detected as HTTP, a list of HTTP routes that should be
-        /// matched.
-        #[prost(message, repeated, tag="2")]
-        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
-    }
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Http1 {
-        #[prost(message, repeated, tag="1")]
-        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
-    }
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Http2 {
-        #[prost(message, repeated, tag="1")]
-        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
-    }
-    /// TODO: opaque TLS settings (versions, algorithms, SNI)
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Opaque {
-    }
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Tls {
-    }
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Kind {
-        #[prost(message, tag="1")]
-        Detect(Detect),
-        #[prost(message, tag="2")]
-        Opaque(Opaque),
-        #[prost(message, tag="3")]
-        Tls(Tls),
-        #[prost(message, tag="4")]
-        Http1(Http1),
-        #[prost(message, tag="5")]
-        Http2(Http2),
-    }
 }
 /// Outbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
@@ -81,17 +32,6 @@ pub struct HttpRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag="3")]
     pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
-    #[prost(message, repeated, tag="4")]
-    pub response_classes: ::prost::alloc::vec::Vec<super::destination::ResponseClass>,
-    /// If a route is retryable, any failed requests on that route may be retried
-    /// by the proxy.
-    #[prost(bool, tag="5")]
-    pub is_retryable: bool,
-    /// After this time has elapsed since receiving the initial request, any
-    /// outstanding request will be cancelled, a timeout error response will be
-    /// returned, and no more retries will be attempted.
-    #[prost(message, optional, tag="6")]
-    pub timeout: ::core::option::Option<::prost_types::Duration>,
 }
 /// Nested message and enum types in `HttpRoute`.
 pub mod http_route {
@@ -99,7 +39,7 @@ pub mod http_route {
     pub struct Rule {
         #[prost(message, repeated, tag="1")]
         pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
-        #[prost(message, repeated, tag="3")]
+        #[prost(message, repeated, tag="2")]
         pub backends: ::prost::alloc::vec::Vec<super::Backend>,
     }
 }

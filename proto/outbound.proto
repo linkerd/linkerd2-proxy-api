@@ -4,7 +4,6 @@ package io.linkerd.proxy.outbound;
 
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/outbound";
 
-import "google/protobuf/duration.proto";
 import "net.proto";
 import "destination.proto";
 import "meta.proto";
@@ -28,45 +27,11 @@ message TargetSpec {
 }
 
 message Service {
-        ProxyProtocol protocol = 1;
+  repeated HttpRoute http_routes = 1;
 
-        io.linkerd.proxy.destination.RetryBudget retry_budget = 2;
-
-        // Backends for this service. Can be overridden by backends specified
-        // in a matching route.
-        repeated Backend backends = 3;
-}
-
-message ProxyProtocol {
-  oneof kind {
-    Detect detect = 1;
-    Opaque opaque = 2;
-    Tls tls = 3;
-    Http1 http1 = 4;
-    Http2 http2 = 5;
-  }
-
-  message Detect {
-    google.protobuf.Duration timeout = 1;
-
-    // If the protocol detected as HTTP, a list of HTTP routes that should be
-    // matched.
-    repeated HttpRoute http_routes = 2;
-  }
-
-  message Http1 {
-    repeated HttpRoute routes = 1;
-  }
-
-  message Http2 {
-    repeated HttpRoute routes = 1;
-  }
-
-  message Opaque {
-    // TODO: opaque TLS settings (versions, algorithms, SNI)
-  }
-
-  message Tls {}
+  // Backends for this service. Can be overridden by backends specified
+  // in a matching route.
+  repeated Backend backends = 2;
 }
 
 // Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
@@ -83,18 +48,8 @@ message HttpRoute {
 
   message Rule {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
-    repeated Backend backends = 3;
+    repeated Backend backends = 2;
   }
-
-  repeated io.linkerd.proxy.destination.ResponseClass response_classes = 4;
-
-  // If a route is retryable, any failed requests on that route may be retried
-  // by the proxy.
-  bool is_retryable = 5;
-  // After this time has elapsed since receiving the initial request, any
-  // outstanding request will be cancelled, a timeout error response will be
-  // returned, and no more retries will be attempted.
-  google.protobuf.Duration timeout = 6;
 }
 
 message Backend {
