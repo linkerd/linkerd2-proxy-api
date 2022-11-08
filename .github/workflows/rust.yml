@@ -22,36 +22,36 @@ jobs:
   gen-check:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v30-rust
+    container: docker://ghcr.io/linkerd/dev:v32-rust
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - run: just rs-fetch
       - run: just rs-gen-check
 
   rust-clippy:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v30-rust
+    container: docker://ghcr.io/linkerd/dev:v32-rust
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - run: just rs-fetch
       - run: just rs-clippy
 
   rust-docs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v30-rust
+    container: docker://ghcr.io/linkerd/dev:v32-rust
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - run: just rs-fetch
       - run: just rs-docs
 
   rust-test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v30-rust
+    container: docker://ghcr.io/linkerd/dev:v32-rust
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - run: just rs-fetch
       - run: just rs-test-build
       - run: just rs-test
@@ -67,7 +67,7 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing Ci.
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - uses: EmbarkStudios/cargo-deny-action@7257a18a9c2fe3f92b85d41ae473520dff953c97
         with:
           command: check ${{ matrix.checks }}
