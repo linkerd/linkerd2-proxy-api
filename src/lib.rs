@@ -30,6 +30,11 @@ pub mod inbound {
     include!("gen/io.linkerd.proxy.inbound.rs");
 }
 
+#[cfg(feature = "outbound")]
+pub mod outbound {
+    include!("gen/io.linkerd.proxy.outbound.rs");
+}
+
 #[cfg(feature = "meta")]
 pub mod meta {
     include!("gen/io.linkerd.proxy.meta.rs");
