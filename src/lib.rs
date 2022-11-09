@@ -38,5 +38,10 @@ pub mod meta {
 #[cfg(feature = "net")]
 pub mod net;
 
+#[cfg(feature = "outbound")]
+pub mod outbound {
+    include!("gen/io.linkerd.proxy.outbound.rs");
+}
+
 #[cfg(feature = "tap")]
 pub mod tap;
