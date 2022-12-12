@@ -3,21 +3,57 @@ pub struct TargetSpec {
     /// Identifies the source proxy workload (e.g., pod name).
     #[prost(string, tag="1")]
     pub workload: ::prost::alloc::string::String,
-    /// Target address
+    /// Target address. This may be the cluster IP of a Kubernetes Service or the
+    /// IP of a Pod.
     #[prost(message, optional, tag="2")]
     pub address: ::core::option::Option<super::net::IpAddress>,
     /// Target port
     #[prost(uint32, tag="3")]
     pub port: u32,
 }
+/// Outbound policy for a given target address.
+/// TODO: This "Service" represents a traffic target of some kind, but is not
+/// necessarily a Kubernetes Service (e.g. it may be a Pod).  Is there a better
+/// name for this type?  OutboundPolicy?
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Service {
-    #[prost(message, repeated, tag="1")]
-    pub http_routes: ::prost::alloc::vec::Vec<HttpRoute>,
-    /// Backends for this service. Can be overridden by backends specified
-    /// in a matching route.
-    #[prost(message, repeated, tag="2")]
-    pub backends: ::prost::alloc::vec::Vec<Backend>,
+    /// Indicates the protocol to use for this target.  This will be set to Opaque
+    /// if the target has been marked as opaque and will be Discover otherwise.
+    #[prost(message, optional, tag="1")]
+    pub protocol: ::core::option::Option<ProxyProtocol>,
+    /// The backend to use for this target.  If the target is a Service, the
+    /// backend will be a Dst containing the FQDN of the Service.  If the target
+    /// is a Pod, it will be an endpoint address.
+    #[prost(message, optional, tag="2")]
+    pub backend: ::core::option::Option<Backend>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ProxyProtocol {
+    #[prost(oneof="proxy_protocol::Kind", tags="1, 2")]
+    pub kind: ::core::option::Option<proxy_protocol::Kind>,
+}
+/// Nested message and enum types in `ProxyProtocol`.
+pub mod proxy_protocol {
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Detect {
+        /// Protocol detection timeout.
+        #[prost(message, optional, tag="1")]
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
+        /// If the protocol detected as HTTP, a list of HTTP routes that should be
+        /// matched.
+        #[prost(message, repeated, tag="2")]
+        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+    }
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Opaque {
+    }
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag="1")]
+        Detect(Detect),
+        #[prost(message, tag="2")]
+        Opaque(Opaque),
+    }
 }
 /// Outbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
