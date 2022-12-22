@@ -1,8 +1,9 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetDestination {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub scheme: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub path: ::prost::alloc::string::String,
     /// An opaque value that is set at injection-time and sent with destintion
     /// lookups.
@@ -10,125 +11,145 @@ pub struct GetDestination {
     /// If, for instance, the token encodes a namespace or some locality
     /// information, the service may alter its results to take this locality into
     /// account.
-    #[prost(string, tag="3")]
+    #[prost(string, tag = "3")]
     pub context_token: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Update {
-    #[prost(oneof="update::Update", tags="1, 2, 3")]
+    #[prost(oneof = "update::Update", tags = "1, 2, 3")]
     pub update: ::core::option::Option<update::Update>,
 }
 /// Nested message and enum types in `Update`.
 pub mod update {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Update {
         /// A new set of endpoints are available for the service. The set might be
         /// empty.
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         Add(super::WeightedAddrSet),
         /// Some endpoints have been removed from the service.
-        #[prost(message, tag="2")]
+        #[prost(message, tag = "2")]
         Remove(super::AddrSet),
         /// `no_endpoints{exists: false}` indicates that the service does not exist
         /// and the client MAY try an alternate service discovery method (e.g. DNS).
         ///
         /// `no_endpoints(exists: true)` indicates that the service does exist and
         /// the client MUST NOT fall back to an alternate service discovery method.
-        #[prost(message, tag="3")]
+        #[prost(message, tag = "3")]
         NoEndpoints(super::NoEndpoints),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AddrSet {
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag = "1")]
     pub addrs: ::prost::alloc::vec::Vec<super::net::TcpAddress>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WeightedAddrSet {
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag = "1")]
     pub addrs: ::prost::alloc::vec::Vec<WeightedAddr>,
-    #[prost(map="string, string", tag="2")]
-    pub metric_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    #[prost(map = "string, string", tag = "2")]
+    pub metric_labels: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        ::prost::alloc::string::String,
+    >,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WeightedAddr {
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub addr: ::core::option::Option<super::net::TcpAddress>,
-    #[prost(uint32, tag="3")]
+    #[prost(uint32, tag = "3")]
     pub weight: u32,
-    #[prost(map="string, string", tag="4")]
-    pub metric_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
-    #[prost(message, optional, tag="5")]
+    #[prost(map = "string, string", tag = "4")]
+    pub metric_labels: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        ::prost::alloc::string::String,
+    >,
+    #[prost(message, optional, tag = "5")]
     pub tls_identity: ::core::option::Option<TlsIdentity>,
-    #[prost(message, optional, tag="6")]
+    #[prost(message, optional, tag = "6")]
     pub protocol_hint: ::core::option::Option<ProtocolHint>,
-    #[prost(message, optional, tag="7")]
+    #[prost(message, optional, tag = "7")]
     pub authority_override: ::core::option::Option<AuthorityOverride>,
 }
 /// Which strategy should be used for verifying TLS.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TlsIdentity {
-    #[prost(oneof="tls_identity::Strategy", tags="1")]
+    #[prost(oneof = "tls_identity::Strategy", tags = "1")]
     pub strategy: ::core::option::Option<tls_identity::Strategy>,
 }
 /// Nested message and enum types in `TlsIdentity`.
 pub mod tls_identity {
     /// Verify the certificate based on the Kubernetes pod identity.
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct DnsLikeIdentity {
         /// A DNS-like name that encodes workload coordinates.
         ///
         /// For example:
         ///     {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
-        #[prost(string, tag="1")]
+        #[prost(string, tag = "1")]
         pub name: ::prost::alloc::string::String,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Strategy {
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         DnsLikeIdentity(DnsLikeIdentity),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AuthorityOverride {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub authority_override: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NoEndpoints {
-    #[prost(bool, tag="1")]
+    #[prost(bool, tag = "1")]
     pub exists: bool,
 }
 /// A hint of what protocol the service knows. The default value is
 /// for the `hint` field to be not be set, essentially meaning "unknown".
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProtocolHint {
     /// When set, indicates that the target supports receiving opaque traffic
     /// wrapped with the Linkerd connection header on the specified port.
-    #[prost(message, optional, tag="2")]
+    #[prost(message, optional, tag = "2")]
     pub opaque_transport: ::core::option::Option<protocol_hint::OpaqueTransport>,
-    #[prost(oneof="protocol_hint::Protocol", tags="1")]
+    #[prost(oneof = "protocol_hint::Protocol", tags = "1")]
     pub protocol: ::core::option::Option<protocol_hint::Protocol>,
 }
 /// Nested message and enum types in `ProtocolHint`.
 pub mod protocol_hint {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct H2 {
-    }
+    pub struct H2 {}
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct OpaqueTransport {
         /// The target proxy's inbound port.
-        #[prost(uint32, tag="1")]
+        #[prost(uint32, tag = "1")]
         pub inbound_port: u32,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Protocol {
         /// Hints that the service understands HTTP2 and the proxy's internal
         /// http2-upgrade mechanism.
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         H2(H2),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DestinationProfile {
     /// The fully-qualified service name, if one exists.
@@ -143,27 +164,27 @@ pub struct DestinationProfile {
     ///
     /// If the lookup does not refer to a known named entity, this field MUST be
     /// left empty.
-    #[prost(string, tag="5")]
+    #[prost(string, tag = "5")]
     pub fully_qualified_name: ::prost::alloc::string::String,
     /// Indicates that connections on this service address should be handled as
     /// opaque TCP streams. HTTP routes returned on for such services will be
     /// ignored.
-    #[prost(bool, tag="4")]
+    #[prost(bool, tag = "4")]
     pub opaque_protocol: bool,
     /// A list of routes, each with a RequestMatch.  If a request matches
     /// more than one route, the first match wins.
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag = "1")]
     pub routes: ::prost::alloc::vec::Vec<Route>,
     /// The retry budget controls how much additional load the proxy can generate
     /// as retries. Failured requests on retryable routes will not be retried if
     /// there is no available budget.
-    #[prost(message, optional, tag="2")]
+    #[prost(message, optional, tag = "2")]
     pub retry_budget: ::core::option::Option<RetryBudget>,
     /// If this list is non-empty, requests to this destination should instead be
     /// split between the destinations in this list.  Each destination should
     /// receive a portion of the requests proportional to its weight.  If this
     /// list is empty, requests should be sent to this destination as normal.
-    #[prost(message, repeated, tag="3")]
+    #[prost(message, repeated, tag = "3")]
     pub dst_overrides: ::prost::alloc::vec::Vec<WeightedDst>,
     /// If this field is set, it indicates that the target is a known endpoint (and
     /// not a service address). The values of `fully_qualified_name` and
@@ -172,32 +193,37 @@ pub struct DestinationProfile {
     /// are used.
     ///
     /// No endpoint should be set If the target is unknown.
-    #[prost(message, optional, tag="6")]
+    #[prost(message, optional, tag = "6")]
     pub endpoint: ::core::option::Option<WeightedAddr>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Route {
     /// This route contains requests which match this condition.
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub condition: ::core::option::Option<RequestMatch>,
     /// A list of response classes for this route.  If a response matches
     /// more than one ResponseClass, the first match wins.  If a response does not
     /// match any ResponseClasses, it is considered to be a successful response.
-    #[prost(message, repeated, tag="2")]
+    #[prost(message, repeated, tag = "2")]
     pub response_classes: ::prost::alloc::vec::Vec<ResponseClass>,
     /// Metric labels to attach to requests and responses that match this route.
-    #[prost(map="string, string", tag="3")]
-    pub metrics_labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    #[prost(map = "string, string", tag = "3")]
+    pub metrics_labels: ::std::collections::HashMap<
+        ::prost::alloc::string::String,
+        ::prost::alloc::string::String,
+    >,
     /// If a route is retryable, any failed requests on that route may be retried
     /// by the proxy.
-    #[prost(bool, tag="4")]
+    #[prost(bool, tag = "4")]
     pub is_retryable: bool,
     /// After this time has elapsed since receiving the initial request, any
     /// outstanding request will be cancelled, a timeout error response will be
     /// returned, and no more retries will be attempted.
-    #[prost(message, optional, tag="5")]
+    #[prost(message, optional, tag = "5")]
     pub timeout: ::core::option::Option<::prost_types::Duration>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RetryBudget {
     /// The ratio of additional traffic that may be added by retries.  A
@@ -205,107 +231,117 @@ pub struct RetryBudget {
     /// requests.  A retry_ratio of 1.0 means that 1 retry may be attempted for
     /// every 1 regular request (in other words, total request load may be doubled
     /// as a result of retries).
-    #[prost(float, tag="1")]
+    #[prost(float, tag = "1")]
     pub retry_ratio: f32,
     /// The proxy may always attempt this number of retries per second, even if it
     /// would violate the retry_ratio.  This is to allow retries to happen even
     /// when the request rate is very low.
-    #[prost(uint32, tag="2")]
+    #[prost(uint32, tag = "2")]
     pub min_retries_per_second: u32,
     /// This duration indicates for how long requests should be considered for the
     /// purposes of enforcing the retry_ratio.  A higher value considers a larger
     /// window and therefore allows burstier retries.
-    #[prost(message, optional, tag="3")]
+    #[prost(message, optional, tag = "3")]
     pub ttl: ::core::option::Option<::prost_types::Duration>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResponseClass {
     /// This class contains responses which match this condition.
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub condition: ::core::option::Option<ResponseMatch>,
     /// If responses in this class should be considered failures.  This defaults
     /// to false (success).
-    #[prost(bool, tag="2")]
+    #[prost(bool, tag = "2")]
     pub is_failure: bool,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RequestMatch {
-    #[prost(oneof="request_match::Match", tags="1, 2, 3, 4, 5")]
+    #[prost(oneof = "request_match::Match", tags = "1, 2, 3, 4, 5")]
     pub r#match: ::core::option::Option<request_match::Match>,
 }
 /// Nested message and enum types in `RequestMatch`.
 pub mod request_match {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Seq {
-        #[prost(message, repeated, tag="1")]
+        #[prost(message, repeated, tag = "1")]
         pub matches: ::prost::alloc::vec::Vec<super::RequestMatch>,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Match {
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         All(Seq),
-        #[prost(message, tag="2")]
+        #[prost(message, tag = "2")]
         Any(Seq),
-        #[prost(message, tag="3")]
+        #[prost(message, tag = "3")]
         Not(::prost::alloc::boxed::Box<super::RequestMatch>),
-        #[prost(message, tag="4")]
+        #[prost(message, tag = "4")]
         Path(super::PathMatch),
         /// TODO: match on arbitrary header
-        #[prost(message, tag="5")]
+        #[prost(message, tag = "5")]
         Method(super::super::http_types::HttpMethod),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PathMatch {
     /// Match if the request path matches this regex.
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub regex: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResponseMatch {
-    #[prost(oneof="response_match::Match", tags="1, 2, 3, 4")]
+    #[prost(oneof = "response_match::Match", tags = "1, 2, 3, 4")]
     pub r#match: ::core::option::Option<response_match::Match>,
 }
 /// Nested message and enum types in `ResponseMatch`.
 pub mod response_match {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Seq {
-        #[prost(message, repeated, tag="1")]
+        #[prost(message, repeated, tag = "1")]
         pub matches: ::prost::alloc::vec::Vec<super::ResponseMatch>,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Match {
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         All(Seq),
-        #[prost(message, tag="2")]
+        #[prost(message, tag = "2")]
         Any(Seq),
-        #[prost(message, tag="3")]
+        #[prost(message, tag = "3")]
         Not(::prost::alloc::boxed::Box<super::ResponseMatch>),
         /// TODO: match on arbitrary header or trailer
-        #[prost(message, tag="4")]
+        #[prost(message, tag = "4")]
         Status(super::HttpStatusRange),
     }
 }
 /// If either a minimum or maximum is not specified, the range is considered to
 /// be over a discrete value.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpStatusRange {
     /// Minimum matching http status code (inclusive), if specified.
-    #[prost(uint32, tag="1")]
+    #[prost(uint32, tag = "1")]
     pub min: u32,
     /// Maximum matching http status code (inclusive), if specified.
-    #[prost(uint32, tag="2")]
+    #[prost(uint32, tag = "2")]
     pub max: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WeightedDst {
     /// This authority will be used as the `path` in a call to the Destination.Get
     /// rpc.
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub authority: ::prost::alloc::string::String,
     /// The proportion of requests to send to this destination.  This value is
     /// relative to other weights in the same dst_overrides list.
-    #[prost(uint32, tag="2")]
+    #[prost(uint32, tag = "2")]
     pub weight: u32,
 }
 /// Generated client implementations.
@@ -420,10 +456,10 @@ pub mod destination_client {
 pub mod destination_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with DestinationServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with DestinationServer.
     #[async_trait]
     pub trait Destination: Send + Sync + 'static {
-        ///Server streaming response type for the Get method.
+        /// Server streaming response type for the Get method.
         type GetStream: futures_core::Stream<Item = Result<super::Update, tonic::Status>>
             + Send
             + 'static;
@@ -433,7 +469,7 @@ pub mod destination_server {
             &self,
             request: tonic::Request<super::GetDestination>,
         ) -> Result<tonic::Response<Self::GetStream>, tonic::Status>;
-        ///Server streaming response type for the GetProfile method.
+        /// Server streaming response type for the GetProfile method.
         type GetProfileStream: futures_core::Stream<
                 Item = Result<super::DestinationProfile, tonic::Status>,
             >
