@@ -1,27 +1,31 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CertifyRequest {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub identity: ::prost::alloc::string::String,
     /// Proof of the requester's identity.
     ///
     /// In Kubernetes, for instance, this is the contents of a service account
     /// token.
-    #[prost(bytes="vec", tag="2")]
+    #[prost(bytes = "vec", tag = "2")]
     pub token: ::prost::alloc::vec::Vec<u8>,
     /// A PEM-encoded x509 Certificate Signing Request.
-    #[prost(bytes="vec", tag="3")]
+    #[prost(bytes = "vec", tag = "3")]
     pub certificate_signing_request: ::prost::alloc::vec::Vec<u8>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CertifyResponse {
     /// A PEM-encoded x509 Certificate.
-    #[prost(bytes="vec", tag="1")]
+    #[prost(bytes = "vec", tag = "1")]
     pub leaf_certificate: ::prost::alloc::vec::Vec<u8>,
     /// A list of PEM-encoded x509 Certificates that establish the trust chain
     /// between the leaf_certificate and the well-known trust anchors.
-    #[prost(bytes="vec", repeated, tag="2")]
-    pub intermediate_certificates: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
-    #[prost(message, optional, tag="3")]
+    #[prost(bytes = "vec", repeated, tag = "2")]
+    pub intermediate_certificates: ::prost::alloc::vec::Vec<
+        ::prost::alloc::vec::Vec<u8>,
+    >,
+    #[prost(message, optional, tag = "3")]
     pub valid_until: ::core::option::Option<::prost_types::Timestamp>,
 }
 /// Generated client implementations.
@@ -114,7 +118,7 @@ pub mod identity_client {
 pub mod identity_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with IdentityServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with IdentityServer.
     #[async_trait]
     pub trait Identity: Send + Sync + 'static {
         /// Requests that a time-bounded certificate be signed.
