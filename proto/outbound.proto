@@ -106,6 +106,7 @@ message Distribution {
 
   message Empty {}
   message FirstAvailable {
+    // Use the first available backend in the list; weights are ignored.
     repeated Backend backends = 1;
   }
   message RandomAvailable {

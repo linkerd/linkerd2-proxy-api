@@ -886,6 +886,7 @@ type Distribution_FirstAvailable struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Use the first available backend in the list; weights are ignored.
 	Backends []*Backend `protobuf:"bytes,1,rep,name=backends,proto3" json:"backends,omitempty"`
 }
 

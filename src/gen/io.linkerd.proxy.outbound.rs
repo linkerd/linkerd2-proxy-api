@@ -139,6 +139,7 @@ pub mod distribution {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct FirstAvailable {
+        /// Use the first available backend in the list; weights are ignored.
         #[prost(message, repeated, tag = "1")]
         pub backends: ::prost::alloc::vec::Vec<super::Backend>,
     }
