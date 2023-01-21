@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OutboundPoliciesClient interface {
-	Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*Service, error)
+	Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*OutboundPolicy, error)
 	Watch(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (OutboundPolicies_WatchClient, error)
 }
 
@@ -34,8 +34,8 @@ func NewOutboundPoliciesClient(cc grpc.ClientConnInterface) OutboundPoliciesClie
 	return &outboundPoliciesClient{cc}
 }
 
-func (c *outboundPoliciesClient) Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*Service, error) {
-	out := new(Service)
+func (c *outboundPoliciesClient) Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*OutboundPolicy, error) {
+	out := new(OutboundPolicy)
 	err := c.cc.Invoke(ctx, "/io.linkerd.proxy.outbound.OutboundPolicies/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (c *outboundPoliciesClient) Watch(ctx context.Context, in *TargetSpec, opts
 }
 
 type OutboundPolicies_WatchClient interface {
-	Recv() (*Service, error)
+	Recv() (*OutboundPolicy, error)
 	grpc.ClientStream
 }
 
@@ -67,8 +67,8 @@ type outboundPoliciesWatchClient struct {
 	grpc.ClientStream
 }
 
-func (x *outboundPoliciesWatchClient) Recv() (*Service, error) {
-	m := new(Service)
+func (x *outboundPoliciesWatchClient) Recv() (*OutboundPolicy, error) {
+	m := new(OutboundPolicy)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (x *outboundPoliciesWatchClient) Recv() (*Service, error) {
 // All implementations must embed UnimplementedOutboundPoliciesServer
 // for forward compatibility
 type OutboundPoliciesServer interface {
-	Get(context.Context, *TargetSpec) (*Service, error)
+	Get(context.Context, *TargetSpec) (*OutboundPolicy, error)
 	Watch(*TargetSpec, OutboundPolicies_WatchServer) error
 	mustEmbedUnimplementedOutboundPoliciesServer()
 }
@@ -88,7 +88,7 @@ type OutboundPoliciesServer interface {
 type UnimplementedOutboundPoliciesServer struct {
 }
 
-func (UnimplementedOutboundPoliciesServer) Get(context.Context, *TargetSpec) (*Service, error) {
+func (UnimplementedOutboundPoliciesServer) Get(context.Context, *TargetSpec) (*OutboundPolicy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedOutboundPoliciesServer) Watch(*TargetSpec, OutboundPolicies_WatchServer) error {
@@ -134,7 +134,7 @@ func _OutboundPolicies_Watch_Handler(srv interface{}, stream grpc.ServerStream) 
 }
 
 type OutboundPolicies_WatchServer interface {
-	Send(*Service) error
+	Send(*OutboundPolicy) error
 	grpc.ServerStream
 }
 
@@ -142,7 +142,7 @@ type outboundPoliciesWatchServer struct {
 	grpc.ServerStream
 }
 
-func (x *outboundPoliciesWatchServer) Send(m *Service) error {
+func (x *outboundPoliciesWatchServer) Send(m *OutboundPolicy) error {
 	return x.ServerStream.SendMsg(m)
 }
 

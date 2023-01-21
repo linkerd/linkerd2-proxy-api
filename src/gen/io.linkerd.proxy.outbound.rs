@@ -1,97 +1,181 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TargetSpec {
     /// Identifies the source proxy workload (e.g., pod name).
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub workload: ::prost::alloc::string::String,
-    /// Target address. This may be the cluster IP of a Kubernetes Service or the
-    /// IP of a Pod.
-    #[prost(message, optional, tag="2")]
-    pub address: ::core::option::Option<super::net::IpAddress>,
     /// Target port
-    #[prost(uint32, tag="3")]
+    #[prost(uint32, tag = "4")]
     pub port: u32,
+    #[prost(oneof = "target_spec::Target", tags = "2, 3")]
+    pub target: ::core::option::Option<target_spec::Target>,
+}
+/// Nested message and enum types in `TargetSpec`.
+pub mod target_spec {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Target {
+        /// Target address. This may be the cluster IP of a Kubernetes Service or the
+        /// IP of a Pod.
+        #[prost(message, tag = "2")]
+        Address(super::super::net::IpAddress),
+        #[prost(string, tag = "3")]
+        Authority(::prost::alloc::string::String),
+    }
 }
 /// Outbound policy for a given target address.
-/// TODO: This "Service" represents a traffic target of some kind, but is not
-/// necessarily a Kubernetes Service (e.g. it may be a Pod).  Is there a better
-/// name for this type?  OutboundPolicy?
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Service {
+pub struct OutboundPolicy {
     /// Indicates the protocol to use for this target.  This will be set to Opaque
     /// if the target has been marked as opaque and will be Discover otherwise.
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub protocol: ::core::option::Option<ProxyProtocol>,
     /// The backend to use for this target.  If the target is a Service, the
     /// backend will be a Dst containing the FQDN of the Service.  If the target
     /// is a Pod, it will be an endpoint address.
-    #[prost(message, optional, tag="2")]
+    #[prost(message, optional, tag = "2")]
     pub backend: ::core::option::Option<Backend>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProxyProtocol {
-    #[prost(oneof="proxy_protocol::Kind", tags="1, 2")]
+    #[prost(oneof = "proxy_protocol::Kind", tags = "1, 2")]
     pub kind: ::core::option::Option<proxy_protocol::Kind>,
 }
 /// Nested message and enum types in `ProxyProtocol`.
 pub mod proxy_protocol {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Detect {
         /// Protocol detection timeout.
-        #[prost(message, optional, tag="1")]
+        #[prost(message, optional, tag = "1")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
-        /// If the protocol detected as HTTP, a list of HTTP routes that should be
-        /// matched.
-        #[prost(message, repeated, tag="2")]
+        /// Policy to use if the protocol is detected as HTTP1.
+        #[prost(message, optional, tag = "2")]
+        pub http1: ::core::option::Option<Http1>,
+        /// Policy to use if the protocol is detected as HTTP2.
+        #[prost(message, optional, tag = "3")]
+        pub http2: ::core::option::Option<Http2>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Opaque {}
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Http1 {
+        #[prost(message, repeated, tag = "1")]
         pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Opaque {
+    pub struct Http2 {
+        #[prost(message, repeated, tag = "1")]
+        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
-        #[prost(message, tag="1")]
+        #[prost(message, tag = "1")]
         Detect(Detect),
-        #[prost(message, tag="2")]
+        #[prost(message, tag = "2")]
         Opaque(Opaque),
     }
 }
 /// Outbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
 ///
 /// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub metadata: ::core::option::Option<super::meta::Metadata>,
     /// If empty, the host value is ignored.
-    #[prost(message, repeated, tag="2")]
+    #[prost(message, repeated, tag = "2")]
     pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
     /// Must have at least one rule.
-    #[prost(message, repeated, tag="3")]
+    #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<http_route::Rule>,
 }
 /// Nested message and enum types in `HttpRoute`.
 pub mod http_route {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Rule {
-        #[prost(message, repeated, tag="1")]
+        #[prost(message, repeated, tag = "1")]
         pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
-        #[prost(message, repeated, tag="2")]
-        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+        #[prost(message, repeated, tag = "2")]
+        pub filters: ::prost::alloc::vec::Vec<super::Filter>,
+        #[prost(message, repeated, tag = "3")]
+        pub backends: ::prost::alloc::vec::Vec<super::Distribution>,
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Filter {
+    #[prost(oneof = "filter::Kind", tags = "1")]
+    pub kind: ::core::option::Option<filter::Kind>,
+}
+/// Nested message and enum types in `Filter`.
+pub mod filter {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag = "1")]
+        FailureInjector(super::super::http_route::HttpFailureInjector),
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Distribution {
+    #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
+    pub distribution: ::core::option::Option<distribution::Distribution>,
+}
+/// Nested message and enum types in `Distribution`.
+pub mod distribution {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Empty {}
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct FirstAvailable {
+        #[prost(message, repeated, tag = "1")]
+        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RandomAvailable {
+        #[prost(message, repeated, tag = "1")]
+        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Distribution {
+        #[prost(message, tag = "1")]
+        Empty(Empty),
+        #[prost(message, tag = "2")]
+        FirstAvailable(FirstAvailable),
+        #[prost(message, tag = "3")]
+        RandomAvailable(RandomAvailable),
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Backend {
-    #[prost(oneof="backend::Backend", tags="1, 2")]
+    #[prost(message, repeated, tag = "1")]
+    pub filters: ::prost::alloc::vec::Vec<Filter>,
+    #[prost(oneof = "backend::Backend", tags = "2, 3")]
     pub backend: ::core::option::Option<backend::Backend>,
 }
 /// Nested message and enum types in `Backend`.
 pub mod backend {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Backend {
-        #[prost(message, tag="1")]
-        Dst(super::super::destination::WeightedDst),
-        #[prost(message, tag="2")]
-        Endpoint(super::super::destination::WeightedAddr),
+        #[prost(message, tag = "2")]
+        Balancer(super::super::destination::WeightedDst),
+        #[prost(message, tag = "3")]
+        Forward(super::super::destination::WeightedAddr),
     }
 }
 /// Generated client implementations.
@@ -155,7 +239,7 @@ pub mod outbound_policies_client {
         pub async fn get(
             &mut self,
             request: impl tonic::IntoRequest<super::TargetSpec>,
-        ) -> Result<tonic::Response<super::Service>, tonic::Status> {
+        ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -175,7 +259,7 @@ pub mod outbound_policies_client {
             &mut self,
             request: impl tonic::IntoRequest<super::TargetSpec>,
         ) -> Result<
-            tonic::Response<tonic::codec::Streaming<super::Service>>,
+            tonic::Response<tonic::codec::Streaming<super::OutboundPolicy>>,
             tonic::Status,
         > {
             self.inner
@@ -199,16 +283,16 @@ pub mod outbound_policies_client {
 pub mod outbound_policies_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with OutboundPoliciesServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with OutboundPoliciesServer.
     #[async_trait]
     pub trait OutboundPolicies: Send + Sync + 'static {
         async fn get(
             &self,
             request: tonic::Request<super::TargetSpec>,
-        ) -> Result<tonic::Response<super::Service>, tonic::Status>;
-        ///Server streaming response type for the Watch method.
+        ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status>;
+        /// Server streaming response type for the Watch method.
         type WatchStream: futures_core::Stream<
-                Item = Result<super::Service, tonic::Status>,
+                Item = Result<super::OutboundPolicy, tonic::Status>,
             >
             + Send
             + 'static;
@@ -282,7 +366,7 @@ pub mod outbound_policies_server {
                     impl<
                         T: OutboundPolicies,
                     > tonic::server::UnaryService<super::TargetSpec> for GetSvc<T> {
-                        type Response = super::Service;
+                        type Response = super::OutboundPolicy;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
@@ -320,7 +404,7 @@ pub mod outbound_policies_server {
                         T: OutboundPolicies,
                     > tonic::server::ServerStreamingService<super::TargetSpec>
                     for WatchSvc<T> {
-                        type Response = super::Service;
+                        type Response = super::OutboundPolicy;
                         type ResponseStream = T::WatchStream;
                         type Future = BoxFuture<
                             tonic::Response<Self::ResponseStream>,

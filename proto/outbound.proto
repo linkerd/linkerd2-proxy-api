@@ -11,28 +11,29 @@ import "http_route.proto";
 import "google/protobuf/duration.proto";
 
 service OutboundPolicies {
-  rpc Get(TargetSpec) returns (Service) {}
+  rpc Get(TargetSpec) returns (OutboundPolicy) {}
 
-  rpc Watch(TargetSpec) returns (stream Service) {}
+  rpc Watch(TargetSpec) returns (stream OutboundPolicy) {}
 }
 
 message TargetSpec {
   // Identifies the source proxy workload (e.g., pod name).
   string workload = 1;
 
-  // Target address. This may be the cluster IP of a Kubernetes Service or the
-  // IP of a Pod.
-  io.linkerd.proxy.net.IPAddress address = 2;
+
+  oneof target {
+    // Target address. This may be the cluster IP of a Kubernetes Service or the
+    // IP of a Pod.
+    io.linkerd.proxy.net.IPAddress address = 2;
+    string authority = 3;
+  }
 
   // Target port
-  uint32 port = 3;
+  uint32 port = 4;
 }
 
 // Outbound policy for a given target address.
-// TODO: This "Service" represents a traffic target of some kind, but is not
-// necessarily a Kubernetes Service (e.g. it may be a Pod).  Is there a better
-// name for this type?  OutboundPolicy?
-message Service {
+message OutboundPolicy {
   // Indicates the protocol to use for this target.  This will be set to Opaque
   // if the target has been marked as opaque and will be Discover otherwise.
   ProxyProtocol protocol = 1;
@@ -53,12 +54,22 @@ message ProxyProtocol {
     // Protocol detection timeout.
     google.protobuf.Duration timeout = 1;
 
-    // If the protocol detected as HTTP, a list of HTTP routes that should be
-    // matched.
-    repeated HttpRoute http_routes = 2;
+    // Policy to use if the protocol is detected as HTTP1.
+    Http1 http1 = 2;
+
+    // Policy to use if the protocol is detected as HTTP2.
+    Http2 http2 = 3;
   }
 
   message Opaque {}
+
+  message Http1 {
+    repeated HttpRoute http_routes = 1;
+  }
+
+  message Http2 {
+    repeated HttpRoute http_routes = 1;
+  }
 }
 
 // Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
@@ -75,13 +86,38 @@ message HttpRoute {
 
   message Rule {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
-    repeated Backend backends = 2;
+    repeated Filter filters = 2;
+    repeated Distribution backends = 3;
+  }
+}
+
+message Filter {
+  oneof kind {
+    io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
+  }
+}
+
+message Distribution {
+  oneof distribution {
+    Empty empty = 1;
+    FirstAvailable first_available = 2;
+    RandomAvailable random_available = 3;
+  }
+
+  message Empty {}
+  message FirstAvailable {
+    repeated Backend backends = 1;
+  }
+  message RandomAvailable {
+    repeated Backend backends = 1;
   }
 }
 
 message Backend {
+  repeated Filter filters = 1;
+
   oneof backend {
-    io.linkerd.proxy.destination.WeightedDst dst = 1;
-    io.linkerd.proxy.destination.WeightedAddr endpoint = 2;
+    io.linkerd.proxy.destination.WeightedDst balancer = 2;
+    io.linkerd.proxy.destination.WeightedAddr forward = 3;
   }
 }

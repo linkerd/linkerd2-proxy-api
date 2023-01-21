@@ -32,4 +32,8 @@ pub struct Resource {
     pub kind: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
     pub name: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub namespace: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub section: ::prost::alloc::string::String,
 }
