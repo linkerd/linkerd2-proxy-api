@@ -1,267 +1,321 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObserveRequest {
     /// Limits the number of event keys that will be returned by this tap.
-    #[prost(uint32, tag="1")]
+    #[prost(uint32, tag = "1")]
     pub limit: u32,
     /// Encodes request-matching logic.
-    #[prost(message, optional, tag="2")]
+    #[prost(message, optional, tag = "2")]
     pub r#match: ::core::option::Option<observe_request::Match>,
     /// Conditionally extracts components from requests and responses to include
     /// in tap events
-    #[prost(message, optional, tag="3")]
+    #[prost(message, optional, tag = "3")]
     pub extract: ::core::option::Option<observe_request::Extract>,
 }
 /// Nested message and enum types in `ObserveRequest`.
 pub mod observe_request {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Match {
-        #[prost(oneof="r#match::Match", tags="1, 2, 3, 4, 5, 6, 7, 8")]
+        #[prost(oneof = "r#match::Match", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
         pub r#match: ::core::option::Option<r#match::Match>,
     }
     /// Nested message and enum types in `Match`.
     pub mod r#match {
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Seq {
-            #[prost(message, repeated, tag="1")]
+            #[prost(message, repeated, tag = "1")]
             pub matches: ::prost::alloc::vec::Vec<super::Match>,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Label {
-            #[prost(string, tag="1")]
+            #[prost(string, tag = "1")]
             pub key: ::prost::alloc::string::String,
-            #[prost(string, tag="2")]
+            #[prost(string, tag = "2")]
             pub value: ::prost::alloc::string::String,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Tcp {
-            #[prost(oneof="tcp::Match", tags="1, 3")]
+            #[prost(oneof = "tcp::Match", tags = "1, 3")]
             pub r#match: ::core::option::Option<tcp::Match>,
         }
         /// Nested message and enum types in `Tcp`.
         pub mod tcp {
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Message)]
             pub struct Netmask {
-                #[prost(message, optional, tag="1")]
-                pub ip: ::core::option::Option<super::super::super::super::net::IpAddress>,
-                #[prost(uint32, tag="2")]
+                #[prost(message, optional, tag = "1")]
+                pub ip: ::core::option::Option<
+                    super::super::super::super::net::IpAddress,
+                >,
+                #[prost(uint32, tag = "2")]
                 pub mask: u32,
             }
             /// If either a minimum or maximum is not specified, the range is
             /// considered to be over a discrete value.
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Message)]
             pub struct PortRange {
                 /// Minimum matching port value (inclusive), if specified.
-                #[prost(uint32, tag="1")]
+                #[prost(uint32, tag = "1")]
                 pub min: u32,
                 /// Maximum matching port value (inclusive), if specified.
-                #[prost(uint32, tag="2")]
+                #[prost(uint32, tag = "2")]
                 pub max: u32,
             }
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Oneof)]
             pub enum Match {
-                #[prost(message, tag="1")]
+                #[prost(message, tag = "1")]
                 Netmask(Netmask),
-                #[prost(message, tag="3")]
+                #[prost(message, tag = "3")]
                 Ports(PortRange),
             }
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Http {
-            #[prost(oneof="http::Match", tags="1, 3, 2, 4")]
+            #[prost(oneof = "http::Match", tags = "1, 3, 2, 4")]
             pub r#match: ::core::option::Option<http::Match>,
         }
         /// Nested message and enum types in `Http`.
         pub mod http {
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Message)]
             pub struct StringMatch {
-                #[prost(oneof="string_match::Match", tags="1, 2")]
+                #[prost(oneof = "string_match::Match", tags = "1, 2")]
                 pub r#match: ::core::option::Option<string_match::Match>,
             }
             /// Nested message and enum types in `StringMatch`.
             pub mod string_match {
+                #[allow(clippy::derive_partial_eq_without_eq)]
                 #[derive(Clone, PartialEq, ::prost::Oneof)]
                 pub enum Match {
-                    #[prost(string, tag="1")]
+                    #[prost(string, tag = "1")]
                     Exact(::prost::alloc::string::String),
-                    #[prost(string, tag="2")]
+                    #[prost(string, tag = "2")]
                     Prefix(::prost::alloc::string::String),
                 }
             }
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Oneof)]
             pub enum Match {
-                #[prost(message, tag="1")]
+                #[prost(message, tag = "1")]
                 Scheme(super::super::super::super::http_types::Scheme),
-                #[prost(message, tag="3")]
+                #[prost(message, tag = "3")]
                 Method(super::super::super::super::http_types::HttpMethod),
-                #[prost(message, tag="2")]
+                #[prost(message, tag = "2")]
                 Authority(StringMatch),
                 /// TODO Header        header    = 4;
-                #[prost(message, tag="4")]
+                #[prost(message, tag = "4")]
                 Path(StringMatch),
             }
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Match {
-            #[prost(message, tag="1")]
+            #[prost(message, tag = "1")]
             All(Seq),
-            #[prost(message, tag="2")]
+            #[prost(message, tag = "2")]
             Any(Seq),
-            #[prost(message, tag="3")]
+            #[prost(message, tag = "3")]
             Not(::prost::alloc::boxed::Box<super::Match>),
-            #[prost(message, tag="4")]
+            #[prost(message, tag = "4")]
             Source(Tcp),
-            #[prost(message, tag="5")]
+            #[prost(message, tag = "5")]
             Destination(Tcp),
-            #[prost(message, tag="6")]
+            #[prost(message, tag = "6")]
             Http(Http),
-            #[prost(message, tag="7")]
+            #[prost(message, tag = "7")]
             DestinationLabel(Label),
-            #[prost(message, tag="8")]
+            #[prost(message, tag = "8")]
             RouteLabel(Label),
         }
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Extract {
-        #[prost(oneof="extract::Extract", tags="1")]
+        #[prost(oneof = "extract::Extract", tags = "1")]
         pub extract: ::core::option::Option<extract::Extract>,
     }
     /// Nested message and enum types in `Extract`.
     pub mod extract {
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Http {
-            #[prost(oneof="http::Extract", tags="1")]
+            #[prost(oneof = "http::Extract", tags = "1")]
             pub extract: ::core::option::Option<http::Extract>,
         }
         /// Nested message and enum types in `Http`.
         pub mod http {
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Message)]
-            pub struct Headers {
-            }
+            pub struct Headers {}
+            #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Oneof)]
             pub enum Extract {
-                #[prost(message, tag="1")]
+                #[prost(message, tag = "1")]
                 Headers(Headers),
             }
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Extract {
-            #[prost(message, tag="1")]
+            #[prost(message, tag = "1")]
             Http(Http),
         }
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Eos {
-    #[prost(oneof="eos::End", tags="1, 2")]
+    #[prost(oneof = "eos::End", tags = "1, 2")]
     pub end: ::core::option::Option<eos::End>,
 }
 /// Nested message and enum types in `Eos`.
 pub mod eos {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum End {
-        #[prost(uint32, tag="1")]
+        #[prost(uint32, tag = "1")]
         GrpcStatusCode(u32),
-        #[prost(uint32, tag="2")]
+        #[prost(uint32, tag = "2")]
         ResetErrorCode(u32),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TapEvent {
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub source: ::core::option::Option<super::net::TcpAddress>,
-    #[prost(message, optional, tag="5")]
+    #[prost(message, optional, tag = "5")]
     pub source_meta: ::core::option::Option<tap_event::EndpointMeta>,
-    #[prost(message, optional, tag="7")]
+    #[prost(message, optional, tag = "7")]
     pub route_meta: ::core::option::Option<tap_event::RouteMeta>,
-    #[prost(message, optional, tag="2")]
+    #[prost(message, optional, tag = "2")]
     pub destination: ::core::option::Option<super::net::TcpAddress>,
-    #[prost(message, optional, tag="4")]
+    #[prost(message, optional, tag = "4")]
     pub destination_meta: ::core::option::Option<tap_event::EndpointMeta>,
-    #[prost(enumeration="tap_event::ProxyDirection", tag="6")]
+    #[prost(enumeration = "tap_event::ProxyDirection", tag = "6")]
     pub proxy_direction: i32,
-    #[prost(oneof="tap_event::Event", tags="3")]
+    #[prost(oneof = "tap_event::Event", tags = "3")]
     pub event: ::core::option::Option<tap_event::Event>,
 }
 /// Nested message and enum types in `TapEvent`.
 pub mod tap_event {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct EndpointMeta {
-        #[prost(map="string, string", tag="1")]
-        pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+        #[prost(map = "string, string", tag = "1")]
+        pub labels: ::std::collections::HashMap<
+            ::prost::alloc::string::String,
+            ::prost::alloc::string::String,
+        >,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RouteMeta {
-        #[prost(map="string, string", tag="1")]
-        pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+        #[prost(map = "string, string", tag = "1")]
+        pub labels: ::std::collections::HashMap<
+            ::prost::alloc::string::String,
+            ::prost::alloc::string::String,
+        >,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http {
-        #[prost(oneof="http::Event", tags="1, 2, 3")]
+        #[prost(oneof = "http::Event", tags = "1, 2, 3")]
         pub event: ::core::option::Option<http::Event>,
     }
     /// Nested message and enum types in `Http`.
     pub mod http {
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct StreamId {
             /// A randomized base (stable across a process's runtime)
-            #[prost(uint32, tag="1")]
+            #[prost(uint32, tag = "1")]
             pub base: u32,
             /// A stream id unique within the lifetime of `base`.
-            #[prost(uint64, tag="2")]
+            #[prost(uint64, tag = "2")]
             pub stream: u64,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct RequestInit {
-            #[prost(message, optional, tag="1")]
+            #[prost(message, optional, tag = "1")]
             pub id: ::core::option::Option<StreamId>,
-            #[prost(message, optional, tag="2")]
-            pub method: ::core::option::Option<super::super::super::http_types::HttpMethod>,
-            #[prost(message, optional, tag="3")]
+            #[prost(message, optional, tag = "2")]
+            pub method: ::core::option::Option<
+                super::super::super::http_types::HttpMethod,
+            >,
+            #[prost(message, optional, tag = "3")]
             pub scheme: ::core::option::Option<super::super::super::http_types::Scheme>,
-            #[prost(string, tag="4")]
+            #[prost(string, tag = "4")]
             pub authority: ::prost::alloc::string::String,
-            #[prost(string, tag="5")]
+            #[prost(string, tag = "5")]
             pub path: ::prost::alloc::string::String,
-            #[prost(message, optional, tag="6")]
-            pub headers: ::core::option::Option<super::super::super::http_types::Headers>,
+            #[prost(message, optional, tag = "6")]
+            pub headers: ::core::option::Option<
+                super::super::super::http_types::Headers,
+            >,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct ResponseInit {
-            #[prost(message, optional, tag="1")]
+            #[prost(message, optional, tag = "1")]
             pub id: ::core::option::Option<StreamId>,
-            #[prost(message, optional, tag="2")]
+            #[prost(message, optional, tag = "2")]
             pub since_request_init: ::core::option::Option<::prost_types::Duration>,
-            #[prost(uint32, tag="3")]
+            #[prost(uint32, tag = "3")]
             pub http_status: u32,
-            #[prost(message, optional, tag="4")]
-            pub headers: ::core::option::Option<super::super::super::http_types::Headers>,
+            #[prost(message, optional, tag = "4")]
+            pub headers: ::core::option::Option<
+                super::super::super::http_types::Headers,
+            >,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct ResponseEnd {
-            #[prost(message, optional, tag="1")]
+            #[prost(message, optional, tag = "1")]
             pub id: ::core::option::Option<StreamId>,
-            #[prost(message, optional, tag="2")]
+            #[prost(message, optional, tag = "2")]
             pub since_request_init: ::core::option::Option<::prost_types::Duration>,
-            #[prost(message, optional, tag="3")]
+            #[prost(message, optional, tag = "3")]
             pub since_response_init: ::core::option::Option<::prost_types::Duration>,
-            #[prost(uint64, tag="4")]
+            #[prost(uint64, tag = "4")]
             pub response_bytes: u64,
-            #[prost(message, optional, tag="5")]
+            #[prost(message, optional, tag = "5")]
             pub eos: ::core::option::Option<super::super::Eos>,
-            #[prost(message, optional, tag="6")]
-            pub trailers: ::core::option::Option<super::super::super::http_types::Headers>,
+            #[prost(message, optional, tag = "6")]
+            pub trailers: ::core::option::Option<
+                super::super::super::http_types::Headers,
+            >,
         }
+        #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Event {
-            #[prost(message, tag="1")]
+            #[prost(message, tag = "1")]
             RequestInit(RequestInit),
-            #[prost(message, tag="2")]
+            #[prost(message, tag = "2")]
             ResponseInit(ResponseInit),
-            #[prost(message, tag="3")]
+            #[prost(message, tag = "3")]
             ResponseEnd(ResponseEnd),
         }
     }
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum ProxyDirection {
         Unknown = 0,
@@ -280,10 +334,20 @@ pub mod tap_event {
                 ProxyDirection::Outbound => "OUTBOUND",
             }
         }
+        /// Creates an enum from field names used in the ProtoBuf definition.
+        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+            match value {
+                "UNKNOWN" => Some(Self::Unknown),
+                "INBOUND" => Some(Self::Inbound),
+                "OUTBOUND" => Some(Self::Outbound),
+                _ => None,
+            }
+        }
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Event {
-        #[prost(message, tag="3")]
+        #[prost(message, tag = "3")]
         Http(Http),
     }
 }
@@ -374,10 +438,10 @@ pub mod tap_client {
 pub mod tap_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with TapServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with TapServer.
     #[async_trait]
     pub trait Tap: Send + Sync + 'static {
-        ///Server streaming response type for the Observe method.
+        /// Server streaming response type for the Observe method.
         type ObserveStream: futures_core::Stream<
                 Item = Result<super::TapEvent, tonic::Status>,
             >
