@@ -106,8 +106,8 @@ pub mod http_route {
         pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
         #[prost(message, repeated, tag = "2")]
         pub filters: ::prost::alloc::vec::Vec<super::Filter>,
-        #[prost(message, repeated, tag = "3")]
-        pub backends: ::prost::alloc::vec::Vec<super::Distribution>,
+        #[prost(message, optional, tag = "3")]
+        pub backends: ::core::option::Option<super::Distribution>,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

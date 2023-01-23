@@ -87,7 +87,7 @@ message HttpRoute {
   message Rule {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
-    repeated Distribution backends = 3;
+    Distribution backends = 3;
   }
 }
 
