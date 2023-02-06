@@ -131,9 +131,14 @@ message ProtocolHint {
     // Hints that the service understands HTTP2 and the proxy's internal
     // http2-upgrade mechanism.
     H2 h2 = 1;
-  }
+    // Hints that the destination will handle this connection as an opaque TCP
+    // stream, and (if `opaque_transport` is set) that the proxy should not send
+    // a `SessionProtocol` as part of its transport header.
+    Opaque opaque = 3;
+ }
 
   message H2 {}
+  message Opaque {}
 
   // When set, indicates that the target supports receiving opaque traffic
   // wrapped with the Linkerd connection header on the specified port.
