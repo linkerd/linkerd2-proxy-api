@@ -125,7 +125,7 @@ pub struct ProtocolHint {
     /// wrapped with the Linkerd connection header on the specified port.
     #[prost(message, optional, tag = "2")]
     pub opaque_transport: ::core::option::Option<protocol_hint::OpaqueTransport>,
-    #[prost(oneof = "protocol_hint::Protocol", tags = "1")]
+    #[prost(oneof = "protocol_hint::Protocol", tags = "1, 3")]
     pub protocol: ::core::option::Option<protocol_hint::Protocol>,
 }
 /// Nested message and enum types in `ProtocolHint`.
@@ -133,6 +133,9 @@ pub mod protocol_hint {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct H2 {}
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Opaque {}
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct OpaqueTransport {
@@ -147,6 +150,11 @@ pub mod protocol_hint {
         /// http2-upgrade mechanism.
         #[prost(message, tag = "1")]
         H2(H2),
+        /// Hints that the destination will handle this connection as an opaque TCP
+        /// stream, and (if `opaque_transport` is set) that the proxy should not send
+        /// a `SessionProtocol` as part of its transport header.
+        #[prost(message, tag = "3")]
+        Opaque(Opaque),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

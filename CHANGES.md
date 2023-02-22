@@ -1,5 +1,9 @@
 # `linkerd2-proxy-api` changes
 
+## v0.8.0
+
+* Add `Opaque` variant to `destination.ProtocolHint`
+
 ## v0.7.0
 
 * Rust: Update `tonic` to v0.8 and `prost` to v0.11
