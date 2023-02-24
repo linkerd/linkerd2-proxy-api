@@ -121,4 +121,17 @@ message Backend {
     io.linkerd.proxy.destination.WeightedDst balancer = 2;
     io.linkerd.proxy.destination.WeightedAddr forward = 3;
   }
+
+  Queue queue = 4;
+  
+  // Describes queue configuration for a backend.
+  message Queue {
+    // The number of requests that may be held in a queue before backpressure is
+    // exerted.
+    uint32 capacity = 1;
+
+    // A timeout that limits how long a backend may remain unready before any
+    // requests in its queue are failed.
+    google.protobuf.Duration failfast_timeout = 2;
+  }
 }
