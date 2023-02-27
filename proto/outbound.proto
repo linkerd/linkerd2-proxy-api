@@ -118,7 +118,44 @@ message Backend {
   repeated Filter filters = 1;
 
   oneof backend {
-    io.linkerd.proxy.destination.WeightedDst balancer = 2;
+    BalanceP2c balancer = 2;
     io.linkerd.proxy.destination.WeightedAddr forward = 3;
+  }
+
+  Queue queue = 4;
+
+  // Describes queue configuration for a backend.
+  message Queue {
+    // The number of requests that may be held in a queue before backpressure is
+    // exerted.
+    uint32 capacity = 1;
+
+    // A timeout that limits how long a backend may remain unready before any
+    // requests in its queue are failed.
+    google.protobuf.Duration failfast_timeout = 2;
+  }
+
+  // Describes a power-of-two-choices (P2C) load balancer configuration for a
+  // backend.
+  message BalanceP2c {
+    // The destination to discover endpoints for.
+    io.linkerd.proxy.destination.WeightedDst dst = 1;
+
+    // The load estimation strategy used by this load balancer.
+    oneof load {
+      // This load balancer uses peak EWMA (exponentially weighted moving
+      // average) load estimates.
+      PeakEwma peak_ewma = 2;
+    }
+
+    // Parameters configuring peak EWMA load estimation.
+    message PeakEwma {
+      // Initial latency value used when no latencies have been
+      // recorded for an endpoint.
+      google.protobuf.Duration default_rtt = 1;
+
+      // The duration of the moving window over which latency is observed.
+      google.protobuf.Duration decay = 2;
+    }
   }
 }

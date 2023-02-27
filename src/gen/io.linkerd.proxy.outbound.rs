@@ -165,16 +165,67 @@ pub mod distribution {
 pub struct Backend {
     #[prost(message, repeated, tag = "1")]
     pub filters: ::prost::alloc::vec::Vec<Filter>,
+    #[prost(message, optional, tag = "4")]
+    pub queue: ::core::option::Option<backend::Queue>,
     #[prost(oneof = "backend::Backend", tags = "2, 3")]
     pub backend: ::core::option::Option<backend::Backend>,
 }
 /// Nested message and enum types in `Backend`.
 pub mod backend {
+    /// Describes queue configuration for a backend.
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Queue {
+        /// The number of requests that may be held in a queue before backpressure is
+        /// exerted.
+        #[prost(uint32, tag = "1")]
+        pub capacity: u32,
+        /// A timeout that limits how long a backend may remain unready before any
+        /// requests in its queue are failed.
+        #[prost(message, optional, tag = "2")]
+        pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
+    }
+    /// Describes a power-of-two-choices (P2C) load balancer configuration for a
+    /// backend.
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct BalanceP2c {
+        /// The destination to discover endpoints for.
+        #[prost(message, optional, tag = "1")]
+        pub dst: ::core::option::Option<super::super::destination::WeightedDst>,
+        /// The load estimation strategy used by this load balancer.
+        #[prost(oneof = "balance_p2c::Load", tags = "2")]
+        pub load: ::core::option::Option<balance_p2c::Load>,
+    }
+    /// Nested message and enum types in `BalanceP2c`.
+    pub mod balance_p2c {
+        /// Parameters configuring peak EWMA load estimation.
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct PeakEwma {
+            /// Initial latency value used when no latencies have been
+            /// recorded for an endpoint.
+            #[prost(message, optional, tag = "1")]
+            pub default_rtt: ::core::option::Option<::prost_types::Duration>,
+            /// The duration of the moving window over which latency is observed.
+            #[prost(message, optional, tag = "2")]
+            pub decay: ::core::option::Option<::prost_types::Duration>,
+        }
+        /// The load estimation strategy used by this load balancer.
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Load {
+            /// This load balancer uses peak EWMA (exponentially weighted moving
+            /// average) load estimates.
+            #[prost(message, tag = "2")]
+            PeakEwma(PeakEwma),
+        }
+    }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Backend {
         #[prost(message, tag = "2")]
-        Balancer(super::super::destination::WeightedDst),
+        Balancer(BalanceP2c),
         #[prost(message, tag = "3")]
         Forward(super::super::destination::WeightedAddr),
     }
