@@ -48,7 +48,7 @@ generally used by [controller implementations][cp-gh].
 
 [![Crates.io][rs-crate-badge]][rs-crate-url]
 [![Documentation][rs-docs-badge]][rs-docs-url]
-[![License][rs-lic-badge]](LICENSE)
+[![License][lic-badge]](LICENSE)
 
 This repository publishes the [**linkerd2-proxy-api** crate][rs-crate-url],
 which uses [`tonic`][tonic] to expose client and server implementations for each
@@ -86,3 +86,4 @@ Issues may be opened in the [**linkerd2** repository][new-issue].
 [rs-crate-url]: https://crates.io/crates/linkerd2-proxy-api
 [rs-docs-badge]: https://docs.rs/linkerd2-proxy-api/badge.svg
 [rs-docs-url]: https://docs.rs/linkerd2-proxy-api
+[lic-badge]: https://img.shields.io/github/license/linkerd/linkerd2-proxy-api.svg
