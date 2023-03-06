@@ -1,29 +1,30 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TargetSpec {
-    /// Identifies the source proxy workload (e.g., pod name).
+pub struct TrafficSpec {
+    /// Uniquely identifies the source proxy workload (e.g., pod name) to the
+    /// control plane.
     #[prost(string, tag = "1")]
-    pub workload: ::prost::alloc::string::String,
-    /// Target port
-    #[prost(uint32, tag = "4")]
-    pub port: u32,
-    #[prost(oneof = "target_spec::Target", tags = "2, 3")]
-    pub target: ::core::option::Option<target_spec::Target>,
+    pub source_workload: ::prost::alloc::string::String,
+    /// Describes a target address, as observed by the proxy.
+    #[prost(oneof = "traffic_spec::Target", tags = "2, 3")]
+    pub target: ::core::option::Option<traffic_spec::Target>,
 }
-/// Nested message and enum types in `TargetSpec`.
-pub mod target_spec {
+/// Nested message and enum types in `TrafficSpec`.
+pub mod traffic_spec {
+    /// Describes a target address, as observed by the proxy.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Target {
-        /// Target address. This may be the cluster IP of a Kubernetes Service or the
-        /// IP of a Pod.
+        /// Indicates the proxy is connecting to a specific IP:port.
         #[prost(message, tag = "2")]
-        Address(super::super::net::IpAddress),
+        Addr(super::super::net::SocketAddress),
+        /// Indicates the proxy is connecting to a named address (like an HTTP
+        /// authority).
         #[prost(string, tag = "3")]
         Authority(::prost::alloc::string::String),
     }
 }
-/// Outbound policy for a given target address.
+/// Outbound policy for a given traffic spec.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct OutboundPolicy {
@@ -40,7 +41,7 @@ pub struct OutboundPolicy {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProxyProtocol {
-    #[prost(oneof = "proxy_protocol::Kind", tags = "1, 2")]
+    #[prost(oneof = "proxy_protocol::Kind", tags = "1, 2, 3, 4, 5")]
     pub kind: ::core::option::Option<proxy_protocol::Kind>,
 }
 /// Nested message and enum types in `ProxyProtocol`.
@@ -51,11 +52,13 @@ pub mod proxy_protocol {
         /// Protocol detection timeout.
         #[prost(message, optional, tag = "1")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
-        /// Policy to use if the protocol is detected as HTTP1.
         #[prost(message, optional, tag = "2")]
-        pub http1: ::core::option::Option<Http1>,
-        /// Policy to use if the protocol is detected as HTTP2.
+        pub opaque: ::core::option::Option<Opaque>,
+        /// HTTP/1 policy configuration.
         #[prost(message, optional, tag = "3")]
+        pub http1: ::core::option::Option<Http1>,
+        /// HTTP/2 policy configuration.
+        #[prost(message, optional, tag = "4")]
         pub http2: ::core::option::Option<Http2>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
@@ -74,12 +77,27 @@ pub mod proxy_protocol {
         pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Grpc {
+        #[prost(message, repeated, tag = "1")]
+        pub grpc_routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
         #[prost(message, tag = "1")]
         Detect(Detect),
         #[prost(message, tag = "2")]
         Opaque(Opaque),
+        /// HTTP/1 policy configuration.
+        #[prost(message, tag = "3")]
+        Http1(Http1),
+        /// HTTP/2 policy configuration.
+        #[prost(message, tag = "4")]
+        Http2(Http2),
+        /// gRPC policy configuration.
+        #[prost(message, tag = "5")]
+        Grpc(Grpc),
     }
 }
 /// Outbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
@@ -105,94 +123,221 @@ pub mod http_route {
         #[prost(message, repeated, tag = "1")]
         pub matches: ::prost::alloc::vec::Vec<super::super::http_route::HttpRouteMatch>,
         #[prost(message, repeated, tag = "2")]
-        pub filters: ::prost::alloc::vec::Vec<super::Filter>,
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
-        pub backends: ::core::option::Option<super::Distribution>,
+        pub backends: ::core::option::Option<Distribution>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Filter {
+        #[prost(oneof = "filter::Kind", tags = "1, 2, 3")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            FailureInjector(super::super::super::http_route::HttpFailureInjector),
+            #[prost(message, tag = "2")]
+            RequestHeaderModifier(
+                super::super::super::http_route::RequestHeaderModifier,
+            ),
+            #[prost(message, tag = "3")]
+            Redirect(super::super::super::http_route::RequestRedirect),
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Distribution {
+        #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
+        pub distribution: ::core::option::Option<distribution::Distribution>,
+    }
+    /// Nested message and enum types in `Distribution`.
+    pub mod distribution {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Empty {}
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct FirstAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::RouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct RandomAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::WeightedRouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Distribution {
+            #[prost(message, tag = "1")]
+            Empty(Empty),
+            /// Use the first available backend in the list.
+            #[prost(message, tag = "2")]
+            FirstAvailable(FirstAvailable),
+            #[prost(message, tag = "3")]
+            RandomAvailable(RandomAvailable),
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<super::Backend>,
+        #[prost(message, repeated, tag = "3")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct WeightedRouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<RouteBackend>,
+        #[prost(uint32, tag = "2")]
+        pub weight: u32,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Filter {
-    #[prost(oneof = "filter::Kind", tags = "1")]
-    pub kind: ::core::option::Option<filter::Kind>,
+pub struct GrpcRoute {
+    #[prost(message, optional, tag = "1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// If empty, the host value is ignored.
+    #[prost(message, repeated, tag = "2")]
+    pub hosts: ::prost::alloc::vec::Vec<super::http_route::HostMatch>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag = "3")]
+    pub rules: ::prost::alloc::vec::Vec<grpc_route::Rule>,
 }
-/// Nested message and enum types in `Filter`.
-pub mod filter {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Kind {
-        #[prost(message, tag = "1")]
-        FailureInjector(super::super::http_route::HttpFailureInjector),
-    }
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Distribution {
-    #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
-    pub distribution: ::core::option::Option<distribution::Distribution>,
-}
-/// Nested message and enum types in `Distribution`.
-pub mod distribution {
+/// Nested message and enum types in `GrpcRoute`.
+pub mod grpc_route {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Empty {}
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct FirstAvailable {
-        /// Use the first available backend in the list; weights are ignored.
+    pub struct Rule {
         #[prost(message, repeated, tag = "1")]
-        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+        pub matches: ::prost::alloc::vec::Vec<super::super::grpc_route::GrpcRouteMatch>,
+        #[prost(message, repeated, tag = "2")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+        #[prost(message, optional, tag = "3")]
+        pub backends: ::core::option::Option<Distribution>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct RandomAvailable {
-        #[prost(message, repeated, tag = "1")]
-        pub backends: ::prost::alloc::vec::Vec<super::Backend>,
+    pub struct Filter {
+        #[prost(oneof = "filter::Kind", tags = "1, 2")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            FailureInjector(super::super::super::grpc_route::GrpcFailureInjector),
+            #[prost(message, tag = "2")]
+            RequestHeaderModifier(
+                super::super::super::http_route::RequestHeaderModifier,
+            ),
+        }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Distribution {
-        #[prost(message, tag = "1")]
-        Empty(Empty),
-        #[prost(message, tag = "2")]
-        FirstAvailable(FirstAvailable),
-        #[prost(message, tag = "3")]
-        RandomAvailable(RandomAvailable),
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Distribution {
+        #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
+        pub distribution: ::core::option::Option<distribution::Distribution>,
+    }
+    /// Nested message and enum types in `Distribution`.
+    pub mod distribution {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Empty {}
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct FirstAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::RouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct RandomAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::WeightedRouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Distribution {
+            #[prost(message, tag = "1")]
+            Empty(Empty),
+            /// Use the first available backend in the list.
+            #[prost(message, tag = "2")]
+            FirstAvailable(FirstAvailable),
+            #[prost(message, tag = "3")]
+            RandomAvailable(RandomAvailable),
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<super::Backend>,
+        #[prost(message, repeated, tag = "3")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct WeightedRouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<RouteBackend>,
+        #[prost(uint32, tag = "2")]
+        pub weight: u32,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Backend {
-    #[prost(message, repeated, tag = "1")]
-    pub filters: ::prost::alloc::vec::Vec<Filter>,
+    #[prost(message, optional, tag = "1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// Describes queue configuration for a backend.
     #[prost(message, optional, tag = "4")]
-    pub queue: ::core::option::Option<backend::Queue>,
+    pub queue: ::core::option::Option<Queue>,
     #[prost(oneof = "backend::Backend", tags = "2, 3")]
     pub backend: ::core::option::Option<backend::Backend>,
 }
 /// Nested message and enum types in `Backend`.
 pub mod backend {
-    /// Describes queue configuration for a backend.
+    /// A strategy for discovering endpoints for a service.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Queue {
-        /// The number of requests that may be held in a queue before backpressure is
-        /// exerted.
-        #[prost(uint32, tag = "1")]
-        pub capacity: u32,
-        /// A timeout that limits how long a backend may remain unready before any
-        /// requests in its queue are failed.
-        #[prost(message, optional, tag = "2")]
-        pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
+    pub struct EndpointDiscovery {
+        #[prost(oneof = "endpoint_discovery::Kind", tags = "1")]
+        pub kind: ::core::option::Option<endpoint_discovery::Kind>,
+    }
+    /// Nested message and enum types in `EndpointDiscovery`.
+    pub mod endpoint_discovery {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct DestinationGet {
+            #[prost(string, tag = "1")]
+            pub path: ::prost::alloc::string::String,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            /// Use the `Destination` service to discover endpoints for this service.
+            #[prost(message, tag = "1")]
+            Dst(DestinationGet),
+        }
     }
     /// Describes a power-of-two-choices (P2C) load balancer configuration for a
     /// backend.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct BalanceP2c {
-        /// The destination to discover endpoints for.
         #[prost(message, optional, tag = "1")]
-        pub dst: ::core::option::Option<super::super::destination::WeightedDst>,
+        pub discovery: ::core::option::Option<EndpointDiscovery>,
         /// The load estimation strategy used by this load balancer.
         #[prost(oneof = "balance_p2c::Load", tags = "2")]
         pub load: ::core::option::Option<balance_p2c::Load>,
@@ -224,11 +369,25 @@ pub mod backend {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Backend {
+        /// A backend that consists of a single endpoint.
         #[prost(message, tag = "2")]
-        Balancer(BalanceP2c),
-        #[prost(message, tag = "3")]
         Forward(super::super::destination::WeightedAddr),
+        /// A backend that comprises a load balanced service.
+        #[prost(message, tag = "3")]
+        Balancer(BalanceP2c),
     }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Queue {
+    /// The number of requests that may be held in a queue before backpressure is
+    /// exerted.
+    #[prost(uint32, tag = "1")]
+    pub capacity: u32,
+    /// A timeout that limits how long a backend may remain unready before any
+    /// requests in its queue are failed.
+    #[prost(message, optional, tag = "2")]
+    pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
 }
 /// Generated client implementations.
 pub mod outbound_policies_client {
@@ -290,7 +449,7 @@ pub mod outbound_policies_client {
         }
         pub async fn get(
             &mut self,
-            request: impl tonic::IntoRequest<super::TargetSpec>,
+            request: impl tonic::IntoRequest<super::TrafficSpec>,
         ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status> {
             self.inner
                 .ready()
@@ -309,7 +468,7 @@ pub mod outbound_policies_client {
         }
         pub async fn watch(
             &mut self,
-            request: impl tonic::IntoRequest<super::TargetSpec>,
+            request: impl tonic::IntoRequest<super::TrafficSpec>,
         ) -> Result<
             tonic::Response<tonic::codec::Streaming<super::OutboundPolicy>>,
             tonic::Status,
@@ -340,7 +499,7 @@ pub mod outbound_policies_server {
     pub trait OutboundPolicies: Send + Sync + 'static {
         async fn get(
             &self,
-            request: tonic::Request<super::TargetSpec>,
+            request: tonic::Request<super::TrafficSpec>,
         ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status>;
         /// Server streaming response type for the Watch method.
         type WatchStream: futures_core::Stream<
@@ -350,7 +509,7 @@ pub mod outbound_policies_server {
             + 'static;
         async fn watch(
             &self,
-            request: tonic::Request<super::TargetSpec>,
+            request: tonic::Request<super::TrafficSpec>,
         ) -> Result<tonic::Response<Self::WatchStream>, tonic::Status>;
     }
     #[derive(Debug)]
@@ -417,7 +576,7 @@ pub mod outbound_policies_server {
                     struct GetSvc<T: OutboundPolicies>(pub Arc<T>);
                     impl<
                         T: OutboundPolicies,
-                    > tonic::server::UnaryService<super::TargetSpec> for GetSvc<T> {
+                    > tonic::server::UnaryService<super::TrafficSpec> for GetSvc<T> {
                         type Response = super::OutboundPolicy;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
@@ -425,7 +584,7 @@ pub mod outbound_policies_server {
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::TargetSpec>,
+                            request: tonic::Request<super::TrafficSpec>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
                             let fut = async move { (*inner).get(request).await };
@@ -454,7 +613,7 @@ pub mod outbound_policies_server {
                     struct WatchSvc<T: OutboundPolicies>(pub Arc<T>);
                     impl<
                         T: OutboundPolicies,
-                    > tonic::server::ServerStreamingService<super::TargetSpec>
+                    > tonic::server::ServerStreamingService<super::TrafficSpec>
                     for WatchSvc<T> {
                         type Response = super::OutboundPolicy;
                         type ResponseStream = T::WatchStream;
@@ -464,7 +623,7 @@ pub mod outbound_policies_server {
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::TargetSpec>,
+                            request: tonic::Request<super::TrafficSpec>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
                             let fut = async move { (*inner).watch(request).await };

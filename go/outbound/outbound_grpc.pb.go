@@ -27,8 +27,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OutboundPoliciesClient interface {
-	Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*OutboundPolicy, error)
-	Watch(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (OutboundPolicies_WatchClient, error)
+	Get(ctx context.Context, in *TrafficSpec, opts ...grpc.CallOption) (*OutboundPolicy, error)
+	Watch(ctx context.Context, in *TrafficSpec, opts ...grpc.CallOption) (OutboundPolicies_WatchClient, error)
 }
 
 type outboundPoliciesClient struct {
@@ -39,7 +39,7 @@ func NewOutboundPoliciesClient(cc grpc.ClientConnInterface) OutboundPoliciesClie
 	return &outboundPoliciesClient{cc}
 }
 
-func (c *outboundPoliciesClient) Get(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (*OutboundPolicy, error) {
+func (c *outboundPoliciesClient) Get(ctx context.Context, in *TrafficSpec, opts ...grpc.CallOption) (*OutboundPolicy, error) {
 	out := new(OutboundPolicy)
 	err := c.cc.Invoke(ctx, OutboundPolicies_Get_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -48,7 +48,7 @@ func (c *outboundPoliciesClient) Get(ctx context.Context, in *TargetSpec, opts .
 	return out, nil
 }
 
-func (c *outboundPoliciesClient) Watch(ctx context.Context, in *TargetSpec, opts ...grpc.CallOption) (OutboundPolicies_WatchClient, error) {
+func (c *outboundPoliciesClient) Watch(ctx context.Context, in *TrafficSpec, opts ...grpc.CallOption) (OutboundPolicies_WatchClient, error) {
 	stream, err := c.cc.NewStream(ctx, &OutboundPolicies_ServiceDesc.Streams[0], OutboundPolicies_Watch_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
@@ -84,8 +84,8 @@ func (x *outboundPoliciesWatchClient) Recv() (*OutboundPolicy, error) {
 // All implementations must embed UnimplementedOutboundPoliciesServer
 // for forward compatibility
 type OutboundPoliciesServer interface {
-	Get(context.Context, *TargetSpec) (*OutboundPolicy, error)
-	Watch(*TargetSpec, OutboundPolicies_WatchServer) error
+	Get(context.Context, *TrafficSpec) (*OutboundPolicy, error)
+	Watch(*TrafficSpec, OutboundPolicies_WatchServer) error
 	mustEmbedUnimplementedOutboundPoliciesServer()
 }
 
@@ -93,10 +93,10 @@ type OutboundPoliciesServer interface {
 type UnimplementedOutboundPoliciesServer struct {
 }
 
-func (UnimplementedOutboundPoliciesServer) Get(context.Context, *TargetSpec) (*OutboundPolicy, error) {
+func (UnimplementedOutboundPoliciesServer) Get(context.Context, *TrafficSpec) (*OutboundPolicy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedOutboundPoliciesServer) Watch(*TargetSpec, OutboundPolicies_WatchServer) error {
+func (UnimplementedOutboundPoliciesServer) Watch(*TrafficSpec, OutboundPolicies_WatchServer) error {
 	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
 }
 func (UnimplementedOutboundPoliciesServer) mustEmbedUnimplementedOutboundPoliciesServer() {}
@@ -113,7 +113,7 @@ func RegisterOutboundPoliciesServer(s grpc.ServiceRegistrar, srv OutboundPolicie
 }
 
 func _OutboundPolicies_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TargetSpec)
+	in := new(TrafficSpec)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,13 +125,13 @@ func _OutboundPolicies_Get_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: OutboundPolicies_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OutboundPoliciesServer).Get(ctx, req.(*TargetSpec))
+		return srv.(OutboundPoliciesServer).Get(ctx, req.(*TrafficSpec))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _OutboundPolicies_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(TargetSpec)
+	m := new(TrafficSpec)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
