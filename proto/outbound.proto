@@ -115,7 +115,7 @@ message HttpRoute {
   }
 
   message Distribution {
-    oneof distribution {
+    oneof kind {
       Empty empty = 1;
       // Use the first available backend in the list.
       FirstAvailable first_available = 2;
@@ -164,7 +164,7 @@ message GrpcRoute {
   }
 
   message Distribution {
-    oneof distribution {
+    oneof kind {
       Empty empty = 1;
       // Use the first available backend in the list.
       FirstAvailable first_available = 2;
@@ -194,7 +194,7 @@ message GrpcRoute {
 message Backend {
   io.linkerd.proxy.meta.Metadata metadata = 1;
 
-  oneof backend {
+  oneof kind {
     // A backend that consists of a single endpoint.
     io.linkerd.proxy.destination.WeightedAddr forward = 2;
 

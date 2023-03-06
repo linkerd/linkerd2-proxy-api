@@ -151,8 +151,8 @@ pub mod http_route {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Distribution {
-        #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
-        pub distribution: ::core::option::Option<distribution::Distribution>,
+        #[prost(oneof = "distribution::Kind", tags = "1, 2, 3")]
+        pub kind: ::core::option::Option<distribution::Kind>,
     }
     /// Nested message and enum types in `Distribution`.
     pub mod distribution {
@@ -173,7 +173,7 @@ pub mod http_route {
         }
         #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Oneof)]
-        pub enum Distribution {
+        pub enum Kind {
             #[prost(message, tag = "1")]
             Empty(Empty),
             /// Use the first available backend in the list.
@@ -246,8 +246,8 @@ pub mod grpc_route {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Distribution {
-        #[prost(oneof = "distribution::Distribution", tags = "1, 2, 3")]
-        pub distribution: ::core::option::Option<distribution::Distribution>,
+        #[prost(oneof = "distribution::Kind", tags = "1, 2, 3")]
+        pub kind: ::core::option::Option<distribution::Kind>,
     }
     /// Nested message and enum types in `Distribution`.
     pub mod distribution {
@@ -268,7 +268,7 @@ pub mod grpc_route {
         }
         #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Oneof)]
-        pub enum Distribution {
+        pub enum Kind {
             #[prost(message, tag = "1")]
             Empty(Empty),
             /// Use the first available backend in the list.
@@ -303,8 +303,8 @@ pub struct Backend {
     /// Describes queue configuration for a backend.
     #[prost(message, optional, tag = "4")]
     pub queue: ::core::option::Option<Queue>,
-    #[prost(oneof = "backend::Backend", tags = "2, 3")]
-    pub backend: ::core::option::Option<backend::Backend>,
+    #[prost(oneof = "backend::Kind", tags = "2, 3")]
+    pub kind: ::core::option::Option<backend::Kind>,
 }
 /// Nested message and enum types in `Backend`.
 pub mod backend {
@@ -368,7 +368,7 @@ pub mod backend {
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Backend {
+    pub enum Kind {
         /// A backend that consists of a single endpoint.
         #[prost(message, tag = "2")]
         Forward(super::super::destination::WeightedAddr),
