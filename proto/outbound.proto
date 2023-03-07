@@ -25,7 +25,7 @@ message TrafficSpec {
   // Describes a target address, as observed by the proxy.
   oneof target {
     // Indicates the proxy is connecting to a specific IP:port.
-    io.linkerd.proxy.net.SocketAddress addr = 2;
+    io.linkerd.proxy.net.TcpAddress addr = 2;
 
     // Indicates the proxy is connecting to a named address (like an HTTP
     // authority).

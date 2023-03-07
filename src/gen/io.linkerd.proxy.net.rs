@@ -1,13 +1,5 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SocketAddress {
-    #[prost(message, optional, tag = "1")]
-    pub ip: ::core::option::Option<IpAddress>,
-    #[prost(uint32, tag = "2")]
-    pub port: u32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct IpAddress {
     #[prost(oneof = "ip_address::Ip", tags = "1, 2")]
     pub ip: ::core::option::Option<ip_address::Ip>,

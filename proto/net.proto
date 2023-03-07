@@ -4,11 +4,6 @@ package io.linkerd.proxy.net;
 
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/net";
 
-message SocketAddress {
-  IPAddress ip = 1;
-  uint32 port = 2;
-}
-
 message IPAddress {
   oneof ip {
     fixed32 ipv4 = 1;

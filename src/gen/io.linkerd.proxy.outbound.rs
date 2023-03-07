@@ -17,7 +17,7 @@ pub mod traffic_spec {
     pub enum Target {
         /// Indicates the proxy is connecting to a specific IP:port.
         #[prost(message, tag = "2")]
-        Addr(super::super::net::SocketAddress),
+        Addr(super::super::net::TcpAddress),
         /// Indicates the proxy is connecting to a named address (like an HTTP
         /// authority).
         #[prost(string, tag = "3")]
