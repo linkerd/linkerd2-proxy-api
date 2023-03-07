@@ -835,6 +835,65 @@ func (x *Ratio) GetDenominator() uint32 {
 	return 0
 }
 
+// If either a minimum or maximum is not specified, the range is considered to
+// be over a discrete value.
+type HttpStatusRange struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Minimum matching http status code (inclusive), if specified.
+	Min uint32 `protobuf:"varint,1,opt,name=min,proto3" json:"min,omitempty"`
+	// Maximum matching http status code (inclusive), if specified.
+	Max uint32 `protobuf:"varint,2,opt,name=max,proto3" json:"max,omitempty"`
+}
+
+func (x *HttpStatusRange) Reset() {
+	*x = HttpStatusRange{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_http_route_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HttpStatusRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HttpStatusRange) ProtoMessage() {}
+
+func (x *HttpStatusRange) ProtoReflect() protoreflect.Message {
+	mi := &file_http_route_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HttpStatusRange.ProtoReflect.Descriptor instead.
+func (*HttpStatusRange) Descriptor() ([]byte, []int) {
+	return file_http_route_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *HttpStatusRange) GetMin() uint32 {
+	if x != nil {
+		return x.Min
+	}
+	return 0
+}
+
+func (x *HttpStatusRange) GetMax() uint32 {
+	if x != nil {
+		return x.Max
+	}
+	return 0
+}
+
 // A match like `*.example.com` is encoded as [com, example].
 type HostMatch_Suffix struct {
 	state         protoimpl.MessageState
@@ -847,7 +906,7 @@ type HostMatch_Suffix struct {
 func (x *HostMatch_Suffix) Reset() {
 	*x = HostMatch_Suffix{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_http_route_proto_msgTypes[10]
+		mi := &file_http_route_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -860,7 +919,7 @@ func (x *HostMatch_Suffix) String() string {
 func (*HostMatch_Suffix) ProtoMessage() {}
 
 func (x *HostMatch_Suffix) ProtoReflect() protoreflect.Message {
-	mi := &file_http_route_proto_msgTypes[10]
+	mi := &file_http_route_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -977,11 +1036,14 @@ var file_http_route_proto_rawDesc = []byte{
 	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x65, 0x72, 0x61, 0x74,
 	0x6f, 0x72, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x69, 0x6e, 0x61, 0x74, 0x6f,
 	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x69, 0x6e,
-	0x61, 0x74, 0x6f, 0x72, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65,
-	0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f,
-	0x2f, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x61, 0x74, 0x6f, 0x72, 0x22, 0x35, 0x0a, 0x0f, 0x48, 0x74, 0x74, 0x70, 0x53, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x69, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x03, 0x6d, 0x69, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x61, 0x78,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x03, 0x6d, 0x61, 0x78, 0x42, 0x35, 0x5a, 0x33, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72,
+	0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79,
+	0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x72, 0x6f, 0x75,
+	0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -996,7 +1058,7 @@ func file_http_route_proto_rawDescGZIP() []byte {
 	return file_http_route_proto_rawDescData
 }
 
-var file_http_route_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_http_route_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_http_route_proto_goTypes = []interface{}{
 	(*HostMatch)(nil),             // 0: io.linkerd.proxy.http_route.HostMatch
 	(*HttpRouteMatch)(nil),        // 1: io.linkerd.proxy.http_route.HttpRouteMatch
@@ -1008,20 +1070,21 @@ var file_http_route_proto_goTypes = []interface{}{
 	(*PathModifier)(nil),          // 7: io.linkerd.proxy.http_route.PathModifier
 	(*HttpFailureInjector)(nil),   // 8: io.linkerd.proxy.http_route.HttpFailureInjector
 	(*Ratio)(nil),                 // 9: io.linkerd.proxy.http_route.Ratio
-	(*HostMatch_Suffix)(nil),      // 10: io.linkerd.proxy.http_route.HostMatch.Suffix
-	(*http_types.HttpMethod)(nil), // 11: io.linkerd.proxy.http_types.HttpMethod
-	(*http_types.Headers)(nil),    // 12: io.linkerd.proxy.http_types.Headers
-	(*http_types.Scheme)(nil),     // 13: io.linkerd.proxy.http_types.Scheme
+	(*HttpStatusRange)(nil),       // 10: io.linkerd.proxy.http_route.HttpStatusRange
+	(*HostMatch_Suffix)(nil),      // 11: io.linkerd.proxy.http_route.HostMatch.Suffix
+	(*http_types.HttpMethod)(nil), // 12: io.linkerd.proxy.http_types.HttpMethod
+	(*http_types.Headers)(nil),    // 13: io.linkerd.proxy.http_types.Headers
+	(*http_types.Scheme)(nil),     // 14: io.linkerd.proxy.http_types.Scheme
 }
 var file_http_route_proto_depIdxs = []int32{
-	10, // 0: io.linkerd.proxy.http_route.HostMatch.suffix:type_name -> io.linkerd.proxy.http_route.HostMatch.Suffix
+	11, // 0: io.linkerd.proxy.http_route.HostMatch.suffix:type_name -> io.linkerd.proxy.http_route.HostMatch.Suffix
 	2,  // 1: io.linkerd.proxy.http_route.HttpRouteMatch.path:type_name -> io.linkerd.proxy.http_route.PathMatch
 	3,  // 2: io.linkerd.proxy.http_route.HttpRouteMatch.headers:type_name -> io.linkerd.proxy.http_route.HeaderMatch
 	4,  // 3: io.linkerd.proxy.http_route.HttpRouteMatch.query_params:type_name -> io.linkerd.proxy.http_route.QueryParamMatch
-	11, // 4: io.linkerd.proxy.http_route.HttpRouteMatch.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	12, // 5: io.linkerd.proxy.http_route.RequestHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
-	12, // 6: io.linkerd.proxy.http_route.RequestHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
-	13, // 7: io.linkerd.proxy.http_route.RequestRedirect.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	12, // 4: io.linkerd.proxy.http_route.HttpRouteMatch.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	13, // 5: io.linkerd.proxy.http_route.RequestHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
+	13, // 6: io.linkerd.proxy.http_route.RequestHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
+	14, // 7: io.linkerd.proxy.http_route.RequestRedirect.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
 	7,  // 8: io.linkerd.proxy.http_route.RequestRedirect.path:type_name -> io.linkerd.proxy.http_route.PathModifier
 	9,  // 9: io.linkerd.proxy.http_route.HttpFailureInjector.ratio:type_name -> io.linkerd.proxy.http_route.Ratio
 	10, // [10:10] is the sub-list for method output_type
@@ -1158,6 +1221,18 @@ func file_http_route_proto_init() {
 			}
 		}
 		file_http_route_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HttpStatusRange); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_http_route_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HostMatch_Suffix); i {
 			case 0:
 				return &v.state
@@ -1197,7 +1272,7 @@ func file_http_route_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_http_route_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

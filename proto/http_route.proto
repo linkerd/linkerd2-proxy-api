@@ -146,3 +146,12 @@ message Ratio {
   // MUST not be zero.
   uint32 denominator = 2;
 }
+
+// If either a minimum or maximum is not specified, the range is considered to
+// be over a discrete value.
+message HttpStatusRange {
+  // Minimum matching http status code (inclusive), if specified.
+  uint32 min = 1;
+  // Maximum matching http status code (inclusive), if specified.
+  uint32 max = 2;
+}

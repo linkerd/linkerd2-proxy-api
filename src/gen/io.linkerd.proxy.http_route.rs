@@ -203,3 +203,15 @@ pub struct Ratio {
     #[prost(uint32, tag = "2")]
     pub denominator: u32,
 }
+/// If either a minimum or maximum is not specified, the range is considered to
+/// be over a discrete value.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct HttpStatusRange {
+    /// Minimum matching http status code (inclusive), if specified.
+    #[prost(uint32, tag = "1")]
+    pub min: u32,
+    /// Maximum matching http status code (inclusive), if specified.
+    #[prost(uint32, tag = "2")]
+    pub max: u32,
+}
