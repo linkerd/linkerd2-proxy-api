@@ -32,11 +32,6 @@ pub struct OutboundPolicy {
     /// if the target has been marked as opaque and will be Discover otherwise.
     #[prost(message, optional, tag = "1")]
     pub protocol: ::core::option::Option<ProxyProtocol>,
-    /// The backend to use for this target.  If the target is a Service, the
-    /// backend will be a Dst containing the FQDN of the Service.  If the target
-    /// is a Pod, it will be an endpoint address.
-    #[prost(message, optional, tag = "2")]
-    pub backend: ::core::option::Option<Backend>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -63,7 +58,10 @@ pub mod proxy_protocol {
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Opaque {}
+    pub struct Opaque {
+        #[prost(message, repeated, tag = "1")]
+        pub opaque_routes: ::prost::alloc::vec::Vec<super::OpaqueRoute>,
+    }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http1 {
@@ -285,6 +283,73 @@ pub mod grpc_route {
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct WeightedRouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<RouteBackend>,
+        #[prost(uint32, tag = "2")]
+        pub weight: u32,
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OpaqueRoute {
+    #[prost(message, optional, tag = "1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag = "3")]
+    pub rules: ::prost::alloc::vec::Vec<opaque_route::Rule>,
+}
+/// Nested message and enum types in `OpaqueRoute`.
+pub mod opaque_route {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rule {
+        #[prost(message, optional, tag = "1")]
+        pub backends: ::core::option::Option<Distribution>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Distribution {
+        #[prost(oneof = "distribution::Kind", tags = "1, 2, 3")]
+        pub kind: ::core::option::Option<distribution::Kind>,
+    }
+    /// Nested message and enum types in `Distribution`.
+    pub mod distribution {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Empty {}
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct FirstAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::RouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct RandomAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::WeightedRouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Empty(Empty),
+            /// Use the first available backend in the list.
+            #[prost(message, tag = "2")]
+            FirstAvailable(FirstAvailable),
+            #[prost(message, tag = "3")]
+            RandomAvailable(RandomAvailable),
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<super::Backend>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
