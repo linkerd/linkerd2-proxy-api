@@ -38,11 +38,6 @@ message OutboundPolicy {
   // Indicates the protocol to use for this target.  This will be set to Opaque
   // if the target has been marked as opaque and will be Discover otherwise.
   ProxyProtocol protocol = 1;
-
-  // The backend to use for this target.  If the target is a Service, the
-  // backend will be a Dst containing the FQDN of the Service.  If the target
-  // is a Pod, it will be an endpoint address.
-  Backend backend = 2;
 }
 
 message ProxyProtocol {
@@ -74,7 +69,9 @@ message ProxyProtocol {
     Http2 http2 = 4;
   }
 
-  message Opaque {}
+  message Opaque {
+    repeated OpaqueRoute opaque_routes = 1;
+  }
 
   message Http1 {
     repeated HttpRoute http_routes = 1;
@@ -183,6 +180,42 @@ message GrpcRoute {
   message RouteBackend {
     Backend backend = 1;
     repeated Filter filters = 3;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message OpaqueRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    Distribution backends = 1;
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
   }
 
   message WeightedRouteBackend {
