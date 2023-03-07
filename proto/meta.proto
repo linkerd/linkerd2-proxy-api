@@ -24,4 +24,6 @@ message Resource {
   string group = 1;
   string kind = 2;
   string name = 3;
+  string namespace = 4;
+  string section = 5;
 }

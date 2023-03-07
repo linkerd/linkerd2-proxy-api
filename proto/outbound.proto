@@ -1,0 +1,286 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.outbound;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/outbound";
+
+import "net.proto";
+import "destination.proto";
+import "meta.proto";
+import "grpc_route.proto";
+import "http_route.proto";
+import "google/protobuf/duration.proto";
+
+service OutboundPolicies {
+  rpc Get(TrafficSpec) returns (OutboundPolicy) {}
+
+  rpc Watch(TrafficSpec) returns (stream OutboundPolicy) {}
+}
+
+message TrafficSpec {
+  // Uniquely identifies the source proxy workload (e.g., pod name) to the
+  // control plane.
+  string source_workload = 1;
+
+  // Describes a target address, as observed by the proxy.
+  oneof target {
+    // Indicates the proxy is connecting to a specific IP:port.
+    io.linkerd.proxy.net.TcpAddress addr = 2;
+
+    // Indicates the proxy is connecting to a named address (like an HTTP
+    // authority).
+    string authority = 3;
+  }
+}
+
+// Outbound policy for a given traffic spec.
+message OutboundPolicy {
+  // Indicates the protocol to use for this target.  This will be set to Opaque
+  // if the target has been marked as opaque and will be Discover otherwise.
+  ProxyProtocol protocol = 1;
+}
+
+message ProxyProtocol {
+  oneof kind {
+    Detect detect = 1;
+
+    Opaque opaque = 2;
+
+    // HTTP/1 policy configuration.
+    Http1 http1 = 3;
+
+    // HTTP/2 policy configuration.
+    Http2 http2 = 4;
+
+    // gRPC policy configuration.
+    Grpc grpc = 5;
+  }
+
+  message Detect {
+    // Protocol detection timeout.
+    google.protobuf.Duration timeout = 1;
+
+    Opaque opaque = 2;
+
+    // HTTP/1 policy configuration.
+    Http1 http1 = 3;
+
+    // HTTP/2 policy configuration.
+    Http2 http2 = 4;
+  }
+
+  message Opaque {
+    repeated OpaqueRoute routes = 1;
+  }
+
+  message Http1 {
+    repeated HttpRoute routes = 1;
+  }
+
+  message Http2 {
+    repeated HttpRoute routes = 1;
+  }
+
+  message Grpc {
+    repeated GrpcRoute routes = 1;
+  }
+}
+
+// Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
+//
+// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
+message HttpRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
+    repeated Filter filters = 2;
+    Distribution backends = 3;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+      io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
+    }
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
+    repeated Filter filters = 3;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message GrpcRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
+    repeated Filter filters = 2;
+    Distribution backends = 3;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.grpc_route.GrpcFailureInjector failure_injector = 1;
+      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+    }
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
+    repeated Filter filters = 3;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message OpaqueRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    Distribution backends = 1;
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message Backend {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  oneof kind {
+    // A backend that consists of a single endpoint.
+    io.linkerd.proxy.destination.WeightedAddr forward = 2;
+
+    // A backend that comprises a load balanced service.
+    BalanceP2c balancer = 3;
+  }
+
+  // Describes queue configuration for a backend.
+  Queue queue = 4;
+
+  // A strategy for discovering endpoints for a service.
+  message EndpointDiscovery {
+    oneof kind {
+      // Use the `Destination` service to discover endpoints for this service.
+      DestinationGet dst = 1;
+    }
+
+    message DestinationGet {
+      string path = 1;
+    }
+  }
+
+  // Describes a power-of-two-choices (P2C) load balancer configuration for a
+  // backend.
+  message BalanceP2c {
+    EndpointDiscovery discovery = 1;
+
+    // The load estimation strategy used by this load balancer.
+    oneof load {
+      // This load balancer uses peak EWMA (exponentially weighted moving
+      // average) load estimates.
+      PeakEwma peak_ewma = 2;
+    }
+
+    // Parameters configuring peak EWMA load estimation.
+    message PeakEwma {
+      // Initial latency value used when no latencies have been
+      // recorded for an endpoint.
+      google.protobuf.Duration default_rtt = 1;
+
+      // The duration of the moving window over which latency is observed.
+      google.protobuf.Duration decay = 2;
+    }
+  }
+}
+
+message Queue {
+  // The number of requests that may be held in a queue before backpressure is
+  // exerted.
+  uint32 capacity = 1;
+
+  // A timeout that limits how long a backend may remain unready before any
+  // requests in its queue are failed.
+  google.protobuf.Duration failfast_timeout = 2;
+}
+
