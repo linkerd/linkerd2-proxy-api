@@ -70,19 +70,19 @@ message ProxyProtocol {
   }
 
   message Opaque {
-    repeated OpaqueRoute opaque_routes = 1;
+    repeated OpaqueRoute routes = 1;
   }
 
   message Http1 {
-    repeated HttpRoute http_routes = 1;
+    repeated HttpRoute routes = 1;
   }
 
   message Http2 {
-    repeated HttpRoute http_routes = 1;
+    repeated HttpRoute routes = 1;
   }
 
   message Grpc {
-    repeated GrpcRoute grpc_routes = 1;
+    repeated GrpcRoute routes = 1;
   }
 }
 

@@ -60,25 +60,25 @@ pub mod proxy_protocol {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Opaque {
         #[prost(message, repeated, tag = "1")]
-        pub opaque_routes: ::prost::alloc::vec::Vec<super::OpaqueRoute>,
+        pub routes: ::prost::alloc::vec::Vec<super::OpaqueRoute>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http1 {
         #[prost(message, repeated, tag = "1")]
-        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
         #[prost(message, repeated, tag = "1")]
-        pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
         #[prost(message, repeated, tag = "1")]
-        pub grpc_routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
+        pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
