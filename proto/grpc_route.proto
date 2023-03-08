@@ -31,3 +31,7 @@ message GrpcFailureInjector {
   // ALL requests are failed.
   io.linkerd.proxy.http_route.Ratio ratio = 3;
 }
+
+message GrpcStatus {
+  uint32 code = 1;
+}

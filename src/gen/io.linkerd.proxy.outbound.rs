@@ -124,6 +124,10 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, repeated, tag = "4")]
+        pub failure_statuses: ::prost::alloc::vec::Vec<
+            super::super::http_route::HttpStatusRange,
+        >,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -221,6 +225,10 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, repeated, tag = "4")]
+        pub failure_statuses: ::prost::alloc::vec::Vec<
+            super::super::grpc_route::GrpcStatus,
+        >,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]

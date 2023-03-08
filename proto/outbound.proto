@@ -101,6 +101,8 @@ message HttpRoute {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+
+    repeated io.linkerd.proxy.http_route.HttpStatusRange failure_statuses = 4;
   }
 
   message Filter {
@@ -151,6 +153,8 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+
+    repeated io.linkerd.proxy.grpc_route.GrpcStatus failure_statuses = 4;
   }
 
   message Filter {

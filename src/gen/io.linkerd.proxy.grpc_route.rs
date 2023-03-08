@@ -32,3 +32,9 @@ pub struct GrpcFailureInjector {
     #[prost(message, optional, tag = "3")]
     pub ratio: ::core::option::Option<super::http_route::Ratio>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GrpcStatus {
+    #[prost(uint32, tag = "1")]
+    pub code: u32,
+}
