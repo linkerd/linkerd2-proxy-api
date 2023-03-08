@@ -30,49 +30,39 @@ export PROTOC_NO_VENDOR := "1"
 
 export RUST_BACKTRACE := env_var_or_default("RUST_BACKTRACE", "short")
 
-cargo_toolchain := ""
-cargo := "cargo" + if cargo_toolchain != "" { " +" + cargo_toolchain } else { "" }
+cargo-toolchain := ""
+_cargo := 'just-cargo' + if cargo-toolchain != '' { ' toolchain=' + cargo-toolchain } else { '' }
 
 features := "all"
 _features := if features == "all" { "--all-features" } else { "--features=" + features }
 
-# If we're running in Github Actions and cargo-action-fmt is installed, then add
-# a command suffix that formats errors.
-_fmt_cargo := if env_var_or_default("GITHUB_ACTIONS", "") != "true" { "" } else {
-    ```
-    if command -v cargo-action-fmt >/dev/null 2>&1; then
-        echo "--message-format=json | cargo-action-fmt"
-    fi
-    ```
-}
-
 # Fetch Rust dependencies
 rs-fetch:
-    {{ cargo }} fetch --locked
+    {{ _cargo }} fetch --locked
 
 # Check Rust code formatting
 rs-check-fmt:
-    {{ cargo }} fmt -- --check
+    {{ _cargo }} fmt -- --check
 
 # Check Rust code compilation
 rs-check *flags:
-    {{ cargo }} check --frozen --all-targets {{ _features }} {{ flags }} {{ _fmt_cargo }}
+    {{ _cargo }} check --all-targets {{ _features }} {{ flags }}
 
 # Lint Rust code
 rs-clippy *flags:
-    {{ cargo }} clippy --frozen --all-targets {{ _features }} {{ flags }} {{ _fmt_cargo }}
+    {{ _cargo }} clippy --all-targets {{ _features }} {{ flags }}
 
 # Audit Rust dependencies with `cargo-deny`
 rs-deny *args:
-    {{ cargo }} deny {{ _features }} check {{ args}}
+    cargo-deny {{ _features }} check {{ args}}
 
 # Generate Rust documentation for this crate.
 rs-docs:
-    {{ cargo }} doc --frozen --no-deps {{ _features }} {{ _fmt_cargo }}
+    {{ _cargo }} doc --no-deps {{ _features }}
 
 # Generate Rust bindings from protobuf.
 rs-gen:
-    {{ cargo }} run --frozen --example=gen
+    cargo run --example=gen
 
 # Regenerate Rust bindings and error if they don't match what is already in
 # version control.
@@ -86,15 +76,15 @@ rs-gen-check: rs-gen
 
 # Build Rust tests.
 rs-test-build *flags:
-    {{ cargo }} test --no-run --frozen {{ _features }} {{ flags }} {{ _fmt_cargo }}
+    {{ _cargo }} test-build {{ _features }} {{ flags }}
 
 # Run Rust tests.
 rs-test *flags:
-    {{ cargo }} test --frozen {{ _features }} {{ flags }}
+    {{ _cargo }} test {{ _features }} {{ flags }}
 
 # Public the Rust crate to crates.io.
 rs-publish *flags:
-    {{ cargo }} publish {{ _features }} {{ flags }}
+    cargo publish {{ _features }} {{ flags }}
 
 ##
 ## Go recipes
