@@ -170,6 +170,7 @@ type ProxyProtocol struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*ProxyProtocol_Detect_
 	//	*ProxyProtocol_Opaque_
 	//	*ProxyProtocol_Tls_
@@ -309,7 +310,7 @@ type Authz struct {
 	//
 	// Must have at least one network, otherwise the authorization must be
 	// ignored. An authorization matches all clients by including an explicit
-	// match on, i.e., `[0.0.0.0/0, 0::/0]``.
+	// match on, i.e., `[0.0.0.0/0, 0::/0]“.
 	Networks []*Network `protobuf:"bytes,1,rep,name=networks,proto3" json:"networks,omitempty"`
 	// Must be set.
 	Authentication *Authn `protobuf:"bytes,2,opt,name=authentication,proto3" json:"authentication,omitempty"`
@@ -449,6 +450,7 @@ type Authn struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Permit:
+	//
 	//	*Authn_Unauthenticated
 	//	*Authn_MeshTLS
 	Permit isAuthn_Permit `protobuf_oneof:"permit"`
@@ -1094,6 +1096,7 @@ type Authn_PermitMeshTLS struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Clients:
+	//
 	//	*Authn_PermitMeshTLS_Unauthenticated
 	//	*Authn_PermitMeshTLS_Identities
 	Clients isAuthn_PermitMeshTLS_Clients `protobuf_oneof:"clients"`
@@ -1291,6 +1294,7 @@ type HttpRoute_Filter struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*HttpRoute_Filter_FailureInjector
 	//	*HttpRoute_Filter_RequestHeaderModifier
 	//	*HttpRoute_Filter_Redirect
@@ -1440,6 +1444,7 @@ type GrpcRoute_Filter struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*GrpcRoute_Filter_FailureInjector
 	//	*GrpcRoute_Filter_RequestHeaderModifier
 	Kind isGrpcRoute_Filter_Kind `protobuf_oneof:"kind"`

@@ -28,6 +28,7 @@ type HostMatch struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*HostMatch_Exact
 	//	*HostMatch_Suffix_
 	Match isHostMatch_Match `protobuf_oneof:"match"`
@@ -191,6 +192,7 @@ type PathMatch struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*PathMatch_Exact
 	//	*PathMatch_Prefix
 	//	*PathMatch_Regex
@@ -287,6 +289,7 @@ type HeaderMatch struct {
 
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Types that are assignable to Value:
+	//
 	//	*HeaderMatch_Exact
 	//	*HeaderMatch_Regex
 	Value isHeaderMatch_Value `protobuf_oneof:"value"`
@@ -376,6 +379,7 @@ type QueryParamMatch struct {
 
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Types that are assignable to Value:
+	//
 	//	*QueryParamMatch_Exact
 	//	*QueryParamMatch_Regex
 	Value isQueryParamMatch_Value `protobuf_oneof:"value"`
@@ -627,6 +631,7 @@ type PathModifier struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Replace:
+	//
 	//	*PathModifier_Full
 	//	*PathModifier_Prefix
 	Replace isPathModifier_Replace `protobuf_oneof:"replace"`

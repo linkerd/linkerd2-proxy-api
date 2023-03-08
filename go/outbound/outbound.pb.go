@@ -37,6 +37,7 @@ type TrafficSpec struct {
 	// Describes a target address, as observed by the proxy.
 	//
 	// Types that are assignable to Target:
+	//
 	//	*TrafficSpec_Addr
 	//	*TrafficSpec_Authority
 	Target isTrafficSpec_Target `protobuf_oneof:"target"`
@@ -177,6 +178,7 @@ type ProxyProtocol struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*ProxyProtocol_Detect_
 	//	*ProxyProtocol_Opaque_
 	//	*ProxyProtocol_Http1_
@@ -492,6 +494,7 @@ type Backend struct {
 
 	Metadata *meta.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Types that are assignable to Kind:
+	//
 	//	*Backend_Forward
 	//	*Backend_Balancer
 	Kind isBackend_Kind `protobuf_oneof:"kind"`
@@ -974,6 +977,7 @@ type HttpRoute_Filter struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*HttpRoute_Filter_FailureInjector
 	//	*HttpRoute_Filter_RequestHeaderModifier
 	//	*HttpRoute_Filter_Redirect
@@ -1068,6 +1072,7 @@ type HttpRoute_Distribution struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*HttpRoute_Distribution_Empty_
 	//	*HttpRoute_Distribution_FirstAvailable_
 	//	*HttpRoute_Distribution_RandomAvailable_
@@ -1468,6 +1473,7 @@ type GrpcRoute_Filter struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*GrpcRoute_Filter_FailureInjector
 	//	*GrpcRoute_Filter_RequestHeaderModifier
 	Kind isGrpcRoute_Filter_Kind `protobuf_oneof:"kind"`
@@ -1548,6 +1554,7 @@ type GrpcRoute_Distribution struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*GrpcRoute_Distribution_Empty_
 	//	*GrpcRoute_Distribution_FirstAvailable_
 	//	*GrpcRoute_Distribution_RandomAvailable_
@@ -1932,6 +1939,7 @@ type OpaqueRoute_Distribution struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*OpaqueRoute_Distribution_Empty_
 	//	*OpaqueRoute_Distribution_FirstAvailable_
 	//	*OpaqueRoute_Distribution_RandomAvailable_
@@ -2262,6 +2270,7 @@ type Backend_EndpointDiscovery struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*Backend_EndpointDiscovery_Dst
 	Kind isBackend_EndpointDiscovery_Kind `protobuf_oneof:"kind"`
 }
@@ -2334,6 +2343,7 @@ type Backend_BalanceP2C struct {
 	// The load estimation strategy used by this load balancer.
 	//
 	// Types that are assignable to Load:
+	//
 	//	*Backend_BalanceP2C_PeakEwma_
 	Load isBackend_BalanceP2C_Load `protobuf_oneof:"load"`
 }

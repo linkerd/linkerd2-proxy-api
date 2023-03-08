@@ -1,6 +1,6 @@
 module github.com/linkerd/linkerd2-proxy-api
 
-go 1.17
+go 1.19
 
 require (
 	github.com/golang/protobuf v1.5.2

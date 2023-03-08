@@ -145,6 +145,7 @@ type Eos struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to End:
+	//
 	//	*Eos_GrpcStatusCode
 	//	*Eos_ResetErrorCode
 	End isEos_End `protobuf_oneof:"end"`
@@ -231,6 +232,7 @@ type TapEvent struct {
 	DestinationMeta *TapEvent_EndpointMeta  `protobuf:"bytes,4,opt,name=destination_meta,json=destinationMeta,proto3" json:"destination_meta,omitempty"`
 	ProxyDirection  TapEvent_ProxyDirection `protobuf:"varint,6,opt,name=proxy_direction,json=proxyDirection,proto3,enum=io.linkerd.proxy.tap.TapEvent_ProxyDirection" json:"proxy_direction,omitempty"`
 	// Types that are assignable to Event:
+	//
 	//	*TapEvent_Http_
 	Event isTapEvent_Event `protobuf_oneof:"event"`
 }
@@ -339,6 +341,7 @@ type ObserveRequest_Match struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*ObserveRequest_Match_All
 	//	*ObserveRequest_Match_Any
 	//	*ObserveRequest_Match_Not
@@ -503,6 +506,7 @@ type ObserveRequest_Extract struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Extract:
+	//
 	//	*ObserveRequest_Extract_Http_
 	Extract isObserveRequest_Extract_Extract `protobuf_oneof:"extract"`
 }
@@ -671,6 +675,7 @@ type ObserveRequest_Match_Tcp struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*ObserveRequest_Match_Tcp_Netmask_
 	//	*ObserveRequest_Match_Tcp_Ports
 	Match isObserveRequest_Match_Tcp_Match `protobuf_oneof:"match"`
@@ -751,6 +756,7 @@ type ObserveRequest_Match_Http struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*ObserveRequest_Match_Http_Scheme
 	//	*ObserveRequest_Match_Http_Method
 	//	*ObserveRequest_Match_Http_Authority
@@ -973,6 +979,7 @@ type ObserveRequest_Match_Http_StringMatch struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*ObserveRequest_Match_Http_StringMatch_Exact
 	//	*ObserveRequest_Match_Http_StringMatch_Prefix
 	Match isObserveRequest_Match_Http_StringMatch_Match `protobuf_oneof:"match"`
@@ -1054,6 +1061,7 @@ type ObserveRequest_Extract_Http struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Extract:
+	//
 	//	*ObserveRequest_Extract_Http_Headers_
 	Extract isObserveRequest_Extract_Http_Extract `protobuf_oneof:"extract"`
 }
@@ -1252,6 +1260,7 @@ type TapEvent_Http struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Event:
+	//
 	//	*TapEvent_Http_RequestInit_
 	//	*TapEvent_Http_ResponseInit_
 	//	*TapEvent_Http_ResponseEnd_
