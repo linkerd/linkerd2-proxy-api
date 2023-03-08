@@ -98,6 +98,7 @@ type Update struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Update:
+	//
 	//	*Update_Add
 	//	*Update_Remove
 	//	*Update_NoEndpoints
@@ -390,6 +391,7 @@ type TlsIdentity struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Strategy:
+	//
 	//	*TlsIdentity_DnsLikeIdentity_
 	Strategy isTlsIdentity_Strategy `protobuf_oneof:"strategy"`
 }
@@ -552,6 +554,7 @@ type ProtocolHint struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Protocol:
+	//
 	//	*ProtocolHint_H2_
 	//	*ProtocolHint_Opaque_
 	Protocol isProtocolHint_Protocol `protobuf_oneof:"protocol"`
@@ -986,6 +989,7 @@ type RequestMatch struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*RequestMatch_All
 	//	*RequestMatch_Any
 	//	*RequestMatch_Not
@@ -1156,6 +1160,7 @@ type ResponseMatch struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Match:
+	//
 	//	*ResponseMatch_All
 	//	*ResponseMatch_Any
 	//	*ResponseMatch_Not
@@ -1385,7 +1390,8 @@ type TlsIdentity_DnsLikeIdentity struct {
 	// A DNS-like name that encodes workload coordinates.
 	//
 	// For example:
-	//    {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
+	//
+	//	{name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 }
 

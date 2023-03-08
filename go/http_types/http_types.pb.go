@@ -139,6 +139,7 @@ type HttpMethod struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Type:
+	//
 	//	*HttpMethod_Registered_
 	//	*HttpMethod_Unregistered
 	Type isHttpMethod_Type `protobuf_oneof:"type"`
@@ -219,6 +220,7 @@ type Scheme struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Type:
+	//
 	//	*Scheme_Registered_
 	//	*Scheme_Unregistered
 	Type isScheme_Type `protobuf_oneof:"type"`

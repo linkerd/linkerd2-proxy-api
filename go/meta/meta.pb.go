@@ -28,6 +28,7 @@ type Metadata struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Kind:
+	//
 	//	*Metadata_Default
 	//	*Metadata_Resource
 	Kind isMetadata_Kind `protobuf_oneof:"kind"`
