@@ -27,9 +27,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type InboundServerPoliciesClient interface {
-	// / Gets the inbound server policy for a given workload port.
+	/// Gets the inbound server policy for a given workload port.
 	GetPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (*Server, error)
-	// / Watches the inbound server policy for a given workload port.
+	/// Watches the inbound server policy for a given workload port.
 	WatchPort(ctx context.Context, in *PortSpec, opts ...grpc.CallOption) (InboundServerPolicies_WatchPortClient, error)
 }
 
@@ -86,9 +86,9 @@ func (x *inboundServerPoliciesWatchPortClient) Recv() (*Server, error) {
 // All implementations must embed UnimplementedInboundServerPoliciesServer
 // for forward compatibility
 type InboundServerPoliciesServer interface {
-	// / Gets the inbound server policy for a given workload port.
+	/// Gets the inbound server policy for a given workload port.
 	GetPort(context.Context, *PortSpec) (*Server, error)
-	// / Watches the inbound server policy for a given workload port.
+	/// Watches the inbound server policy for a given workload port.
 	WatchPort(*PortSpec, InboundServerPolicies_WatchPortServer) error
 	mustEmbedUnimplementedInboundServerPoliciesServer()
 }
