@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v39-rust
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
       - run: just rs-fetch
       - run: just rs-gen-check
       - run: just rs-test-build
@@ -58,7 +58,7 @@ jobs:
     container: docker://ghcr.io/linkerd/dev:v39-rust
     steps:
       - if: needs.meta.outputs.publish
-        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
       - if: needs.meta.outputs.publish
         shell: bash
         run: |
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v39-rust
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
       - if: '!needs.meta.outputs.publish'
         run: just rs-publish --dry-run
       - if: needs.meta.outputs.publish
