@@ -721,6 +721,7 @@ type ExponentialBackoff struct {
 	// The minimum amount of time to wait before resuming an operation.
 	MinBackoff *duration.Duration `protobuf:"bytes,1,opt,name=min_backoff,json=minBackoff,proto3" json:"min_backoff,omitempty"`
 	// The maximum amount of time to wait before resuming an operation.
+	// Must be greater than or equal to min_backoff.
 	MaxBackoff *duration.Duration `protobuf:"bytes,2,opt,name=max_backoff,json=maxBackoff,proto3" json:"max_backoff,omitempty"`
 	// The ratio of the base timeout that may be randomly added to a backoff.
 	// Must be greater than or equal to 0.0.
@@ -906,8 +907,9 @@ type ProxyProtocol_Http1 struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Routes  []*HttpRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
-	Breaker *Breaker     `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
+	Routes []*HttpRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+	// If empty, circuit breaking is not performed.
+	Breaker *Breaker `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
 }
 
 func (x *ProxyProtocol_Http1) Reset() {
@@ -961,8 +963,9 @@ type ProxyProtocol_Http2 struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Routes  []*HttpRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
-	Breaker *Breaker     `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
+	Routes []*HttpRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+	// If empty, circuit breaking is not performed.
+	Breaker *Breaker `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
 }
 
 func (x *ProxyProtocol_Http2) Reset() {
@@ -1016,8 +1019,9 @@ type ProxyProtocol_Grpc struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Routes  []*GrpcRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
-	Breaker *Breaker     `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
+	Routes []*GrpcRoute `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+	// If empty, circuit breaking is not performed.
+	Breaker *Breaker `protobuf:"bytes,2,opt,name=breaker,proto3" json:"breaker,omitempty"`
 }
 
 func (x *ProxyProtocol_Grpc) Reset() {

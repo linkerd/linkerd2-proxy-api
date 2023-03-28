@@ -67,6 +67,7 @@ pub mod proxy_protocol {
     pub struct Http1 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub breaker: ::core::option::Option<super::Breaker>,
     }
@@ -75,6 +76,7 @@ pub mod proxy_protocol {
     pub struct Http2 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub breaker: ::core::option::Option<super::Breaker>,
     }
@@ -83,6 +85,7 @@ pub mod proxy_protocol {
     pub struct Grpc {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
+        /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub breaker: ::core::option::Option<super::Breaker>,
     }
@@ -524,6 +527,7 @@ pub struct ExponentialBackoff {
     #[prost(message, optional, tag = "1")]
     pub min_backoff: ::core::option::Option<::prost_types::Duration>,
     /// The maximum amount of time to wait before resuming an operation.
+    /// Must be greater than or equal to min_backoff.
     #[prost(message, optional, tag = "2")]
     pub max_backoff: ::core::option::Option<::prost_types::Duration>,
     /// The ratio of the base timeout that may be randomly added to a backoff.
