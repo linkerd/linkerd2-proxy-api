@@ -220,7 +220,7 @@ pub mod http_route {
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Kind {
             #[prost(message, tag = "1")]
-            Statuses(super::super::super::http_route::StatusRanges),
+            Statuses(super::super::super::http_types::StatusRanges),
         }
     }
 }

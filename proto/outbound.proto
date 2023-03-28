@@ -9,6 +9,7 @@ import "destination.proto";
 import "meta.proto";
 import "grpc_route.proto";
 import "http_route.proto";
+import "http_types.proto";
 import "google/protobuf/duration.proto";
 
 service OutboundPolicies {
@@ -147,7 +148,7 @@ message HttpRoute {
 
   message FailurePolicy {
     oneof kind {
-      io.linkerd.proxy.http_route.StatusRanges statuses = 1;
+      io.linkerd.proxy.http_types.StatusRanges statuses = 1;
     }
   }
 }

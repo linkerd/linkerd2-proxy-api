@@ -43,3 +43,14 @@ message Headers {
 
   repeated Header headers = 1;
 }
+
+// A range of HTTP response status codes, inclusive.
+message StatusRange {
+  uint32 min = 1;
+  uint32 max = 2;
+}
+
+// A list of HTTP status ranges.
+message StatusRanges {
+  repeated StatusRange ranges = 1;
+}

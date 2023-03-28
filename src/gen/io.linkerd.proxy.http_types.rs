@@ -142,3 +142,19 @@ pub mod headers {
         pub value: ::prost::alloc::vec::Vec<u8>,
     }
 }
+/// A range of HTTP response status codes, inclusive.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StatusRange {
+    #[prost(uint32, tag = "1")]
+    pub min: u32,
+    #[prost(uint32, tag = "2")]
+    pub max: u32,
+}
+/// A list of HTTP status ranges.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StatusRanges {
+    #[prost(message, repeated, tag = "1")]
+    pub ranges: ::prost::alloc::vec::Vec<StatusRange>,
+}
