@@ -67,18 +67,24 @@ pub mod proxy_protocol {
     pub struct Http1 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        #[prost(message, optional, tag = "2")]
+        pub breaker: ::core::option::Option<super::Breaker>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        #[prost(message, optional, tag = "2")]
+        pub breaker: ::core::option::Option<super::Breaker>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
+        #[prost(message, optional, tag = "2")]
+        pub breaker: ::core::option::Option<super::Breaker>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -124,6 +130,8 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, optional, tag = "4")]
+        pub failure_policy: ::core::option::Option<FailurePolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -197,6 +205,21 @@ pub mod http_route {
         #[prost(uint32, tag = "2")]
         pub weight: u32,
     }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct FailurePolicy {
+        #[prost(oneof = "failure_policy::Kind", tags = "1")]
+        pub kind: ::core::option::Option<failure_policy::Kind>,
+    }
+    /// Nested message and enum types in `FailurePolicy`.
+    pub mod failure_policy {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Statuses(super::super::super::http_route::StatusRanges),
+        }
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -221,6 +244,8 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, optional, tag = "4")]
+        pub failure_policy: ::core::option::Option<FailurePolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -291,6 +316,21 @@ pub mod grpc_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct FailurePolicy {
+        #[prost(oneof = "failure_policy::Kind", tags = "1")]
+        pub kind: ::core::option::Option<failure_policy::Kind>,
+    }
+    /// Nested message and enum types in `FailurePolicy`.
+    pub mod failure_policy {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Statuses(super::super::super::grpc_route::GrpcStatuses),
+        }
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -453,6 +493,43 @@ pub struct Queue {
     /// requests in its queue are failed.
     #[prost(message, optional, tag = "2")]
     pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Breaker {
+    #[prost(oneof = "breaker::Kind", tags = "1")]
+    pub kind: ::core::option::Option<breaker::Kind>,
+}
+/// Nested message and enum types in `Breaker`.
+pub mod breaker {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ConsecutiveFailures {
+        #[prost(uint32, tag = "1")]
+        pub max_failures: u32,
+        #[prost(message, optional, tag = "2")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag = "1")]
+        ConsecutiveFailures(ConsecutiveFailures),
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ExponentialBackoff {
+    /// The minimum amount of time to wait before resuming an operation.
+    #[prost(message, optional, tag = "1")]
+    pub min_backoff: ::core::option::Option<::prost_types::Duration>,
+    /// The maximum amount of time to wait before resuming an operation.
+    #[prost(message, optional, tag = "2")]
+    pub max_backoff: ::core::option::Option<::prost_types::Duration>,
+    /// The ratio of the base timeout that may be randomly added to a backoff.
+    /// Must be greater than or equal to 0.0.
+    #[prost(float, tag = "3")]
+    pub jitter_ratio: f32,
 }
 /// Generated client implementations.
 pub mod outbound_policies_client {

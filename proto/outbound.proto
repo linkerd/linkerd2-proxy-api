@@ -75,14 +75,17 @@ message ProxyProtocol {
 
   message Http1 {
     repeated HttpRoute routes = 1;
+    Breaker breaker = 2;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
+    Breaker breaker = 2;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
+    Breaker breaker = 2;
   }
 }
 
@@ -101,6 +104,7 @@ message HttpRoute {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+    FailurePolicy failure_policy = 4;
   }
 
   message Filter {
@@ -137,6 +141,12 @@ message HttpRoute {
     RouteBackend backend = 1;
     uint32 weight = 2;
   }
+
+  message FailurePolicy {
+    oneof kind {
+      io.linkerd.proxy.http_route.StatusRanges statuses = 1;
+    }
+  }
 }
 
 message GrpcRoute {
@@ -151,6 +161,7 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+    FailurePolicy failure_policy = 4;
   }
 
   message Filter {
@@ -185,6 +196,12 @@ message GrpcRoute {
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
+  }
+
+  message FailurePolicy {
+    oneof kind {
+      io.linkerd.proxy.grpc_route.GrpcStatuses statuses = 1;
+    }
   }
 }
 
@@ -284,3 +301,23 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
+message Breaker {
+  message ConsecutiveFailures {
+    uint32 max_failures = 1;
+    ExponentialBackoff backoff = 2;
+  }
+  
+  oneof kind {
+    ConsecutiveFailures consecutive_failures = 1;
+  }
+}
+
+message ExponentialBackoff {
+  // The minimum amount of time to wait before resuming an operation.
+  google.protobuf.Duration min_backoff = 1;
+  // The maximum amount of time to wait before resuming an operation.
+  google.protobuf.Duration max_backoff = 2;
+  // The ratio of the base timeout that may be randomly added to a backoff.
+  // Must be greater than or equal to 0.0.
+  float jitter_ratio = 3;
+}

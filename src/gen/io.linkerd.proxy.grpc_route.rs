@@ -32,3 +32,10 @@ pub struct GrpcFailureInjector {
     #[prost(message, optional, tag = "3")]
     pub ratio: ::core::option::Option<super::http_route::Ratio>,
 }
+/// A list of gRPC response status codes
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GrpcStatuses {
+    #[prost(uint32, repeated, tag = "1")]
+    pub codes: ::prost::alloc::vec::Vec<u32>,
+}
