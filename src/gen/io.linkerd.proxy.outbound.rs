@@ -133,8 +133,6 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        #[prost(message, optional, tag = "4")]
-        pub failure_policy: ::core::option::Option<FailurePolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -208,21 +206,6 @@ pub mod http_route {
         #[prost(uint32, tag = "2")]
         pub weight: u32,
     }
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct FailurePolicy {
-        #[prost(oneof = "failure_policy::Kind", tags = "1")]
-        pub kind: ::core::option::Option<failure_policy::Kind>,
-    }
-    /// Nested message and enum types in `FailurePolicy`.
-    pub mod failure_policy {
-        #[allow(clippy::derive_partial_eq_without_eq)]
-        #[derive(Clone, PartialEq, ::prost::Oneof)]
-        pub enum Kind {
-            #[prost(message, tag = "1")]
-            Statuses(super::super::super::http_types::StatusRanges),
-        }
-    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -247,8 +230,6 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        #[prost(message, optional, tag = "4")]
-        pub failure_policy: ::core::option::Option<FailurePolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -319,21 +300,6 @@ pub mod grpc_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
-    }
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct FailurePolicy {
-        #[prost(oneof = "failure_policy::Kind", tags = "1")]
-        pub kind: ::core::option::Option<failure_policy::Kind>,
-    }
-    /// Nested message and enum types in `FailurePolicy`.
-    pub mod failure_policy {
-        #[allow(clippy::derive_partial_eq_without_eq)]
-        #[derive(Clone, PartialEq, ::prost::Oneof)]
-        pub enum Kind {
-            #[prost(message, tag = "1")]
-            Statuses(super::super::super::grpc_route::GrpcStatuses),
-        }
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

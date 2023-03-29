@@ -9,7 +9,6 @@ import "destination.proto";
 import "meta.proto";
 import "grpc_route.proto";
 import "http_route.proto";
-import "http_types.proto";
 import "google/protobuf/duration.proto";
 
 service OutboundPolicies {
@@ -108,7 +107,6 @@ message HttpRoute {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    FailurePolicy failure_policy = 4;
   }
 
   message Filter {
@@ -145,12 +143,6 @@ message HttpRoute {
     RouteBackend backend = 1;
     uint32 weight = 2;
   }
-
-  message FailurePolicy {
-    oneof kind {
-      io.linkerd.proxy.http_types.StatusRanges statuses = 1;
-    }
-  }
 }
 
 message GrpcRoute {
@@ -165,7 +157,6 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    FailurePolicy failure_policy = 4;
   }
 
   message Filter {
@@ -200,12 +191,6 @@ message GrpcRoute {
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
-  }
-
-  message FailurePolicy {
-    oneof kind {
-      io.linkerd.proxy.grpc_route.GrpcStatuses statuses = 1;
-    }
   }
 }
 
@@ -310,7 +295,7 @@ message Breaker {
     uint32 max_failures = 1;
     ExponentialBackoff backoff = 2;
   }
-  
+
   oneof kind {
     ConsecutiveFailures consecutive_failures = 1;
   }

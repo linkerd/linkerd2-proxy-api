@@ -202,54 +202,6 @@ func (x *GrpcFailureInjector) GetRatio() *http_route.Ratio {
 	return nil
 }
 
-// A list of gRPC response status codes
-type GrpcStatuses struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Codes []uint32 `protobuf:"varint,1,rep,packed,name=codes,proto3" json:"codes,omitempty"`
-}
-
-func (x *GrpcStatuses) Reset() {
-	*x = GrpcStatuses{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_grpc_route_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GrpcStatuses) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GrpcStatuses) ProtoMessage() {}
-
-func (x *GrpcStatuses) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_route_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GrpcStatuses.ProtoReflect.Descriptor instead.
-func (*GrpcStatuses) Descriptor() ([]byte, []int) {
-	return file_grpc_route_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *GrpcStatuses) GetCodes() []uint32 {
-	if x != nil {
-		return x.Codes
-	}
-	return nil
-}
-
 var File_grpc_route_proto protoreflect.FileDescriptor
 
 var file_grpc_route_proto_rawDesc = []byte{
@@ -278,13 +230,11 @@ var file_grpc_route_proto_rawDesc = []byte{
 	0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6f,
 	0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x68,
 	0x74, 0x74, 0x70, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x52,
-	0x05, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x22, 0x24, 0x0a, 0x0c, 0x47, 0x72, 0x70, 0x63, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x65, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x05, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x42, 0x35, 0x5a, 0x33,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65,
-	0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78,
-	0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x5f, 0x72, 0x6f,
-	0x75, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e,
+	0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f,
+	0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -299,19 +249,18 @@ func file_grpc_route_proto_rawDescGZIP() []byte {
 	return file_grpc_route_proto_rawDescData
 }
 
-var file_grpc_route_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_grpc_route_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_grpc_route_proto_goTypes = []interface{}{
 	(*GrpcRouteMatch)(nil),         // 0: io.linkerd.proxy.grpc_route.GrpcRouteMatch
 	(*GrpcRpcMatch)(nil),           // 1: io.linkerd.proxy.grpc_route.GrpcRpcMatch
 	(*GrpcFailureInjector)(nil),    // 2: io.linkerd.proxy.grpc_route.GrpcFailureInjector
-	(*GrpcStatuses)(nil),           // 3: io.linkerd.proxy.grpc_route.GrpcStatuses
-	(*http_route.HeaderMatch)(nil), // 4: io.linkerd.proxy.http_route.HeaderMatch
-	(*http_route.Ratio)(nil),       // 5: io.linkerd.proxy.http_route.Ratio
+	(*http_route.HeaderMatch)(nil), // 3: io.linkerd.proxy.http_route.HeaderMatch
+	(*http_route.Ratio)(nil),       // 4: io.linkerd.proxy.http_route.Ratio
 }
 var file_grpc_route_proto_depIdxs = []int32{
 	1, // 0: io.linkerd.proxy.grpc_route.GrpcRouteMatch.rpc:type_name -> io.linkerd.proxy.grpc_route.GrpcRpcMatch
-	4, // 1: io.linkerd.proxy.grpc_route.GrpcRouteMatch.headers:type_name -> io.linkerd.proxy.http_route.HeaderMatch
-	5, // 2: io.linkerd.proxy.grpc_route.GrpcFailureInjector.ratio:type_name -> io.linkerd.proxy.http_route.Ratio
+	3, // 1: io.linkerd.proxy.grpc_route.GrpcRouteMatch.headers:type_name -> io.linkerd.proxy.http_route.HeaderMatch
+	4, // 2: io.linkerd.proxy.grpc_route.GrpcFailureInjector.ratio:type_name -> io.linkerd.proxy.http_route.Ratio
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -361,18 +310,6 @@ func file_grpc_route_proto_init() {
 				return nil
 			}
 		}
-		file_grpc_route_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GrpcStatuses); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -380,7 +317,7 @@ func file_grpc_route_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_grpc_route_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
