@@ -67,18 +67,27 @@ pub mod proxy_protocol {
     pub struct Http1 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        /// If empty, circuit breaking is not performed.
+        #[prost(message, optional, tag = "2")]
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        /// If empty, circuit breaking is not performed.
+        #[prost(message, optional, tag = "2")]
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
+        /// If empty, circuit breaking is not performed.
+        #[prost(message, optional, tag = "2")]
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -453,6 +462,44 @@ pub struct Queue {
     /// requests in its queue are failed.
     #[prost(message, optional, tag = "2")]
     pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct FailureAccrual {
+    #[prost(oneof = "failure_accrual::Kind", tags = "1")]
+    pub kind: ::core::option::Option<failure_accrual::Kind>,
+}
+/// Nested message and enum types in `FailureAccrual`.
+pub mod failure_accrual {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ConsecutiveFailures {
+        #[prost(uint32, tag = "1")]
+        pub max_failures: u32,
+        #[prost(message, optional, tag = "2")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag = "1")]
+        ConsecutiveFailures(ConsecutiveFailures),
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ExponentialBackoff {
+    /// The minimum amount of time to wait before resuming an operation.
+    #[prost(message, optional, tag = "1")]
+    pub min_backoff: ::core::option::Option<::prost_types::Duration>,
+    /// The maximum amount of time to wait before resuming an operation.
+    /// Must be greater than or equal to min_backoff.
+    #[prost(message, optional, tag = "2")]
+    pub max_backoff: ::core::option::Option<::prost_types::Duration>,
+    /// The ratio of the base timeout that may be randomly added to a backoff.
+    /// Must be greater than or equal to 0.0.
+    #[prost(float, tag = "3")]
+    pub jitter_ratio: f32,
 }
 /// Generated client implementations.
 pub mod outbound_policies_client {

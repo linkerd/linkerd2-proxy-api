@@ -75,14 +75,20 @@ message ProxyProtocol {
 
   message Http1 {
     repeated HttpRoute routes = 1;
+    // If empty, circuit breaking is not performed.
+    FailureAccrual failure_accrual = 2;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
+    // If empty, circuit breaking is not performed.
+    FailureAccrual failure_accrual = 2;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
+    // If empty, circuit breaking is not performed.
+    FailureAccrual failure_accrual = 2;
   }
 }
 
@@ -284,3 +290,24 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
+message FailureAccrual {
+  message ConsecutiveFailures {
+    uint32 max_failures = 1;
+    ExponentialBackoff backoff = 2;
+  }
+
+  oneof kind {
+    ConsecutiveFailures consecutive_failures = 1;
+  }
+}
+
+message ExponentialBackoff {
+  // The minimum amount of time to wait before resuming an operation.
+  google.protobuf.Duration min_backoff = 1;
+  // The maximum amount of time to wait before resuming an operation.
+  // Must be greater than or equal to min_backoff.
+  google.protobuf.Duration max_backoff = 2;
+  // The ratio of the base timeout that may be randomly added to a backoff.
+  // Must be greater than or equal to 0.0.
+  float jitter_ratio = 3;
+}
