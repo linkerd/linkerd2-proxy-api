@@ -76,19 +76,19 @@ message ProxyProtocol {
   message Http1 {
     repeated HttpRoute routes = 1;
     // If empty, circuit breaking is not performed.
-    Breaker breaker = 2;
+    FailureAccrual failure_accrual = 2;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
     // If empty, circuit breaking is not performed.
-    Breaker breaker = 2;
+    FailureAccrual failure_accrual = 2;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
     // If empty, circuit breaking is not performed.
-    Breaker breaker = 2;
+    FailureAccrual failure_accrual = 2;
   }
 }
 
@@ -290,7 +290,7 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
-message Breaker {
+message FailureAccrual {
   message ConsecutiveFailures {
     uint32 max_failures = 1;
     ExponentialBackoff backoff = 2;

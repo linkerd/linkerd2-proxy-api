@@ -69,7 +69,7 @@ pub mod proxy_protocol {
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
-        pub breaker: ::core::option::Option<super::Breaker>,
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -78,7 +78,7 @@ pub mod proxy_protocol {
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
-        pub breaker: ::core::option::Option<super::Breaker>,
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -87,7 +87,7 @@ pub mod proxy_protocol {
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
-        pub breaker: ::core::option::Option<super::Breaker>,
+        pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -465,12 +465,12 @@ pub struct Queue {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Breaker {
-    #[prost(oneof = "breaker::Kind", tags = "1")]
-    pub kind: ::core::option::Option<breaker::Kind>,
+pub struct FailureAccrual {
+    #[prost(oneof = "failure_accrual::Kind", tags = "1")]
+    pub kind: ::core::option::Option<failure_accrual::Kind>,
 }
-/// Nested message and enum types in `Breaker`.
-pub mod breaker {
+/// Nested message and enum types in `FailureAccrual`.
+pub mod failure_accrual {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct ConsecutiveFailures {
