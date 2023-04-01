@@ -28,10 +28,13 @@ pub mod traffic_spec {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct OutboundPolicy {
-    /// Indicates the protocol to use for this target.  This will be set to Opaque
+    /// Indicates the protocol to use for this target. This will be set to Opaque
     /// if the target has been marked as opaque and will be Discover otherwise.
     #[prost(message, optional, tag = "1")]
     pub protocol: ::core::option::Option<ProxyProtocol>,
+    /// Describes the resource for which outbound policy has been discovered.
+    #[prost(message, optional, tag = "2")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

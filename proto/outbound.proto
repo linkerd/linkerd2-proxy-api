@@ -35,9 +35,12 @@ message TrafficSpec {
 
 // Outbound policy for a given traffic spec.
 message OutboundPolicy {
-  // Indicates the protocol to use for this target.  This will be set to Opaque
+  // Indicates the protocol to use for this target. This will be set to Opaque
   // if the target has been marked as opaque and will be Discover otherwise.
   ProxyProtocol protocol = 1;
+
+  // Describes the resource for which outbound policy has been discovered.
+  io.linkerd.proxy.meta.Metadata metadata = 2;
 }
 
 message ProxyProtocol {
