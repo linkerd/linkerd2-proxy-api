@@ -26,4 +26,5 @@ message Resource {
   string name = 3;
   string namespace = 4;
   string section = 5;
+  uint32 port = 6;
 }
