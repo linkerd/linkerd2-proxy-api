@@ -36,4 +36,6 @@ pub struct Resource {
     pub namespace: ::prost::alloc::string::String,
     #[prost(string, tag = "5")]
     pub section: ::prost::alloc::string::String,
+    #[prost(uint32, tag = "6")]
+    pub port: u32,
 }
