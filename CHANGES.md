@@ -3,9 +3,6 @@
 ## v0.9.0
 
 * Add new `OutboundPolicies` API
-* Add circuit-breaker configuration to `OutboundPolicy`
-* Add `Metadata` to `OutboundPolicy` responses
-* Add `port` field to `OutboundPolicy` resource `Metadata`
 * Go: update `google.golang.org/grpc` to v1.53
 
 ## v0.8.0
