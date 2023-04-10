@@ -1,5 +1,10 @@
 # `linkerd2-proxy-api` changes
 
+## v0.9.0
+
+* Add new `OutboundPolicies` API
+* Go: update `google.golang.org/grpc` to v1.53
+
 ## v0.8.0
 
 * Add `Opaque` variant to `destination.ProtocolHint`
