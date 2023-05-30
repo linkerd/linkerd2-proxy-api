@@ -136,6 +136,8 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, optional, tag = "4")]
+        pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -200,6 +202,8 @@ pub mod http_route {
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
+        #[prost(message, optional, tag = "4")]
+        pub backend_request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]

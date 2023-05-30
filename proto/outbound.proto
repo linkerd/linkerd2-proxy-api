@@ -110,6 +110,7 @@ message HttpRoute {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+    google.protobuf.Duration requestTimeout = 4;
   }
 
   message Filter {
@@ -140,6 +141,7 @@ message HttpRoute {
   message RouteBackend {
     Backend backend = 1;
     repeated Filter filters = 3;
+    google.protobuf.Duration backendRequestTimeout = 4;
   }
 
   message WeightedRouteBackend {
