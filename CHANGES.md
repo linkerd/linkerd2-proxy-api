@@ -1,5 +1,11 @@
 # `linkerd2-proxy-api` changes
 
+## v0.10.0
+
+* Add `requestTimeout` fields to routes and route backends in the
+  `OutboundPolicies` API
+* Rust: update `h2` to v0.3.17
+
 ## v0.9.0
 
 * Add new `OutboundPolicies` API
