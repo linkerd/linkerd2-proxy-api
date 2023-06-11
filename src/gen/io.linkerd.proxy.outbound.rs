@@ -136,6 +136,14 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        /// After this time has elapsed since receiving the initial request, any
+        /// outstanding request will be cancelled if no response has been received.
+        /// If the request is cancelled, a timeout error response will be returned,
+        /// and no more retries will be attempted
+        ///
+        /// If this field is empty, no request timeout is applied.
+        #[prost(message, optional, tag = "4")]
+        pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -200,6 +208,13 @@ pub mod http_route {
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
+        /// After this time has elapsed since a request is dispatched to this
+        /// backend, any request will be cancelled if no response has been received.
+        /// If the request is not retried, a timeout error response is returned.
+        ///
+        /// If this field is empty, no request timeout is applied.
+        #[prost(message, optional, tag = "4")]
+        pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -233,6 +248,14 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
+        /// After this time has elapsed since receiving the initial request, any
+        /// outstanding request will be cancelled if no response has been received.
+        /// If the request is cancelled, a timeout error response will be returned,
+        /// and no more retries will be attempted
+        ///
+        /// If this field is empty, no request timeout is applied.
+        #[prost(message, optional, tag = "4")]
+        pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -295,6 +318,13 @@ pub mod grpc_route {
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
+        /// After this time has elapsed since a request is dispatched to this
+        /// backend, any request will be cancelled if no response has been received.
+        /// If the request is not retried, a timeout error response is returned.
+        ///
+        /// If this field is empty, no request timeout is applied.
+        #[prost(message, optional, tag = "4")]
+        pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
