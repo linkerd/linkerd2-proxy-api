@@ -110,6 +110,14 @@ message HttpRoute {
     repeated io.linkerd.proxy.http_route.HttpRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+
+    // After this time has elapsed since receiving the initial request, any
+    // outstanding request will be cancelled if no response has been received.
+    // If the request is cancelled, a timeout error response will be returned,
+    // and no more retries will be attempted
+    //
+    // If this field is empty, no request timeout is applied.
+    google.protobuf.Duration requestTimeout = 4;
   }
 
   message Filter {
@@ -140,6 +148,13 @@ message HttpRoute {
   message RouteBackend {
     Backend backend = 1;
     repeated Filter filters = 3;
+
+    // After this time has elapsed since a request is dispatched to this
+    // backend, any request will be cancelled if no response has been received.
+    // If the request is not retried, a timeout error response is returned.
+    //
+    // If this field is empty, no request timeout is applied.
+    google.protobuf.Duration requestTimeout = 4;
   }
 
   message WeightedRouteBackend {
@@ -160,6 +175,14 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
+    
+    // After this time has elapsed since receiving the initial request, any
+    // outstanding request will be cancelled if no response has been received.
+    // If the request is cancelled, a timeout error response will be returned,
+    // and no more retries will be attempted
+    //
+    // If this field is empty, no request timeout is applied.
+    google.protobuf.Duration requestTimeout = 4;
   }
 
   message Filter {
@@ -189,6 +212,13 @@ message GrpcRoute {
   message RouteBackend {
     Backend backend = 1;
     repeated Filter filters = 3;
+
+    // After this time has elapsed since a request is dispatched to this
+    // backend, any request will be cancelled if no response has been received.
+    // If the request is not retried, a timeout error response is returned.
+    //
+    // If this field is empty, no request timeout is applied.
+    google.protobuf.Duration requestTimeout = 4;
   }
 
   message WeightedRouteBackend {
