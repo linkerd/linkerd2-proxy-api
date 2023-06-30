@@ -148,7 +148,7 @@ pub mod http_route {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Filter {
-        #[prost(oneof = "filter::Kind", tags = "1, 2, 3")]
+        #[prost(oneof = "filter::Kind", tags = "1, 2, 3, 4")]
         pub kind: ::core::option::Option<filter::Kind>,
     }
     /// Nested message and enum types in `Filter`.
@@ -164,6 +164,10 @@ pub mod http_route {
             ),
             #[prost(message, tag = "3")]
             Redirect(super::super::super::http_route::RequestRedirect),
+            #[prost(message, tag = "4")]
+            ResponseHeaderModifier(
+                super::super::super::http_route::RequestHeaderModifier,
+            ),
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]

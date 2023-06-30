@@ -125,6 +125,7 @@ message HttpRoute {
       io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
       io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
       io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
+      io.linkerd.proxy.http_route.RequestHeaderModifier response_header_modifier = 4;
     }
   }
 
