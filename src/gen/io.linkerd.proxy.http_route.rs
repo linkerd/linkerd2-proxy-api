@@ -125,6 +125,25 @@ pub struct RequestHeaderModifier {
     #[prost(string, repeated, tag = "3")]
     pub remove: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
+/// Configures a route to modify a response's headers.
+///
+/// Modifications are to be applied in the order they are described here:
+/// additions apply first, then sets, and then removals.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ResponseHeaderModifier {
+    /// A list of headers name-value pairs to set on responses, augmenting any
+    /// existing values for the header.
+    #[prost(message, optional, tag = "1")]
+    pub add: ::core::option::Option<super::http_types::Headers>,
+    /// A list of headers name-value pairs to set on responses, replacing any
+    /// existing values for the header.
+    #[prost(message, optional, tag = "2")]
+    pub set: ::core::option::Option<super::http_types::Headers>,
+    /// A list of headers names to be removed from responses.
+    #[prost(string, repeated, tag = "3")]
+    pub remove: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
 /// Configures a route to respond with a redirect response. The `location` header
 /// is set with the given URL parameters.
 #[allow(clippy::derive_partial_eq_without_eq)]

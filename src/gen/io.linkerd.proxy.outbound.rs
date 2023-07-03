@@ -166,7 +166,7 @@ pub mod http_route {
             Redirect(super::super::super::http_route::RequestRedirect),
             #[prost(message, tag = "4")]
             ResponseHeaderModifier(
-                super::super::super::http_route::RequestHeaderModifier,
+                super::super::super::http_route::ResponseHeaderModifier,
             ),
         }
     }
