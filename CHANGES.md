@@ -1,5 +1,9 @@
 # `linkerd2-proxy-api` changes
 
+## v0.11.0
+
+* Add `response_header_modifier` outbound HTTP filter
+
 ## v0.10.0
 
 * Add `requestTimeout` fields to routes and route backends in the
