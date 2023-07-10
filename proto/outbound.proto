@@ -80,18 +80,24 @@ message ProxyProtocol {
     repeated HttpRoute routes = 1;
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+    // If empty, retries will not be enabled for any route.
+    io.linkerd.proxy.destination.RetryBudget retry_budget = 3;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+    // If empty, retries will not be enabled for any route.
+    io.linkerd.proxy.destination.RetryBudget retry_budget = 3;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+    // If empty, retries will not be enabled for any route.
+    io.linkerd.proxy.destination.RetryBudget retry_budget = 3;
   }
 }
 
@@ -156,11 +162,24 @@ message HttpRoute {
     //
     // If this field is empty, no request timeout is applied.
     google.protobuf.Duration requestTimeout = 4;
+
+    // Retry policy to use when communicating with this backend.
+    // If empty, retries will never be performed.
+    RetryPolicy retry_policy = 5; 
   }
 
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
+  }
+
+  message RetryPolicy {
+    // Status ranges that should be retried.
+    repeated io.linkerd.proxy.destination.HttpStatusRange retry_statuses = 1;
+    // Maximum number of retries allowed per request.
+    //
+    // If this is 0, no per-request retry limit is applied.
+    uint32 max_per_request = 2;
   }
 }
 

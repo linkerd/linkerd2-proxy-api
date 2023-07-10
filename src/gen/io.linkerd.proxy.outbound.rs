@@ -73,6 +73,9 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If empty, retries will not be enabled for any route.
+        #[prost(message, optional, tag = "3")]
+        pub retry_budget: ::core::option::Option<super::super::destination::RetryBudget>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -82,6 +85,9 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If empty, retries will not be enabled for any route.
+        #[prost(message, optional, tag = "3")]
+        pub retry_budget: ::core::option::Option<super::super::destination::RetryBudget>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -91,6 +97,9 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If empty, retries will not be enabled for any route.
+        #[prost(message, optional, tag = "3")]
+        pub retry_budget: ::core::option::Option<super::super::destination::RetryBudget>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -219,6 +228,10 @@ pub mod http_route {
         /// If this field is empty, no request timeout is applied.
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
+        /// Retry policy to use when communicating with this backend.
+        /// If empty, retries will never be performed.
+        #[prost(message, optional, tag = "5")]
+        pub retry_policy: ::core::option::Option<RetryPolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -227,6 +240,20 @@ pub mod http_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RetryPolicy {
+        /// Status ranges that should be retried.
+        #[prost(message, repeated, tag = "1")]
+        pub retry_statuses: ::prost::alloc::vec::Vec<
+            super::super::destination::HttpStatusRange,
+        >,
+        /// Maximum number of retries allowed per request.
+        ///
+        /// If this is 0, no per-request retry limit is applied.
+        #[prost(uint32, tag = "2")]
+        pub max_per_request: u32,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
