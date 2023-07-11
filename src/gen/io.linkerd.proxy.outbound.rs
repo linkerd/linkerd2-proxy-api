@@ -153,6 +153,11 @@ pub mod http_route {
         /// If this field is empty, no request timeout is applied.
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
+        /// Retry policy to use for requests matching this rule.
+        /// /
+        /// If this field is empty, retries will never be performed.
+        #[prost(message, optional, tag = "5")]
+        pub retry_policy: ::core::option::Option<RetryPolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -228,10 +233,6 @@ pub mod http_route {
         /// If this field is empty, no request timeout is applied.
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
-        /// Retry policy to use when communicating with this backend.
-        /// If empty, retries will never be performed.
-        #[prost(message, optional, tag = "5")]
-        pub retry_policy: ::core::option::Option<RetryPolicy>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
