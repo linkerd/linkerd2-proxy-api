@@ -125,7 +125,6 @@ message HttpRoute {
     // If this field is empty, no request timeout is applied.
     google.protobuf.Duration requestTimeout = 4;
 
-
     // Retry policy to use for requests matching this rule.
     ///
     // If this field is empty, retries will never be performed.
