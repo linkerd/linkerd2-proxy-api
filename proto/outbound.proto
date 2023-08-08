@@ -72,9 +72,7 @@ message ProxyProtocol {
     Http2 http2 = 4;
   }
 
-  message Opaque {
-    repeated OpaqueRoute routes = 1;
-  }
+  message Opaque { repeated OpaqueRoute routes = 1; }
 
   message Http1 {
     repeated HttpRoute routes = 1;
@@ -97,7 +95,8 @@ message ProxyProtocol {
 
 // Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
 //
-// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
+// [api]:
+// https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
 message HttpRoute {
   io.linkerd.proxy.meta.Metadata metadata = 1;
 
@@ -123,9 +122,11 @@ message HttpRoute {
   message Filter {
     oneof kind {
       io.linkerd.proxy.http_route.HttpFailureInjector failure_injector = 1;
-      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+      io.linkerd.proxy.http_route.RequestHeaderModifier
+          request_header_modifier = 2;
       io.linkerd.proxy.http_route.RequestRedirect redirect = 3;
-      io.linkerd.proxy.http_route.ResponseHeaderModifier response_header_modifier = 4;
+      io.linkerd.proxy.http_route.ResponseHeaderModifier
+          response_header_modifier = 4;
     }
   }
 
@@ -138,12 +139,8 @@ message HttpRoute {
     }
 
     message Empty {}
-    message FirstAvailable {
-      repeated RouteBackend backends = 1;
-    }
-    message RandomAvailable {
-      repeated WeightedRouteBackend backends = 1;
-    }
+    message FirstAvailable { repeated RouteBackend backends = 1; }
+    message RandomAvailable { repeated WeightedRouteBackend backends = 1; }
   }
 
   message RouteBackend {
@@ -176,20 +173,21 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    
+
     // After this time has elapsed since receiving the initial request, any
     // outstanding request will be cancelled if no response has been received.
     // If the request is cancelled, a timeout error response will be returned,
     // and no more retries will be attempted
     //
     // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    google.protobuf.Duration request_timeout = 4;
   }
 
   message Filter {
     oneof kind {
       io.linkerd.proxy.grpc_route.GrpcFailureInjector failure_injector = 1;
-      io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
+      io.linkerd.proxy.http_route.RequestHeaderModifier
+          request_header_modifier = 2;
     }
   }
 
@@ -202,12 +200,8 @@ message GrpcRoute {
     }
 
     message Empty {}
-    message FirstAvailable {
-      repeated RouteBackend backends = 1;
-    }
-    message RandomAvailable {
-      repeated WeightedRouteBackend backends = 1;
-    }
+    message FirstAvailable { repeated RouteBackend backends = 1; }
+    message RandomAvailable { repeated WeightedRouteBackend backends = 1; }
   }
 
   message RouteBackend {
@@ -219,7 +213,7 @@ message GrpcRoute {
     // If the request is not retried, a timeout error response is returned.
     //
     // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    google.protobuf.Duration request_timeout = 4;
   }
 
   message WeightedRouteBackend {
@@ -233,9 +227,7 @@ message OpaqueRoute {
 
   // Must have at least one rule.
   repeated Rule rules = 3;
-  message Rule {
-    Distribution backends = 1;
-  }
+  message Rule { Distribution backends = 1; }
 
   message Distribution {
     oneof kind {
@@ -246,17 +238,11 @@ message OpaqueRoute {
     }
 
     message Empty {}
-    message FirstAvailable {
-      repeated RouteBackend backends = 1;
-    }
-    message RandomAvailable {
-      repeated WeightedRouteBackend backends = 1;
-    }
+    message FirstAvailable { repeated RouteBackend backends = 1; }
+    message RandomAvailable { repeated WeightedRouteBackend backends = 1; }
   }
 
-  message RouteBackend {
-    Backend backend = 1;
-  }
+  message RouteBackend { Backend backend = 1; }
 
   message WeightedRouteBackend {
     RouteBackend backend = 1;
@@ -285,9 +271,7 @@ message Backend {
       DestinationGet dst = 1;
     }
 
-    message DestinationGet {
-      string path = 1;
-    }
+    message DestinationGet { string path = 1; }
   }
 
   // Describes a power-of-two-choices (P2C) load balancer configuration for a
@@ -330,9 +314,7 @@ message FailureAccrual {
     ExponentialBackoff backoff = 2;
   }
 
-  oneof kind {
-    ConsecutiveFailures consecutive_failures = 1;
-  }
+  oneof kind { ConsecutiveFailures consecutive_failures = 1; }
 }
 
 message ExponentialBackoff {
