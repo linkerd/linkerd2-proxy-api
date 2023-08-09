@@ -96,8 +96,6 @@ message ProxyProtocol {
     repeated GrpcRoute routes = 1;
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
-    // If empty, retries will not be enabled for any route.
-    io.linkerd.proxy.destination.RetryBudget retry_budget = 3;
   }
 }
 

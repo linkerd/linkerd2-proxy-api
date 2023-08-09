@@ -97,9 +97,6 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
-        /// If empty, retries will not be enabled for any route.
-        #[prost(message, optional, tag = "3")]
-        pub retry_budget: ::core::option::Option<super::super::destination::RetryBudget>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
