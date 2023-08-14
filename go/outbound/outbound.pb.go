@@ -1113,7 +1113,7 @@ type HttpRoute_Rule struct {
 	// If this field is empty, no request timeout is applied.
 	RequestTimeout *duration.Duration `protobuf:"bytes,4,opt,name=requestTimeout,proto3" json:"requestTimeout,omitempty"`
 	// Retry policy to use for requests matching this rule.
-	// /
+	//
 	// If this field is empty, retries will never be performed.
 	RetryPolicy *HttpRoute_RetryPolicy `protobuf:"bytes,5,opt,name=retry_policy,json=retryPolicy,proto3" json:"retry_policy,omitempty"`
 }
