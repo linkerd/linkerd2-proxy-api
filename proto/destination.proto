@@ -108,7 +108,12 @@ message TlsIdentity {
   reserved 2;
   reserved "k8s_pod_identity";
 
-  oneof strategy { DnsLikeIdentity dns_like_identity = 1; }
+  oneof strategy {
+    DnsLikeIdentity dns_like_identity = 1;
+    UriLikeIdentity uri_like_identity = 3;
+  }
+
+  ServerName server_name = 4;
 
   // Verify the certificate based on the Kubernetes pod identity.
   message DnsLikeIdentity {
@@ -116,6 +121,15 @@ message TlsIdentity {
     //
     // For example:
     //    {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
+    string name = 1;
+  }
+
+  // Verify the certificate based on an URI-like identity.
+  message UriLikeIdentity {
+    string uri = 1;
+  }
+
+  message ServerName {
     string name = 1;
   }
 }
