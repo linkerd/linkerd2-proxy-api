@@ -1,6 +1,6 @@
 [package]
 name = "linkerd2-proxy-api"
-version = "0.11.0"
+version = "0.12.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
@@ -19,8 +19,23 @@ grpc-route = ["http-route"]
 http-route = ["http-types"]
 http-types = ["http", "thiserror"]
 identity = ["prost-types", "tonic/codegen"]
-inbound = ["grpc-route", "http-route", "meta", "net", "prost-types", "tonic/codegen"]
-outbound = ["grpc-route", "destination", "http-route", "meta", "net", "prost-types", "tonic/codegen"]
+inbound = [
+    "grpc-route",
+    "http-route",
+    "meta",
+    "net",
+    "prost-types",
+    "tonic/codegen",
+]
+outbound = [
+    "grpc-route",
+    "destination",
+    "http-route",
+    "meta",
+    "net",
+    "prost-types",
+    "tonic/codegen",
+]
 meta = []
 net = ["ipnet", "thiserror"]
 tap = ["h2", "http-types", "net", "prost-types", "tonic/codegen"]
@@ -33,17 +48,17 @@ all-features = true
 h2 = { version = "0.3", optional = true }
 http = { version = "0.2", optional = true }
 ipnet = { version = "2", optional = true }
-prost = "0.11"
-prost-types = { version = "0.11", optional = true }
+prost = "0.12"
+prost-types = { version = "0.12", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "1", optional = true }
 
 [dependencies.tonic]
-version = "0.8"
+version = "0.10"
 default-features = false
 features = ["prost"]
 
 [dev-dependencies.tonic-build]
-version = "0.8"
+version = "0.10"
 default-features = false
 features = ["prost"]

@@ -101,7 +101,7 @@ pub struct Authz {
     ///
     /// Must have at least one network, otherwise the authorization must be
     /// ignored. An authorization matches all clients by including an explicit
-    /// match on, i.e., `[0.0.0.0/0, 0::/0]``.
+    /// match on, i.e., `\[0.0.0.0/0, 0::/0\]``.
     #[prost(message, repeated, tag = "1")]
     pub networks: ::prost::alloc::vec::Vec<Network>,
     /// Must be set.
@@ -203,7 +203,7 @@ pub struct IdentitySuffix {
     #[prost(string, repeated, tag = "1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-/// Inbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
+/// Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
 ///
 /// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -366,11 +366,27 @@ pub mod inbound_server_policies_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         /// / Gets the inbound server policy for a given workload port.
         pub async fn get_port(
             &mut self,
             request: impl tonic::IntoRequest<super::PortSpec>,
-        ) -> Result<tonic::Response<super::Server>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::Server>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -384,13 +400,21 @@ pub mod inbound_server_policies_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.inbound.InboundServerPolicies/GetPort",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "io.linkerd.proxy.inbound.InboundServerPolicies",
+                        "GetPort",
+                    ),
+                );
+            self.inner.unary(req, path, codec).await
         }
         /// / Watches the inbound server policy for a given workload port.
         pub async fn watch_port(
             &mut self,
             request: impl tonic::IntoRequest<super::PortSpec>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<tonic::codec::Streaming<super::Server>>,
             tonic::Status,
         > {
@@ -407,7 +431,15 @@ pub mod inbound_server_policies_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.inbound.InboundServerPolicies/WatchPort",
             );
-            self.inner.server_streaming(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "io.linkerd.proxy.inbound.InboundServerPolicies",
+                        "WatchPort",
+                    ),
+                );
+            self.inner.server_streaming(req, path, codec).await
         }
     }
 }
@@ -422,10 +454,10 @@ pub mod inbound_server_policies_server {
         async fn get_port(
             &self,
             request: tonic::Request<super::PortSpec>,
-        ) -> Result<tonic::Response<super::Server>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::Server>, tonic::Status>;
         /// Server streaming response type for the WatchPort method.
-        type WatchPortStream: futures_core::Stream<
-                Item = Result<super::Server, tonic::Status>,
+        type WatchPortStream: tonic::codegen::tokio_stream::Stream<
+                Item = std::result::Result<super::Server, tonic::Status>,
             >
             + Send
             + 'static;
@@ -433,7 +465,7 @@ pub mod inbound_server_policies_server {
         async fn watch_port(
             &self,
             request: tonic::Request<super::PortSpec>,
-        ) -> Result<tonic::Response<Self::WatchPortStream>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<Self::WatchPortStream>, tonic::Status>;
     }
     /// / An API exposed to the linkerd2-proxy to configure the inbound proxy with per-port configuration
     /// /
@@ -447,6 +479,8 @@ pub mod inbound_server_policies_server {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: InboundServerPolicies> InboundServerPoliciesServer<T> {
@@ -459,6 +493,8 @@ pub mod inbound_server_policies_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -482,6 +518,22 @@ pub mod inbound_server_policies_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>>
     for InboundServerPoliciesServer<T>
@@ -496,7 +548,7 @@ pub mod inbound_server_policies_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -517,13 +569,18 @@ pub mod inbound_server_policies_server {
                             &mut self,
                             request: tonic::Request<super::PortSpec>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get_port(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as InboundServerPolicies>::get_port(&inner, request)
+                                    .await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -533,6 +590,10 @@ pub mod inbound_server_policies_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -556,13 +617,18 @@ pub mod inbound_server_policies_server {
                             &mut self,
                             request: tonic::Request<super::PortSpec>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).watch_port(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as InboundServerPolicies>::watch_port(&inner, request)
+                                    .await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -572,6 +638,10 @@ pub mod inbound_server_policies_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
                         Ok(res)
@@ -600,12 +670,14 @@ pub mod inbound_server_policies_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: InboundServerPolicies> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {

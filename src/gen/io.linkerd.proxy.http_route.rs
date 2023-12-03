@@ -7,7 +7,7 @@ pub struct HostMatch {
 }
 /// Nested message and enum types in `HostMatch`.
 pub mod host_match {
-    /// A match like `*.example.com` is encoded as [com, example].
+    /// A match like `*.example.com` is encoded as \[com, example\].
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Suffix {
@@ -212,7 +212,7 @@ pub struct HttpFailureInjector {
 }
 /// A ratio (i.e., of requests) to which an filter should be applied.
 ///
-/// Represents fractional values on [0, 1].
+/// Represents fractional values on \[0, 1\].
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Ratio {

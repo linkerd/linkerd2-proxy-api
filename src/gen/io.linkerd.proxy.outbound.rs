@@ -110,7 +110,7 @@ pub mod proxy_protocol {
         Grpc(Grpc),
     }
 }
-/// Outbound-specific HTTP route configuration (based on the [Gateway API]\[api\]).
+/// Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
 ///
 /// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -596,10 +596,26 @@ pub mod outbound_policies_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         pub async fn get(
             &mut self,
             request: impl tonic::IntoRequest<super::TrafficSpec>,
-        ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::OutboundPolicy>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -613,12 +629,17 @@ pub mod outbound_policies_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Get",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("io.linkerd.proxy.outbound.OutboundPolicies", "Get"),
+                );
+            self.inner.unary(req, path, codec).await
         }
         pub async fn watch(
             &mut self,
             request: impl tonic::IntoRequest<super::TrafficSpec>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<tonic::codec::Streaming<super::OutboundPolicy>>,
             tonic::Status,
         > {
@@ -635,7 +656,15 @@ pub mod outbound_policies_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Watch",
             );
-            self.inner.server_streaming(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "io.linkerd.proxy.outbound.OutboundPolicies",
+                        "Watch",
+                    ),
+                );
+            self.inner.server_streaming(req, path, codec).await
         }
     }
 }
@@ -649,23 +678,25 @@ pub mod outbound_policies_server {
         async fn get(
             &self,
             request: tonic::Request<super::TrafficSpec>,
-        ) -> Result<tonic::Response<super::OutboundPolicy>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::OutboundPolicy>, tonic::Status>;
         /// Server streaming response type for the Watch method.
-        type WatchStream: futures_core::Stream<
-                Item = Result<super::OutboundPolicy, tonic::Status>,
+        type WatchStream: tonic::codegen::tokio_stream::Stream<
+                Item = std::result::Result<super::OutboundPolicy, tonic::Status>,
             >
             + Send
             + 'static;
         async fn watch(
             &self,
             request: tonic::Request<super::TrafficSpec>,
-        ) -> Result<tonic::Response<Self::WatchStream>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<Self::WatchStream>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct OutboundPoliciesServer<T: OutboundPolicies> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: OutboundPolicies> OutboundPoliciesServer<T> {
@@ -678,6 +709,8 @@ pub mod outbound_policies_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -701,6 +734,22 @@ pub mod outbound_policies_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for OutboundPoliciesServer<T>
     where
@@ -714,7 +763,7 @@ pub mod outbound_policies_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -735,13 +784,17 @@ pub mod outbound_policies_server {
                             &mut self,
                             request: tonic::Request<super::TrafficSpec>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as OutboundPolicies>::get(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -751,6 +804,10 @@ pub mod outbound_policies_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -774,13 +831,17 @@ pub mod outbound_policies_server {
                             &mut self,
                             request: tonic::Request<super::TrafficSpec>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).watch(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as OutboundPolicies>::watch(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -790,6 +851,10 @@ pub mod outbound_policies_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
                         Ok(res)
@@ -818,12 +883,14 @@ pub mod outbound_policies_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: OutboundPolicies> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
