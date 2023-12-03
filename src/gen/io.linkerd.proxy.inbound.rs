@@ -203,9 +203,8 @@ pub struct IdentitySuffix {
     #[prost(string, repeated, tag = "1")]
     pub parts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-/// Inbound-specific HTTP route configuration (based on the [Gateway API][api]).
-///
-/// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
+/// Inbound-specific HTTP route configuration (based on the
+/// [Gateway API](<https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>)).
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {

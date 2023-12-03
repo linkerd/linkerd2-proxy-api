@@ -110,9 +110,8 @@ pub mod proxy_protocol {
         Grpc(Grpc),
     }
 }
-/// Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
-///
-/// \[api\]: <https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>
+/// Outbound-specific HTTP route configuration (based on the
+/// [Gateway API](<https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute>)).
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRoute {
@@ -159,11 +158,15 @@ pub mod http_route {
             #[prost(message, tag = "1")]
             FailureInjector(super::super::super::http_route::HttpFailureInjector),
             #[prost(message, tag = "2")]
-            RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
+            RequestHeaderModifier(
+                super::super::super::http_route::RequestHeaderModifier,
+            ),
             #[prost(message, tag = "3")]
             Redirect(super::super::super::http_route::RequestRedirect),
             #[prost(message, tag = "4")]
-            ResponseHeaderModifier(super::super::super::http_route::ResponseHeaderModifier),
+            ResponseHeaderModifier(
+                super::super::super::http_route::ResponseHeaderModifier,
+            ),
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
@@ -271,7 +274,9 @@ pub mod grpc_route {
             #[prost(message, tag = "1")]
             FailureInjector(super::super::super::grpc_route::GrpcFailureInjector),
             #[prost(message, tag = "2")]
-            RequestHeaderModifier(super::super::super::http_route::RequestHeaderModifier),
+            RequestHeaderModifier(
+                super::super::super::http_route::RequestHeaderModifier,
+            ),
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
@@ -535,8 +540,8 @@ pub struct ExponentialBackoff {
 /// Generated client implementations.
 pub mod outbound_policies_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct OutboundPoliciesClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -569,8 +574,9 @@ pub mod outbound_policies_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
-                Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::BoxBody>,
+            >>::Error: Into<StdError> + Send + Sync,
         {
             OutboundPoliciesClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -609,21 +615,24 @@ pub mod outbound_policies_client {
             &mut self,
             request: impl tonic::IntoRequest<super::TrafficSpec>,
         ) -> std::result::Result<tonic::Response<super::OutboundPolicy>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Get",
             );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "io.linkerd.proxy.outbound.OutboundPolicies",
-                "Get",
-            ));
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("io.linkerd.proxy.outbound.OutboundPolicies", "Get"),
+                );
             self.inner.unary(req, path, codec).await
         }
         pub async fn watch(
@@ -633,21 +642,27 @@ pub mod outbound_policies_client {
             tonic::Response<tonic::codec::Streaming<super::OutboundPolicy>>,
             tonic::Status,
         > {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Watch",
             );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "io.linkerd.proxy.outbound.OutboundPolicies",
-                "Watch",
-            ));
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "io.linkerd.proxy.outbound.OutboundPolicies",
+                        "Watch",
+                    ),
+                );
             self.inner.server_streaming(req, path, codec).await
         }
     }
@@ -666,7 +681,8 @@ pub mod outbound_policies_server {
         /// Server streaming response type for the Watch method.
         type WatchStream: tonic::codegen::tokio_stream::Stream<
                 Item = std::result::Result<super::OutboundPolicy, tonic::Status>,
-            > + Send
+            >
+            + Send
             + 'static;
         async fn watch(
             &self,
@@ -696,7 +712,10 @@ pub mod outbound_policies_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -752,16 +771,22 @@ pub mod outbound_policies_server {
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Get" => {
                     #[allow(non_camel_case_types)]
                     struct GetSvc<T: OutboundPolicies>(pub Arc<T>);
-                    impl<T: OutboundPolicies> tonic::server::UnaryService<super::TrafficSpec> for GetSvc<T> {
+                    impl<
+                        T: OutboundPolicies,
+                    > tonic::server::UnaryService<super::TrafficSpec> for GetSvc<T> {
                         type Response = super::OutboundPolicy;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::TrafficSpec>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut =
-                                async move { <T as OutboundPolicies>::get(&inner, request).await };
+                            let fut = async move {
+                                <T as OutboundPolicies>::get(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -791,13 +816,16 @@ pub mod outbound_policies_server {
                 "/io.linkerd.proxy.outbound.OutboundPolicies/Watch" => {
                     #[allow(non_camel_case_types)]
                     struct WatchSvc<T: OutboundPolicies>(pub Arc<T>);
-                    impl<T: OutboundPolicies>
-                        tonic::server::ServerStreamingService<super::TrafficSpec> for WatchSvc<T>
-                    {
+                    impl<
+                        T: OutboundPolicies,
+                    > tonic::server::ServerStreamingService<super::TrafficSpec>
+                    for WatchSvc<T> {
                         type Response = super::OutboundPolicy;
                         type ResponseStream = T::WatchStream;
-                        type Future =
-                            BoxFuture<tonic::Response<Self::ResponseStream>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::ResponseStream>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::TrafficSpec>,
@@ -832,14 +860,18 @@ pub mod outbound_policies_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
             }
         }
     }
