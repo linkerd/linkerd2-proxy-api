@@ -43,7 +43,9 @@ multiple-versions = "deny"
 wildcards = "allow"
 highlight = "all"
 deny = []
-skip = []
+skip = [
+    { name = "syn" },
+]
 skip-tree = []
 
 [sources]
