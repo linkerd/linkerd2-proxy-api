@@ -410,12 +410,28 @@ pub mod destination_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         /// Given a destination, return all addresses in that destination as a long-
         /// running stream of updates.
         pub async fn get(
             &mut self,
             request: impl tonic::IntoRequest<super::GetDestination>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<tonic::codec::Streaming<super::Update>>,
             tonic::Status,
         > {
@@ -432,14 +448,19 @@ pub mod destination_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.destination.Destination/Get",
             );
-            self.inner.server_streaming(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("io.linkerd.proxy.destination.Destination", "Get"),
+                );
+            self.inner.server_streaming(req, path, codec).await
         }
         /// Given a destination, return that destination's profile and send an update
         /// whenever it changes.
         pub async fn get_profile(
             &mut self,
             request: impl tonic::IntoRequest<super::GetDestination>,
-        ) -> Result<
+        ) -> std::result::Result<
             tonic::Response<tonic::codec::Streaming<super::DestinationProfile>>,
             tonic::Status,
         > {
@@ -456,7 +477,15 @@ pub mod destination_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.destination.Destination/GetProfile",
             );
-            self.inner.server_streaming(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "io.linkerd.proxy.destination.Destination",
+                        "GetProfile",
+                    ),
+                );
+            self.inner.server_streaming(req, path, codec).await
         }
     }
 }
@@ -468,7 +497,9 @@ pub mod destination_server {
     #[async_trait]
     pub trait Destination: Send + Sync + 'static {
         /// Server streaming response type for the Get method.
-        type GetStream: futures_core::Stream<Item = Result<super::Update, tonic::Status>>
+        type GetStream: tonic::codegen::tokio_stream::Stream<
+                Item = std::result::Result<super::Update, tonic::Status>,
+            >
             + Send
             + 'static;
         /// Given a destination, return all addresses in that destination as a long-
@@ -476,10 +507,10 @@ pub mod destination_server {
         async fn get(
             &self,
             request: tonic::Request<super::GetDestination>,
-        ) -> Result<tonic::Response<Self::GetStream>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<Self::GetStream>, tonic::Status>;
         /// Server streaming response type for the GetProfile method.
-        type GetProfileStream: futures_core::Stream<
-                Item = Result<super::DestinationProfile, tonic::Status>,
+        type GetProfileStream: tonic::codegen::tokio_stream::Stream<
+                Item = std::result::Result<super::DestinationProfile, tonic::Status>,
             >
             + Send
             + 'static;
@@ -488,13 +519,15 @@ pub mod destination_server {
         async fn get_profile(
             &self,
             request: tonic::Request<super::GetDestination>,
-        ) -> Result<tonic::Response<Self::GetProfileStream>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<Self::GetProfileStream>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct DestinationServer<T: Destination> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: Destination> DestinationServer<T> {
@@ -507,6 +540,8 @@ pub mod destination_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -530,6 +565,22 @@ pub mod destination_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for DestinationServer<T>
     where
@@ -543,7 +594,7 @@ pub mod destination_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -566,13 +617,17 @@ pub mod destination_server {
                             &mut self,
                             request: tonic::Request<super::GetDestination>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as Destination>::get(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -582,6 +637,10 @@ pub mod destination_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
                         Ok(res)
@@ -605,13 +664,17 @@ pub mod destination_server {
                             &mut self,
                             request: tonic::Request<super::GetDestination>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get_profile(request).await };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as Destination>::get_profile(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -621,6 +684,10 @@ pub mod destination_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
                         Ok(res)
@@ -649,12 +716,14 @@ pub mod destination_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: Destination> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {

@@ -95,9 +95,8 @@ message ProxyProtocol {
   }
 }
 
-// Outbound-specific HTTP route configuration (based on the [Gateway API][api]).
-//
-// [api]: https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute
+// Outbound-specific HTTP route configuration (based on the
+// [Gateway API](https://gateway-api.sigs.k8s.io/v1alpha2/references/spec/#gateway.networking.k8s.io/v1alpha2.HTTPRoute)).
 message HttpRoute {
   io.linkerd.proxy.meta.Metadata metadata = 1;
 
