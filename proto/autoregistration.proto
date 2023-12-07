@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.expansion;
+
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/expansion";
+
+import "google/protobuf/timestamp/timestamp.proto";
+
+import "net.proto";
+
+service Autoregistration {
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+}
+
+message RegisterRequest {
+  string sni = 1;
+  string identity = 2;
+  net.TcpAddress addr = 3;
+}
+
+message RegisterResponse {
+  string workload_entry_name = 1;
+  map<string, string> proxy_env_vars = 2;
+}
