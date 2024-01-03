@@ -80,8 +80,11 @@ pub struct WeightedAddr {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TlsIdentity {
+    /// The server name of the endpoint. This is the value that needs to be included
+    /// by clients in the ClientHello SNI extension of the TLS handshake when they
+    /// initiate TLS connections to servers.
     #[prost(message, optional, tag = "4")]
-    pub server_name: ::core::option::Option<tls_identity::ServerName>,
+    pub server_name: ::core::option::Option<tls_identity::DnsLikeIdentity>,
     #[prost(oneof = "tls_identity::Strategy", tags = "1, 3")]
     pub strategy: ::core::option::Option<tls_identity::Strategy>,
 }
@@ -98,10 +101,10 @@ pub mod tls_identity {
         #[prost(string, tag = "1")]
         pub name: ::prost::alloc::string::String,
     }
-    /// Verify the certificate based on an URI-like identity.
+    /// Verify the certificate based on an URI identity.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct UriLikeIdentity {
+    pub struct UriIdentity {
         /// A URI name that encodes workload identity.
         ///
         /// For example:
@@ -109,22 +112,13 @@ pub mod tls_identity {
         #[prost(string, tag = "1")]
         pub uri: ::prost::alloc::string::String,
     }
-    /// The server name of the endpoint. This is the value that needs to be included
-    /// by clients in the ClientHello SNI extension of the TLS handshake when they
-    /// initiate TLS connections to servers.
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct ServerName {
-        #[prost(string, tag = "1")]
-        pub name: ::prost::alloc::string::String,
-    }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Strategy {
         #[prost(message, tag = "1")]
         DnsLikeIdentity(DnsLikeIdentity),
         #[prost(message, tag = "3")]
-        UriLikeIdentity(UriLikeIdentity),
+        UriLikeIdentity(UriIdentity),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
