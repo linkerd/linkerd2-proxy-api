@@ -104,7 +104,7 @@ pub mod tls_identity {
     /// Verify the certificate based on an URI identity.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct UriIdentity {
+    pub struct UriLikeIdentity {
         /// A URI name that encodes workload identity.
         ///
         /// For example:
@@ -118,7 +118,7 @@ pub mod tls_identity {
         #[prost(message, tag = "1")]
         DnsLikeIdentity(DnsLikeIdentity),
         #[prost(message, tag = "3")]
-        UriLikeIdentity(UriIdentity),
+        UriLikeIdentity(UriLikeIdentity),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

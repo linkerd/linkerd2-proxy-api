@@ -109,7 +109,7 @@ message TlsIdentity {
 
   oneof strategy {
     DnsLikeIdentity dns_like_identity = 1;
-    UriIdentity uri_like_identity = 3;
+    UriLikeIdentity uri_like_identity = 3;
   }
 
   // The server name of the endpoint. This is the value that needs to be included
@@ -127,7 +127,7 @@ message TlsIdentity {
   }
 
   // Verify the certificate based on an URI identity.
-  message UriIdentity {
+  message UriLikeIdentity {
     // A URI name that encodes workload identity.
     //
     // For example:
