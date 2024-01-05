@@ -103,12 +103,19 @@ message WeightedAddr {
   AuthorityOverride authority_override = 7;
 }
 
-// Which strategy should be used for verifying TLS.
 message TlsIdentity {
   reserved 2;
   reserved "k8s_pod_identity";
 
-  oneof strategy { DnsLikeIdentity dns_like_identity = 1; }
+  oneof strategy {
+    DnsLikeIdentity dns_like_identity = 1;
+    UriLikeIdentity uri_like_identity = 3;
+  }
+
+  // The server name of the endpoint. This is the value that needs to be included
+  // by clients in the ClientHello SNI extension of the TLS handshake when they
+  // initiate TLS connections to servers.
+  DnsLikeIdentity server_name = 4;
 
   // Verify the certificate based on the Kubernetes pod identity.
   message DnsLikeIdentity {
@@ -117,6 +124,15 @@ message TlsIdentity {
     // For example:
     //    {name}.{namespace}.{type}.identity.{control-namespace}.{trust-domain...}
     string name = 1;
+  }
+
+  // Verify the certificate based on an URI identity.
+  message UriLikeIdentity {
+    // A URI name that encodes workload identity.
+    //
+    // For example:
+    //    spiffe://trust-domain/workload-dentifier
+    string uri = 1;
   }
 }
 
