@@ -26,10 +26,8 @@ impl TryFrom<IpAddress> for std::net::IpAddr {
     fn try_from(ip: IpAddress) -> Result<Self, Self::Error> {
         use ip_address::Ip;
         match ip.ip {
-            Some(Ip::Ipv4(octets)) => Ok(std::net::Ipv4Addr::from(octets).into()),
-            Some(Ip::Ipv6(v6)) => std::net::Ipv6Addr::try_from(v6)
-                .map(Into::into)
-                .map_err(|_| InvalidIpAddress),
+            Some(Ip::Ipv4(v4)) => Ok(std::net::IpAddr::V4(v4.into())),
+            Some(Ip::Ipv6(v6)) => Ok(std::net::IpAddr::V6(v6.into())),
             None => Err(InvalidIpAddress),
         }
     }

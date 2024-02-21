@@ -48,6 +48,8 @@ rs-check-fmt:
 rs-check *flags:
     {{ _cargo }} check --all-targets {{ _features }} {{ flags }}
 
+alias clippy := rs-clippy
+
 # Lint Rust code
 rs-clippy *flags:
     {{ _cargo }} clippy --all-targets {{ _features }} {{ flags }}
