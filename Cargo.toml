@@ -45,7 +45,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 all-features = true
 
 [dependencies]
-h2 = { version = "0.3", optional = true }
+h2 = { version = "0.4", optional = true }
 http = { version = "0.2", optional = true }
 ipnet = { version = "2", optional = true }
 prost = "0.12"
