@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v43-go
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
       - run: just go-mod-check
       - run: just go-gen-check
       - run: just go-build
