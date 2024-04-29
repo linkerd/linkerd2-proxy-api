@@ -101,6 +101,12 @@ message WeightedAddr {
   TlsIdentity tls_identity = 5;
   ProtocolHint protocol_hint = 6;
   AuthorityOverride authority_override = 7;
+
+  // The HTTP/2 parameters to use when connecting to the destination, if HTTP/2
+  // is used. These parameters are used by proxies when the application traffic
+  // is HTTP/2 or when the H2 ProtocolHint is used to transport HTTP/1
+  // connections over HTTP/2.
+  Http2ClientParams http2 = 8;
 }
 
 message TlsIdentity {
@@ -163,6 +169,47 @@ message ProtocolHint {
   message OpaqueTransport {
     // The target proxy's inbound port.
     uint32 inbound_port = 1;
+  }
+}
+
+// Configures the parameters used to initialize an HTTP/2 connection.
+message Http2ClientParams {
+  // Overrides the default client flow control settings.
+  FlowControl flow_control = 1;
+
+  // Enables keep-alive timeouts.
+  KeepAlive keep_alive = 2;
+
+  // Configures Hyper internals.
+  Internals internals = 3;
+
+  message FlowControl {
+    // Configures the maximum connection-level flow control window size.
+    uint32 initial_connection_window_size = 1;
+
+    // Configures the maximum stream-level flow control window size.
+    uint32 initial_stream_window_size = 2;
+
+    // Enables Hyper's adaptive flow control, ignoring other window settings.
+    bool adaptive_flow_control = 3;
+  }
+
+  message KeepAlive {
+    // The time between pings.
+    google.protobuf.Duration interval = 1;
+
+    // The time to wait for a ping response before considering the connection
+    // dead.
+    google.protobuf.Duration timeout = 2;
+
+    // Whether to send pings when there is no other traffic.
+    bool while_idle = 3;
+  }
+
+  message Internals {
+    uint32 max_concurrent_reset_streams = 1;
+    uint32 max_frame_size = 2;
+    uint32 max_send_buf_size = 3;
   }
 }
 

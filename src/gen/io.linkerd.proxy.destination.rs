@@ -76,6 +76,12 @@ pub struct WeightedAddr {
     pub protocol_hint: ::core::option::Option<ProtocolHint>,
     #[prost(message, optional, tag = "7")]
     pub authority_override: ::core::option::Option<AuthorityOverride>,
+    /// The HTTP/2 parameters to use when connecting to the destination, if HTTP/2
+    /// is used. These parameters are used by proxies when the application traffic
+    /// is HTTP/2 or when the H2 ProtocolHint is used to transport HTTP/1
+    /// connections over HTTP/2.
+    #[prost(message, optional, tag = "8")]
+    pub http2: ::core::option::Option<Http2ClientParams>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -172,6 +178,60 @@ pub mod protocol_hint {
         /// a `SessionProtocol` as part of its transport header.
         #[prost(message, tag = "3")]
         Opaque(Opaque),
+    }
+}
+/// Configures the parameters used to initialize an HTTP/2 connection.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Http2ClientParams {
+    /// Overrides the default client flow control settings.
+    #[prost(message, optional, tag = "1")]
+    pub flow_control: ::core::option::Option<http2_client_params::FlowControl>,
+    /// Enables keep-alive timeouts.
+    #[prost(message, optional, tag = "2")]
+    pub keep_alive: ::core::option::Option<http2_client_params::KeepAlive>,
+    /// Configures Hyper internals.
+    #[prost(message, optional, tag = "3")]
+    pub internals: ::core::option::Option<http2_client_params::Internals>,
+}
+/// Nested message and enum types in `Http2ClientParams`.
+pub mod http2_client_params {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct FlowControl {
+        /// Configures the maximum connection-level flow control window size.
+        #[prost(uint32, tag = "1")]
+        pub initial_connection_window_size: u32,
+        /// Configures the maximum stream-level flow control window size.
+        #[prost(uint32, tag = "2")]
+        pub initial_stream_window_size: u32,
+        /// Enables Hyper's adaptive flow control, ignoring other window settings.
+        #[prost(bool, tag = "3")]
+        pub adaptive_flow_control: bool,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct KeepAlive {
+        /// The time between pings.
+        #[prost(message, optional, tag = "1")]
+        pub interval: ::core::option::Option<::prost_types::Duration>,
+        /// The time to wait for a ping response before considering the connection
+        /// dead.
+        #[prost(message, optional, tag = "2")]
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
+        /// Whether to send pings when there is no other traffic.
+        #[prost(bool, tag = "3")]
+        pub while_idle: bool,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Internals {
+        #[prost(uint32, tag = "1")]
+        pub max_concurrent_reset_streams: u32,
+        #[prost(uint32, tag = "2")]
+        pub max_frame_size: u32,
+        #[prost(uint32, tag = "3")]
+        pub max_send_buf_size: u32,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
