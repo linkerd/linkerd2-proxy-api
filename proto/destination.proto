@@ -7,6 +7,7 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/destination";
 import "google/protobuf/duration.proto";
 
 import "http_types.proto";
+import "meta.proto";
 import "net.proto";
 
 /// Destination Service ///
@@ -85,6 +86,10 @@ message Update {
     // the client MUST NOT fall back to an alternate service discovery method.
     NoEndpoints no_endpoints = 3;
   }
+
+  // Updates may include a set of resource versions describing the state of the
+  // control plane used to serve this state.
+  repeated meta.ResourceVersion resource_versions = 4;
 }
 
 message AddrSet { repeated net.TcpAddress addrs = 1; }

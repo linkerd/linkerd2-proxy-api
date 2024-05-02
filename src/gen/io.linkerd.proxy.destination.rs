@@ -17,6 +17,10 @@ pub struct GetDestination {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Update {
+    /// Updates may include a set of resource versions describing the state of the
+    /// control plane used to serve this state.
+    #[prost(message, repeated, tag = "4")]
+    pub resource_versions: ::prost::alloc::vec::Vec<super::meta::ResourceVersion>,
     #[prost(oneof = "update::Update", tags = "1, 2, 3")]
     pub update: ::core::option::Option<update::Update>,
 }

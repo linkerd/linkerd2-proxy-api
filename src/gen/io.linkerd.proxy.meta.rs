@@ -39,3 +39,17 @@ pub struct Resource {
     #[prost(uint32, tag = "6")]
     pub port: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ResourceVersion {
+    /// A watched resource descriptor.
+    ///
+    /// Currently, we only report 'group' and 'kind', as watches are
+    /// cluster-scoped.
+    #[prost(message, optional, tag = "1")]
+    pub resource: ::core::option::Option<Resource>,
+    /// A numeric value representing the version of the watched resource. To be
+    /// exported as a metric.
+    #[prost(double, tag = "2")]
+    pub version: f64,
+}

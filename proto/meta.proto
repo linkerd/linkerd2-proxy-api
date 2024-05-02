@@ -28,3 +28,15 @@ message Resource {
   string section = 5;
   uint32 port = 6;
 }
+
+message ResourceVersion {
+  // A watched resource descriptor.
+  //
+  // Currently, we only report 'group' and 'kind', as watches are
+  // cluster-scoped.
+  Resource resource = 1;
+
+  // A numeric value representing the version of the watched resource. To be
+  // exported as a metric.
+  double version = 2;
+}
