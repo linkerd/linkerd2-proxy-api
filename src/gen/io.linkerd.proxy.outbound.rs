@@ -135,14 +135,15 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        /// After this time has elapsed since receiving the initial request, any
-        /// outstanding request will be cancelled if no response has been received.
-        /// If the request is cancelled, a timeout error response will be returned,
-        /// and no more retries will be attempted
-        ///
-        /// If this field is empty, no request timeout is applied.
-        #[prost(message, optional, tag = "4")]
+        /// Deprecated: use `timeouts` instead. Servers should continue to set this
+        /// value to the same value as `timeouts.response`.
+        #[deprecated]
+        #[prost(message, optional, tag = "44")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub timeouts: ::core::option::Option<super::super::http_route::Timeouts>,
+        #[prost(message, optional, tag = "6")]
+        pub retry: ::core::option::Option<Retry>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -206,16 +207,54 @@ pub mod http_route {
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Retry {
+        #[prost(uint32, tag = "1")]
+        pub limit: u32,
+        #[prost(message, repeated, tag = "2")]
+        pub on: ::prost::alloc::vec::Vec<retry::Condition>,
+        #[prost(message, optional, tag = "3")]
+        pub per_try_timeout: ::core::option::Option<::prost_types::Duration>,
+    }
+    /// Nested message and enum types in `Retry`.
+    pub mod retry {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Condition {
+            #[prost(oneof = "condition::Kind", tags = "1, 2")]
+            pub kind: ::core::option::Option<condition::Kind>,
+        }
+        /// Nested message and enum types in `Condition`.
+        pub mod condition {
+            /// All 5xx and connection errors (other than route-level timeouts).
+            #[allow(clippy::derive_partial_eq_without_eq)]
+            #[derive(Clone, PartialEq, ::prost::Message)]
+            pub struct ServerError {}
+            #[allow(clippy::derive_partial_eq_without_eq)]
+            #[derive(Clone, PartialEq, ::prost::Message)]
+            pub struct StatusCodes {
+                #[prost(uint32, repeated, tag = "1")]
+                pub codes: ::prost::alloc::vec::Vec<u32>,
+            }
+            #[allow(clippy::derive_partial_eq_without_eq)]
+            #[derive(Clone, PartialEq, ::prost::Oneof)]
+            pub enum Kind {
+                #[prost(message, tag = "1")]
+                StatusCodes(StatusCodes),
+                #[prost(message, tag = "2")]
+                ServerError(ServerError),
+            }
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RouteBackend {
         #[prost(message, optional, tag = "1")]
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
-        /// After this time has elapsed since a request is dispatched to this
-        /// backend, any request will be cancelled if no response has been received.
-        /// If the request is not retried, a timeout error response is returned.
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// Deprecated: proxies ignore this. Per-try timeouts are used instead of
+        /// backend timeouts.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }

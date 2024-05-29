@@ -7,6 +7,7 @@
 package http_route
 
 import (
+	duration "github.com/golang/protobuf/ptypes/duration"
 	http_types "github.com/linkerd/linkerd2-proxy-api/go/http_types"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -912,6 +913,73 @@ func (x *Ratio) GetDenominator() uint32 {
 	return 0
 }
 
+type Timeouts struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Limits the the time a stream may be active after all request frames have
+	// been processed.
+	Response *duration.Duration `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+	// Limits the total duration of the stream.
+	Stream *duration.Duration `protobuf:"bytes,2,opt,name=stream,proto3" json:"stream,omitempty"`
+	// Limits the amount of time a stream may be idle (i.e. with no frames being processed).
+	Idle *duration.Duration `protobuf:"bytes,3,opt,name=idle,proto3" json:"idle,omitempty"`
+}
+
+func (x *Timeouts) Reset() {
+	*x = Timeouts{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_http_route_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Timeouts) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Timeouts) ProtoMessage() {}
+
+func (x *Timeouts) ProtoReflect() protoreflect.Message {
+	mi := &file_http_route_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Timeouts.ProtoReflect.Descriptor instead.
+func (*Timeouts) Descriptor() ([]byte, []int) {
+	return file_http_route_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Timeouts) GetResponse() *duration.Duration {
+	if x != nil {
+		return x.Response
+	}
+	return nil
+}
+
+func (x *Timeouts) GetStream() *duration.Duration {
+	if x != nil {
+		return x.Stream
+	}
+	return nil
+}
+
+func (x *Timeouts) GetIdle() *duration.Duration {
+	if x != nil {
+		return x.Idle
+	}
+	return nil
+}
+
 // A match like `*.example.com` is encoded as [com, example].
 type HostMatch_Suffix struct {
 	state         protoimpl.MessageState
@@ -924,7 +992,7 @@ type HostMatch_Suffix struct {
 func (x *HostMatch_Suffix) Reset() {
 	*x = HostMatch_Suffix{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_http_route_proto_msgTypes[11]
+		mi := &file_http_route_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -937,7 +1005,7 @@ func (x *HostMatch_Suffix) String() string {
 func (*HostMatch_Suffix) ProtoMessage() {}
 
 func (x *HostMatch_Suffix) ProtoReflect() protoreflect.Message {
-	mi := &file_http_route_proto_msgTypes[11]
+	mi := &file_http_route_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -967,6 +1035,8 @@ var file_http_route_proto_rawDesc = []byte{
 	0x74, 0x6f, 0x12, 0x1b, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70,
 	0x72, 0x6f, 0x78, 0x79, 0x2e, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x1a,
 	0x10, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x1a, 0x1e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2f, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x22, 0xa6, 0x01, 0x0a, 0x09, 0x48, 0x6f, 0x73, 0x74, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x12,
 	0x16, 0x0a, 0x05, 0x65, 0x78, 0x61, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00,
 	0x52, 0x05, 0x65, 0x78, 0x61, 0x63, 0x74, 0x12, 0x47, 0x0a, 0x06, 0x73, 0x75, 0x66, 0x66, 0x69,
@@ -1064,11 +1134,21 @@ var file_http_route_proto_rawDesc = []byte{
 	0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x65,
 	0x72, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x69, 0x6e,
 	0x61, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0b, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69,
-	0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d, 0x61, 0x70, 0x69,
-	0x2f, 0x67, 0x6f, 0x2f, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x22, 0xa3, 0x01, 0x0a, 0x08, 0x54, 0x69, 0x6d, 0x65,
+	0x6f, 0x75, 0x74, 0x73, 0x12, 0x35, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x06, 0x73,
+	0x74, 0x72, 0x65, 0x61, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x2d,
+	0x0a, 0x04, 0x69, 0x64, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44,
+	0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x04, 0x69, 0x64, 0x6c, 0x65, 0x42, 0x35, 0x5a,
+	0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b,
+	0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f,
+	0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x68, 0x74, 0x74, 0x70, 0x5f, 0x72,
+	0x6f, 0x75, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1083,7 +1163,7 @@ func file_http_route_proto_rawDescGZIP() []byte {
 	return file_http_route_proto_rawDescData
 }
 
-var file_http_route_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_http_route_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_http_route_proto_goTypes = []interface{}{
 	(*HostMatch)(nil),              // 0: io.linkerd.proxy.http_route.HostMatch
 	(*HttpRouteMatch)(nil),         // 1: io.linkerd.proxy.http_route.HttpRouteMatch
@@ -1096,29 +1176,34 @@ var file_http_route_proto_goTypes = []interface{}{
 	(*PathModifier)(nil),           // 8: io.linkerd.proxy.http_route.PathModifier
 	(*HttpFailureInjector)(nil),    // 9: io.linkerd.proxy.http_route.HttpFailureInjector
 	(*Ratio)(nil),                  // 10: io.linkerd.proxy.http_route.Ratio
-	(*HostMatch_Suffix)(nil),       // 11: io.linkerd.proxy.http_route.HostMatch.Suffix
-	(*http_types.HttpMethod)(nil),  // 12: io.linkerd.proxy.http_types.HttpMethod
-	(*http_types.Headers)(nil),     // 13: io.linkerd.proxy.http_types.Headers
-	(*http_types.Scheme)(nil),      // 14: io.linkerd.proxy.http_types.Scheme
+	(*Timeouts)(nil),               // 11: io.linkerd.proxy.http_route.Timeouts
+	(*HostMatch_Suffix)(nil),       // 12: io.linkerd.proxy.http_route.HostMatch.Suffix
+	(*http_types.HttpMethod)(nil),  // 13: io.linkerd.proxy.http_types.HttpMethod
+	(*http_types.Headers)(nil),     // 14: io.linkerd.proxy.http_types.Headers
+	(*http_types.Scheme)(nil),      // 15: io.linkerd.proxy.http_types.Scheme
+	(*duration.Duration)(nil),      // 16: google.protobuf.Duration
 }
 var file_http_route_proto_depIdxs = []int32{
-	11, // 0: io.linkerd.proxy.http_route.HostMatch.suffix:type_name -> io.linkerd.proxy.http_route.HostMatch.Suffix
+	12, // 0: io.linkerd.proxy.http_route.HostMatch.suffix:type_name -> io.linkerd.proxy.http_route.HostMatch.Suffix
 	2,  // 1: io.linkerd.proxy.http_route.HttpRouteMatch.path:type_name -> io.linkerd.proxy.http_route.PathMatch
 	3,  // 2: io.linkerd.proxy.http_route.HttpRouteMatch.headers:type_name -> io.linkerd.proxy.http_route.HeaderMatch
 	4,  // 3: io.linkerd.proxy.http_route.HttpRouteMatch.query_params:type_name -> io.linkerd.proxy.http_route.QueryParamMatch
-	12, // 4: io.linkerd.proxy.http_route.HttpRouteMatch.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	13, // 5: io.linkerd.proxy.http_route.RequestHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
-	13, // 6: io.linkerd.proxy.http_route.RequestHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
-	13, // 7: io.linkerd.proxy.http_route.ResponseHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
-	13, // 8: io.linkerd.proxy.http_route.ResponseHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
-	14, // 9: io.linkerd.proxy.http_route.RequestRedirect.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	13, // 4: io.linkerd.proxy.http_route.HttpRouteMatch.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	14, // 5: io.linkerd.proxy.http_route.RequestHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
+	14, // 6: io.linkerd.proxy.http_route.RequestHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
+	14, // 7: io.linkerd.proxy.http_route.ResponseHeaderModifier.add:type_name -> io.linkerd.proxy.http_types.Headers
+	14, // 8: io.linkerd.proxy.http_route.ResponseHeaderModifier.set:type_name -> io.linkerd.proxy.http_types.Headers
+	15, // 9: io.linkerd.proxy.http_route.RequestRedirect.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
 	8,  // 10: io.linkerd.proxy.http_route.RequestRedirect.path:type_name -> io.linkerd.proxy.http_route.PathModifier
 	10, // 11: io.linkerd.proxy.http_route.HttpFailureInjector.ratio:type_name -> io.linkerd.proxy.http_route.Ratio
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	16, // 12: io.linkerd.proxy.http_route.Timeouts.response:type_name -> google.protobuf.Duration
+	16, // 13: io.linkerd.proxy.http_route.Timeouts.stream:type_name -> google.protobuf.Duration
+	16, // 14: io.linkerd.proxy.http_route.Timeouts.idle:type_name -> google.protobuf.Duration
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_http_route_proto_init() }
@@ -1260,6 +1345,18 @@ func file_http_route_proto_init() {
 			}
 		}
 		file_http_route_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Timeouts); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_http_route_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HostMatch_Suffix); i {
 			case 0:
 				return &v.state
@@ -1299,7 +1396,7 @@ func file_http_route_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_http_route_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
