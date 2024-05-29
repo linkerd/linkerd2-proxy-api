@@ -4,6 +4,7 @@ package io.linkerd.proxy.http_route;
 option go_package = "github.com/linkerd/linkerd2-proxy-api/go/http_route";
 
 import "http_types.proto";
+import "google/protobuf/duration.proto";
 
 // Describes how to match an `:authority` or `host` header.
 message HostMatch {
@@ -163,4 +164,18 @@ message Ratio {
 
   // MUST not be zero.
   uint32 denominator = 2;
+}
+
+message Timeouts {
+  // Limits the the time a stream may be active after all request frames have
+  // been processed.
+  google.protobuf.Duration response = 1;
+
+  // Limits the total duration of the stream from the request being initiated
+  // until all frames have been processed.
+  google.protobuf.Duration request = 2;
+
+  // Limits the amount of time a stream may be idle (i.e. with no frames being
+  // processed).
+  google.protobuf.Duration idle = 3;
 }

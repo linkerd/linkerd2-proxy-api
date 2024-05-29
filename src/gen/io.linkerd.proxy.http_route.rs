@@ -222,3 +222,19 @@ pub struct Ratio {
     #[prost(uint32, tag = "2")]
     pub denominator: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Timeouts {
+    /// Limits the the time a stream may be active after all request frames have
+    /// been processed.
+    #[prost(message, optional, tag = "1")]
+    pub response: ::core::option::Option<::prost_types::Duration>,
+    /// Limits the total duration of the stream from the request being initiated
+    /// until all frames have been processed.
+    #[prost(message, optional, tag = "2")]
+    pub request: ::core::option::Option<::prost_types::Duration>,
+    /// Limits the amount of time a stream may be idle (i.e. with no frames being
+    /// processed).
+    #[prost(message, optional, tag = "3")]
+    pub idle: ::core::option::Option<::prost_types::Duration>,
+}
