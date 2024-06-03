@@ -115,7 +115,7 @@ message HttpRoute {
 
     // Deprecated: use `timeouts` instead. Servers should continue to set this
     // value to the same value as `timeouts.response`.
-    google.protobuf.Duration requestTimeout = 44 [deprecated = true];
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
 
     io.linkerd.proxy.http_route.Timeouts timeouts = 5;
     Retry retry = 6;
@@ -203,7 +203,10 @@ message GrpcRoute {
     // and no more retries will be attempted
     //
     // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
+
+    io.linkerd.proxy.http_route.Timeouts timeouts = 5;
+    Retry retry = 6;
   }
 
   message Filter {
@@ -227,6 +230,24 @@ message GrpcRoute {
     }
     message RandomAvailable {
       repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message Retry {
+    uint32 limit = 1;
+
+    repeated Condition on = 2;
+
+    google.protobuf.Duration per_try_timeout = 3;
+
+    message Condition {
+      oneof kind {
+        StatusCodes status_codes = 1;
+      }
+      
+      message StatusCodes {
+        repeated uint32 codes = 1;
+      }
     }
   }
 
