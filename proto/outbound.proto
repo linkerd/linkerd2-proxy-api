@@ -80,21 +80,21 @@ message ProxyProtocol {
     repeated HttpRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2;
+    FailureAccrual failure_accrual = 2 [deprecated = true];
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2;
+    FailureAccrual failure_accrual = 2 [deprecated = true];
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2;
+    FailureAccrual failure_accrual = 2 [deprecated = true];
   }
 }
 
@@ -342,6 +342,8 @@ message Backend {
       // average) load estimates.
       PeakEwma peak_ewma = 2;
     }
+
+    FailureAccrual endpoint_failure_accrual = 3;
 
     // Parameters configuring peak EWMA load estimation.
     message PeakEwma {
