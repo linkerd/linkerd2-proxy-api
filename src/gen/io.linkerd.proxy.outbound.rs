@@ -71,7 +71,6 @@ pub mod proxy_protocol {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
         /// If empty, circuit breaking is not performed.
-        #[deprecated]
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
@@ -81,7 +80,6 @@ pub mod proxy_protocol {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
         /// If empty, circuit breaking is not performed.
-        #[deprecated]
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
@@ -91,7 +89,6 @@ pub mod proxy_protocol {
         #[prost(message, repeated, tag = "1")]
         pub routes: ::prost::alloc::vec::Vec<super::GrpcRoute>,
         /// If empty, circuit breaking is not performed.
-        #[deprecated]
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
@@ -407,6 +404,7 @@ pub mod grpc_route {
         /// If the request is not retried, a timeout error response is returned.
         ///
         /// If this field is empty, no request timeout is applied.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
@@ -529,8 +527,6 @@ pub mod backend {
     pub struct BalanceP2c {
         #[prost(message, optional, tag = "1")]
         pub discovery: ::core::option::Option<EndpointDiscovery>,
-        #[prost(message, optional, tag = "3")]
-        pub endpoint_failure_accrual: ::core::option::Option<super::FailureAccrual>,
         /// The load estimation strategy used by this load balancer.
         #[prost(oneof = "balance_p2c::Load", tags = "2")]
         pub load: ::core::option::Option<balance_p2c::Load>,

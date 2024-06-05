@@ -80,21 +80,21 @@ message ProxyProtocol {
     repeated HttpRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2 [deprecated = true];
+    FailureAccrual failure_accrual = 2;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2 [deprecated = true];
+    FailureAccrual failure_accrual = 2;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
 
     // If empty, circuit breaking is not performed.
-    FailureAccrual failure_accrual = 2 [deprecated = true];
+    FailureAccrual failure_accrual = 2;
   }
 }
 
@@ -171,6 +171,7 @@ message HttpRoute {
 
   message RouteBackend {
     Backend backend = 1;
+
     repeated Filter filters = 3;
 
     // Deprecated: proxies ignore this. Per-try timeouts are used instead of
@@ -253,6 +254,7 @@ message GrpcRoute {
 
   message RouteBackend {
     Backend backend = 1;
+
     repeated Filter filters = 3;
 
     // After this time has elapsed since a request is dispatched to this
@@ -260,7 +262,7 @@ message GrpcRoute {
     // If the request is not retried, a timeout error response is returned.
     //
     // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
   }
 
   message WeightedRouteBackend {
@@ -342,8 +344,6 @@ message Backend {
       // average) load estimates.
       PeakEwma peak_ewma = 2;
     }
-
-    FailureAccrual endpoint_failure_accrual = 3;
 
     // Parameters configuring peak EWMA load estimation.
     message PeakEwma {
