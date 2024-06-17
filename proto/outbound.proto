@@ -150,21 +150,17 @@ message HttpRoute {
   message Retry {
     uint32 limit = 1;
 
-    repeated Condition on = 2;
+    Conditions conditions = 2;
 
-    google.protobuf.Duration per_try_timeout = 3;
+    google.protobuf.Duration timeout = 3;
 
-    message Condition {
-      oneof kind {
-        StatusCodes status_codes = 1;
-        ServerError server_error = 2;
-      }
+    message Conditions {
+      // Specifies the status code ranges that should trigger a retry.
+      repeated StatusRange status_ranges = 1;
 
-      // All 5xx and connection errors (other than route-level timeouts).
-      message ServerError {}
-
-      message StatusCodes {
-        repeated uint32 codes = 1;
+      message StatusRange {
+        uint32 min = 1;
+        uint32 max = 2;
       }
     }
   }
@@ -197,13 +193,9 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    
-    // After this time has elapsed since receiving the initial request, any
-    // outstanding request will be cancelled if no response has been received.
-    // If the request is cancelled, a timeout error response will be returned,
-    // and no more retries will be attempted
-    //
-    // If this field is empty, no request timeout is applied.
+
+    // Deprecated: use `timeouts` instead. Servers should continue to set this
+    // value to the same value as `timeouts.response`.
     google.protobuf.Duration requestTimeout = 4 [deprecated = true];
 
     io.linkerd.proxy.http_route.Timeouts timeouts = 5;
@@ -237,18 +229,16 @@ message GrpcRoute {
   message Retry {
     uint32 limit = 1;
 
-    repeated Condition on = 2;
+    Conditions conditions = 2;
 
     google.protobuf.Duration per_try_timeout = 3;
 
-    message Condition {
-      oneof kind {
-        StatusCodes status_codes = 1;
-      }
-      
-      message StatusCodes {
-        repeated uint32 codes = 1;
-      }
+    message Conditions {
+      bool cancelled = 1;
+      bool deadine_exceeded = 4;
+      bool resource_exhausted = 8;
+      bool internal = 13;
+      bool unavailable = 14;
     }
   }
 

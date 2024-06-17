@@ -210,38 +210,29 @@ pub mod http_route {
     pub struct Retry {
         #[prost(uint32, tag = "1")]
         pub limit: u32,
-        #[prost(message, repeated, tag = "2")]
-        pub on: ::prost::alloc::vec::Vec<retry::Condition>,
+        #[prost(message, optional, tag = "2")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
         #[prost(message, optional, tag = "3")]
-        pub per_try_timeout: ::core::option::Option<::prost_types::Duration>,
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
     }
     /// Nested message and enum types in `Retry`.
     pub mod retry {
         #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
-        pub struct Condition {
-            #[prost(oneof = "condition::Kind", tags = "1, 2")]
-            pub kind: ::core::option::Option<condition::Kind>,
+        pub struct Conditions {
+            /// Specifies the status code ranges that should trigger a retry.
+            #[prost(message, repeated, tag = "1")]
+            pub status_ranges: ::prost::alloc::vec::Vec<conditions::StatusRange>,
         }
-        /// Nested message and enum types in `Condition`.
-        pub mod condition {
-            /// All 5xx and connection errors (other than route-level timeouts).
+        /// Nested message and enum types in `Conditions`.
+        pub mod conditions {
             #[allow(clippy::derive_partial_eq_without_eq)]
             #[derive(Clone, PartialEq, ::prost::Message)]
-            pub struct ServerError {}
-            #[allow(clippy::derive_partial_eq_without_eq)]
-            #[derive(Clone, PartialEq, ::prost::Message)]
-            pub struct StatusCodes {
-                #[prost(uint32, repeated, tag = "1")]
-                pub codes: ::prost::alloc::vec::Vec<u32>,
-            }
-            #[allow(clippy::derive_partial_eq_without_eq)]
-            #[derive(Clone, PartialEq, ::prost::Oneof)]
-            pub enum Kind {
-                #[prost(message, tag = "1")]
-                StatusCodes(StatusCodes),
-                #[prost(message, tag = "2")]
-                ServerError(ServerError),
+            pub struct StatusRange {
+                #[prost(uint32, tag = "1")]
+                pub min: u32,
+                #[prost(uint32, tag = "2")]
+                pub max: u32,
             }
         }
     }
@@ -290,12 +281,8 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        /// After this time has elapsed since receiving the initial request, any
-        /// outstanding request will be cancelled if no response has been received.
-        /// If the request is cancelled, a timeout error response will be returned,
-        /// and no more retries will be attempted
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// Deprecated: use `timeouts` instead. Servers should continue to set this
+        /// value to the same value as `timeouts.response`.
         #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
@@ -363,8 +350,8 @@ pub mod grpc_route {
     pub struct Retry {
         #[prost(uint32, tag = "1")]
         pub limit: u32,
-        #[prost(message, repeated, tag = "2")]
-        pub on: ::prost::alloc::vec::Vec<retry::Condition>,
+        #[prost(message, optional, tag = "2")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
         #[prost(message, optional, tag = "3")]
         pub per_try_timeout: ::core::option::Option<::prost_types::Duration>,
     }
@@ -372,24 +359,17 @@ pub mod grpc_route {
     pub mod retry {
         #[allow(clippy::derive_partial_eq_without_eq)]
         #[derive(Clone, PartialEq, ::prost::Message)]
-        pub struct Condition {
-            #[prost(oneof = "condition::Kind", tags = "1")]
-            pub kind: ::core::option::Option<condition::Kind>,
-        }
-        /// Nested message and enum types in `Condition`.
-        pub mod condition {
-            #[allow(clippy::derive_partial_eq_without_eq)]
-            #[derive(Clone, PartialEq, ::prost::Message)]
-            pub struct StatusCodes {
-                #[prost(uint32, repeated, tag = "1")]
-                pub codes: ::prost::alloc::vec::Vec<u32>,
-            }
-            #[allow(clippy::derive_partial_eq_without_eq)]
-            #[derive(Clone, PartialEq, ::prost::Oneof)]
-            pub enum Kind {
-                #[prost(message, tag = "1")]
-                StatusCodes(StatusCodes),
-            }
+        pub struct Conditions {
+            #[prost(bool, tag = "1")]
+            pub cancelled: bool,
+            #[prost(bool, tag = "4")]
+            pub deadine_exceeded: bool,
+            #[prost(bool, tag = "8")]
+            pub resource_exhausted: bool,
+            #[prost(bool, tag = "13")]
+            pub internal: bool,
+            #[prost(bool, tag = "14")]
+            pub unavailable: bool,
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
