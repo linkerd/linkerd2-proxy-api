@@ -230,9 +230,9 @@ pub mod http_route {
             #[derive(Clone, PartialEq, ::prost::Message)]
             pub struct StatusRange {
                 #[prost(uint32, tag = "1")]
-                pub min: u32,
+                pub start: u32,
                 #[prost(uint32, tag = "2")]
-                pub max: u32,
+                pub end: u32,
             }
         }
     }

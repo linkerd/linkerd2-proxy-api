@@ -159,8 +159,8 @@ message HttpRoute {
       repeated StatusRange status_ranges = 1;
 
       message StatusRange {
-        uint32 min = 1;
-        uint32 max = 2;
+        uint32 start = 1;
+        uint32 end = 2;
       }
     }
   }
