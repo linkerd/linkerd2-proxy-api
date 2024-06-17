@@ -353,7 +353,7 @@ pub mod grpc_route {
         #[prost(message, optional, tag = "2")]
         pub conditions: ::core::option::Option<retry::Conditions>,
         #[prost(message, optional, tag = "3")]
-        pub per_try_timeout: ::core::option::Option<::prost_types::Duration>,
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
     }
     /// Nested message and enum types in `Retry`.
     pub mod retry {

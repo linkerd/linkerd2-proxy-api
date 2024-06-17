@@ -231,7 +231,7 @@ message GrpcRoute {
 
     Conditions conditions = 2;
 
-    google.protobuf.Duration per_try_timeout = 3;
+    google.protobuf.Duration timeout = 3;
 
     message Conditions {
       bool cancelled = 1;
