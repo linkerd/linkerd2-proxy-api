@@ -209,11 +209,15 @@ pub mod http_route {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Retry {
         #[prost(uint32, tag = "1")]
-        pub limit: u32,
-        #[prost(message, optional, tag = "2")]
-        pub conditions: ::core::option::Option<retry::Conditions>,
+        pub max_retries: u32,
+        #[prost(uint32, tag = "2")]
+        pub max_request_bytes: u32,
         #[prost(message, optional, tag = "3")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
+        #[prost(message, optional, tag = "4")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
     }
     /// Nested message and enum types in `Retry`.
     pub mod retry {
@@ -349,11 +353,15 @@ pub mod grpc_route {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Retry {
         #[prost(uint32, tag = "1")]
-        pub limit: u32,
-        #[prost(message, optional, tag = "2")]
-        pub conditions: ::core::option::Option<retry::Conditions>,
+        pub max_retries: u32,
+        #[prost(uint32, tag = "2")]
+        pub max_request_bytes: u32,
         #[prost(message, optional, tag = "3")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
+        #[prost(message, optional, tag = "4")]
         pub timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
     }
     /// Nested message and enum types in `Retry`.
     pub mod retry {

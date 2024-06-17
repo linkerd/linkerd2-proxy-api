@@ -148,11 +148,13 @@ message HttpRoute {
   }
 
   message Retry {
-    uint32 limit = 1;
+    uint32 max_retries = 1;
+    uint32 max_request_bytes = 2;
 
-    Conditions conditions = 2;
+    Conditions conditions = 3;
 
-    google.protobuf.Duration timeout = 3;
+    google.protobuf.Duration timeout = 4;
+    ExponentialBackoff backoff = 5;
 
     message Conditions {
       // Specifies the status code ranges that should trigger a retry.
@@ -227,11 +229,13 @@ message GrpcRoute {
   }
 
   message Retry {
-    uint32 limit = 1;
+    uint32 max_retries = 1;
+    uint32 max_request_bytes = 2;
 
-    Conditions conditions = 2;
+    Conditions conditions = 3;
 
-    google.protobuf.Duration timeout = 3;
+    google.protobuf.Duration timeout = 4;
+    ExponentialBackoff backoff = 5;
 
     message Conditions {
       bool cancelled = 1;
