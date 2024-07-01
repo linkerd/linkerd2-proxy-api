@@ -171,9 +171,11 @@ message Timeouts {
   // been processed.
   google.protobuf.Duration response = 1;
 
-  // Limits the total duration of the stream.
-  google.protobuf.Duration stream = 2;
+  // Limits the total duration of the stream from the request being initiated
+  // until all frames have been processed.
+  google.protobuf.Duration request = 2;
 
-  // Limits the amount of time a stream may be idle (i.e. with no frames being processed).
+  // Limits the amount of time a stream may be idle (i.e. with no frames being
+  // processed).
   google.protobuf.Duration idle = 3;
 }
