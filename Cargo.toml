@@ -49,7 +49,7 @@ h2 = { version = "0.3", optional = true }
 http = { version = "0.2", optional = true }
 ipnet = { version = "2", optional = true }
 prost = "0.12"
-prost-types = { version = "0.12", optional = true }
+prost-types = { version = "0.13", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "1", optional = true }
 
