@@ -9,6 +9,7 @@ import "destination.proto";
 import "meta.proto";
 import "grpc_route.proto";
 import "http_route.proto";
+import "tls_route.proto";
 import "google/protobuf/duration.proto";
 
 service OutboundPolicies {
@@ -57,6 +58,9 @@ message ProxyProtocol {
 
     // gRPC policy configuration.
     Grpc grpc = 5;
+
+    // TLS policy configuration.
+    Tls tls = 6;
   }
 
   message Detect {
@@ -92,6 +96,10 @@ message ProxyProtocol {
     repeated GrpcRoute routes = 1;
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+  }
+
+  message Tls {
+    repeated TlsRoute routes = 1;
   }
 }
 
@@ -175,7 +183,7 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    
+
     // After this time has elapsed since receiving the initial request, any
     // outstanding request will be cancelled if no response has been received.
     // If the request is cancelled, a timeout error response will be returned,
@@ -234,6 +242,46 @@ message OpaqueRoute {
   repeated Rule rules = 3;
   message Rule {
     Distribution backends = 1;
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message TlsRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the host value is ignored.
+  repeated io.linkerd.proxy.tls_route.SniMatch snis = 2;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    repeated io.linkerd.proxy.tls_route.TlsRouteMatch matches = 1;
+    Distribution backends = 2;
   }
 
   message Distribution {

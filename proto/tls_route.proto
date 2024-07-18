@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.tls_route;
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/tls_route";
+
+import "http_types.proto";
+
+message SniMatch {
+    oneof match {
+        // Match an exact hostname, e.g. www.example.com.
+        string exact = 1;
+
+        // Match a hostname as a wildcard suffix, e.g. *.example.com.
+        Suffix suffix = 2;
+    }
+
+    // A match like `*.example.com` is encoded as [com, example].
+    message Suffix { repeated string reverse_labels = 1; }
+}
+
+// Describes a set of matches, ALL of which must apply.
+message TlsRouteMatch { }

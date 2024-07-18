@@ -17,6 +17,11 @@ pub mod http_route {
     include!("gen/io.linkerd.proxy.http_route.rs");
 }
 
+#[cfg(feature = "outbound")]
+pub mod tls_route {
+    include!("gen/io.linkerd.proxy.tls_route.rs");
+}
+
 #[cfg(feature = "http-types")]
 pub mod http_types;
 
