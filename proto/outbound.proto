@@ -78,18 +78,21 @@ message ProxyProtocol {
 
   message Http1 {
     repeated HttpRoute routes = 1;
+
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
   }
 
   message Http2 {
     repeated HttpRoute routes = 1;
+
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
   }
 
   message Grpc {
     repeated GrpcRoute routes = 1;
+
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
   }
@@ -110,13 +113,16 @@ message HttpRoute {
     repeated Filter filters = 2;
     Distribution backends = 3;
 
-    // After this time has elapsed since receiving the initial request, any
-    // outstanding request will be cancelled if no response has been received.
-    // If the request is cancelled, a timeout error response will be returned,
-    // and no more retries will be attempted
-    //
-    // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    // DEPRECATED: use `timeouts` instead. Servers should continue to set this
+    // value to the same value as `timeouts.response`.
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
+
+    io.linkerd.proxy.http_route.Timeouts timeouts = 5;
+    Retry retry = 6;
+
+    // If true, the proxy will allow headers to control retry and timeout
+    // behavior.
+    bool allow_l5d_request_headers = 7;
   }
 
   message Filter {
@@ -145,16 +151,35 @@ message HttpRoute {
     }
   }
 
+  message Retry {
+    uint32 max_retries = 1;
+    uint32 max_request_bytes = 2;
+
+    // Must be set, even if there are no internal conditions.
+    Conditions conditions = 3;
+
+    google.protobuf.Duration timeout = 4;
+    ExponentialBackoff backoff = 5;
+
+    // Retryable conditions.
+    message Conditions {
+      // Specifies the status code ranges that should trigger a retry.
+      repeated StatusRange status_ranges = 1;
+
+      message StatusRange {
+        uint32 start = 1;
+        uint32 end = 2;
+      }
+    }
+  }
+
   message RouteBackend {
     Backend backend = 1;
+
     repeated Filter filters = 3;
 
-    // After this time has elapsed since a request is dispatched to this
-    // backend, any request will be cancelled if no response has been received.
-    // If the request is not retried, a timeout error response is returned.
-    //
-    // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    // DEPRECATED: proxies ignore this. Use Retry timeouts instead.
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
   }
 
   message WeightedRouteBackend {
@@ -175,14 +200,17 @@ message GrpcRoute {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
     Distribution backends = 3;
-    
-    // After this time has elapsed since receiving the initial request, any
-    // outstanding request will be cancelled if no response has been received.
-    // If the request is cancelled, a timeout error response will be returned,
-    // and no more retries will be attempted
-    //
-    // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+
+    // DEPRECATED: use `timeouts` instead. Servers should continue to set this
+    // value to the same value as `timeouts.response`.
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
+
+    io.linkerd.proxy.http_route.Timeouts timeouts = 5;
+    Retry retry = 6;
+
+    // If true, the proxy will allow headers to control retry and timeout
+    // behavior.
+    bool allow_l5d_request_headers = 7;
   }
 
   message Filter {
@@ -209,16 +237,33 @@ message GrpcRoute {
     }
   }
 
+  message Retry {
+    uint32 max_retries = 1;
+    uint32 max_request_bytes = 2;
+
+    // Must be set, even if there are no internal conditions.
+    Conditions conditions = 3;
+
+    google.protobuf.Duration timeout = 4;
+    ExponentialBackoff backoff = 5;
+
+    // Retryable gRPC status codes.
+    message Conditions {
+      bool cancelled = 1;
+      bool deadine_exceeded = 4;
+      bool resource_exhausted = 8;
+      bool internal = 13;
+      bool unavailable = 14;
+    }
+  }
+
   message RouteBackend {
     Backend backend = 1;
+
     repeated Filter filters = 3;
 
-    // After this time has elapsed since a request is dispatched to this
-    // backend, any request will be cancelled if no response has been received.
-    // If the request is not retried, a timeout error response is returned.
-    //
-    // If this field is empty, no request timeout is applied.
-    google.protobuf.Duration requestTimeout = 4;
+    // DEPRECATED: proxies ignore this. Retry timeouts are used instead of this.
+    google.protobuf.Duration requestTimeout = 4 [deprecated = true];
   }
 
   message WeightedRouteBackend {

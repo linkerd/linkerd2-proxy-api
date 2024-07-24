@@ -135,14 +135,19 @@ pub mod http_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        /// After this time has elapsed since receiving the initial request, any
-        /// outstanding request will be cancelled if no response has been received.
-        /// If the request is cancelled, a timeout error response will be returned,
-        /// and no more retries will be attempted
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// DEPRECATED: use `timeouts` instead. Servers should continue to set this
+        /// value to the same value as `timeouts.response`.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub timeouts: ::core::option::Option<super::super::http_route::Timeouts>,
+        #[prost(message, optional, tag = "6")]
+        pub retry: ::core::option::Option<Retry>,
+        /// If true, the proxy will allow headers to control retry and timeout
+        /// behavior.
+        #[prost(bool, tag = "7")]
+        pub allow_l5d_request_headers: bool,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -206,16 +211,50 @@ pub mod http_route {
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Retry {
+        #[prost(uint32, tag = "1")]
+        pub max_retries: u32,
+        #[prost(uint32, tag = "2")]
+        pub max_request_bytes: u32,
+        /// Must be set, even if there are no internal conditions.
+        #[prost(message, optional, tag = "3")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
+        #[prost(message, optional, tag = "4")]
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
+    }
+    /// Nested message and enum types in `Retry`.
+    pub mod retry {
+        /// Retryable conditions.
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Conditions {
+            /// Specifies the status code ranges that should trigger a retry.
+            #[prost(message, repeated, tag = "1")]
+            pub status_ranges: ::prost::alloc::vec::Vec<conditions::StatusRange>,
+        }
+        /// Nested message and enum types in `Conditions`.
+        pub mod conditions {
+            #[allow(clippy::derive_partial_eq_without_eq)]
+            #[derive(Clone, PartialEq, ::prost::Message)]
+            pub struct StatusRange {
+                #[prost(uint32, tag = "1")]
+                pub start: u32,
+                #[prost(uint32, tag = "2")]
+                pub end: u32,
+            }
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RouteBackend {
         #[prost(message, optional, tag = "1")]
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
-        /// After this time has elapsed since a request is dispatched to this
-        /// backend, any request will be cancelled if no response has been received.
-        /// If the request is not retried, a timeout error response is returned.
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// DEPRECATED: proxies ignore this. Use Retry timeouts instead.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }
@@ -251,14 +290,19 @@ pub mod grpc_route {
         pub filters: ::prost::alloc::vec::Vec<Filter>,
         #[prost(message, optional, tag = "3")]
         pub backends: ::core::option::Option<Distribution>,
-        /// After this time has elapsed since receiving the initial request, any
-        /// outstanding request will be cancelled if no response has been received.
-        /// If the request is cancelled, a timeout error response will be returned,
-        /// and no more retries will be attempted
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// DEPRECATED: use `timeouts` instead. Servers should continue to set this
+        /// value to the same value as `timeouts.response`.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub timeouts: ::core::option::Option<super::super::http_route::Timeouts>,
+        #[prost(message, optional, tag = "6")]
+        pub retry: ::core::option::Option<Retry>,
+        /// If true, the proxy will allow headers to control retry and timeout
+        /// behavior.
+        #[prost(bool, tag = "7")]
+        pub allow_l5d_request_headers: bool,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -316,16 +360,46 @@ pub mod grpc_route {
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Retry {
+        #[prost(uint32, tag = "1")]
+        pub max_retries: u32,
+        #[prost(uint32, tag = "2")]
+        pub max_request_bytes: u32,
+        /// Must be set, even if there are no internal conditions.
+        #[prost(message, optional, tag = "3")]
+        pub conditions: ::core::option::Option<retry::Conditions>,
+        #[prost(message, optional, tag = "4")]
+        pub timeout: ::core::option::Option<::prost_types::Duration>,
+        #[prost(message, optional, tag = "5")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
+    }
+    /// Nested message and enum types in `Retry`.
+    pub mod retry {
+        /// Retryable gRPC status codes.
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Conditions {
+            #[prost(bool, tag = "1")]
+            pub cancelled: bool,
+            #[prost(bool, tag = "4")]
+            pub deadine_exceeded: bool,
+            #[prost(bool, tag = "8")]
+            pub resource_exhausted: bool,
+            #[prost(bool, tag = "13")]
+            pub internal: bool,
+            #[prost(bool, tag = "14")]
+            pub unavailable: bool,
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RouteBackend {
         #[prost(message, optional, tag = "1")]
         pub backend: ::core::option::Option<super::Backend>,
         #[prost(message, repeated, tag = "3")]
         pub filters: ::prost::alloc::vec::Vec<Filter>,
-        /// After this time has elapsed since a request is dispatched to this
-        /// backend, any request will be cancelled if no response has been received.
-        /// If the request is not retried, a timeout error response is returned.
-        ///
-        /// If this field is empty, no request timeout is applied.
+        /// DEPRECATED: proxies ignore this. Retry timeouts are used instead of this.
+        #[deprecated]
         #[prost(message, optional, tag = "4")]
         pub request_timeout: ::core::option::Option<::prost_types::Duration>,
     }

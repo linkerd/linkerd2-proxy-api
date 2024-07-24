@@ -1,6 +1,6 @@
 [package]
 name = "linkerd2-proxy-api"
-version = "0.13.1"
+version = "0.14.0"
 authors = ["Linkerd Developers <cncf-linkerd-dev@lists.cncf.io>"]
 license = "Apache-2.0"
 edition = "2021"
