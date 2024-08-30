@@ -274,8 +274,8 @@ dependencies = [
  "h2",
  "http",
  "ipnet",
- "prost",
- "prost-types",
+ "prost 0.12.4",
+ "prost-types 0.13.2",
  "quickcheck",
  "thiserror",
  "tonic",
@@ -389,7 +389,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0f5d036824e4761737860779c906171497f6d55681139d8312388f8fe398922"
 dependencies = [
  "bytes",
- "prost-derive",
+ "prost-derive 0.12.4",
+]
+
+[[package]]
+name = "prost"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b2ecbe40f08db5c006b5764a2645f7f3f141ce756412ac9e1dd6087e6d32995"
+dependencies = [
+ "bytes",
+ "prost-derive 0.13.2",
 ]
 
 [[package]]
@@ -406,8 +416,8 @@ dependencies = [
  "once_cell",
  "petgraph",
  "prettyplease",
- "prost",
- "prost-types",
+ "prost 0.12.4",
+ "prost-types 0.12.4",
  "regex",
  "syn 2.0.46",
  "tempfile",
@@ -428,12 +438,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "prost-derive"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "acf0c195eebb4af52c752bec4f52f645da98b6e92077a04110c7f349477ae5ac"
+dependencies = [
+ "anyhow",
+ "itertools",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.46",
+]
+
+[[package]]
 name = "prost-types"
 version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3235c33eb02c1f1e212abdbe34c78b264b038fb58ca612664343271e36e55ffe"
 dependencies = [
- "prost",
+ "prost 0.12.4",
+]
+
+[[package]]
+name = "prost-types"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60caa6738c7369b940c3d49246a8d1749323674c65cb13010134f5c9bad5b519"
+dependencies = [
+ "prost 0.13.2",
 ]
 
 [[package]]
@@ -639,7 +671,7 @@ dependencies = [
  "http-body",
  "percent-encoding",
  "pin-project",
- "prost",
+ "prost 0.12.4",
  "tokio",
  "tokio-stream",
  "tower-layer",
