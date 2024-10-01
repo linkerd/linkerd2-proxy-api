@@ -82,6 +82,8 @@ pub struct WeightedAddr {
     /// connections over HTTP/2.
     #[prost(message, optional, tag = "8")]
     pub http2: ::core::option::Option<Http2ClientParams>,
+    #[prost(enumeration = "ZoneLocality", tag = "9")]
+    pub zone_locality: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -428,6 +430,35 @@ pub struct WeightedDst {
     /// relative to other weights in the same dst_overrides list.
     #[prost(uint32, tag = "2")]
     pub weight: u32,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum ZoneLocality {
+    Unknown = 0,
+    Local = 1,
+    Remote = 2,
+}
+impl ZoneLocality {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ZoneLocality::Unknown => "UNKNOWN",
+            ZoneLocality::Local => "LOCAL",
+            ZoneLocality::Remote => "REMOTE",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "UNKNOWN" => Some(Self::Unknown),
+            "LOCAL" => Some(Self::Local),
+            "REMOTE" => Some(Self::Remote),
+            _ => None,
+        }
+    }
 }
 /// Generated client implementations.
 pub mod destination_client {

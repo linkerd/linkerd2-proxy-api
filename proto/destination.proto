@@ -107,6 +107,13 @@ message WeightedAddr {
   // is HTTP/2 or when the H2 ProtocolHint is used to transport HTTP/1
   // connections over HTTP/2.
   Http2ClientParams http2 = 8;
+  ZoneLocality zone_locality = 9;
+}
+
+enum ZoneLocality {
+  UNKNOWN = 0;
+  LOCAL = 1;
+  REMOTE = 2;
 }
 
 message TlsIdentity {
