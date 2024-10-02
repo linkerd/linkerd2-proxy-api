@@ -8,6 +8,7 @@ import "net.proto";
 import "destination.proto";
 import "meta.proto";
 import "grpc_route.proto";
+import "tls_route.proto";
 import "http_route.proto";
 import "google/protobuf/duration.proto";
 
@@ -57,6 +58,9 @@ message ProxyProtocol {
 
     // gRPC policy configuration.
     Grpc grpc = 5;
+
+    // TLS policy configuration.
+    Tls tls = 6;
   }
 
   message Detect {
@@ -95,6 +99,10 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+  }
+
+  message Tls {
+    repeated TlsRoute routes = 1;
   }
 }
 
@@ -274,6 +282,45 @@ message GrpcRoute {
 
 message OpaqueRoute {
   io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // Must have at least one rule.
+  repeated Rule rules = 3;
+  message Rule {
+    Distribution backends = 1;
+  }
+
+  message Distribution {
+    oneof kind {
+      Empty empty = 1;
+      // Use the first available backend in the list.
+      FirstAvailable first_available = 2;
+      RandomAvailable random_available = 3;
+    }
+
+    message Empty {}
+    message FirstAvailable {
+      repeated RouteBackend backends = 1;
+    }
+    message RandomAvailable {
+      repeated WeightedRouteBackend backends = 1;
+    }
+  }
+
+  message RouteBackend {
+    Backend backend = 1;
+  }
+
+  message WeightedRouteBackend {
+    RouteBackend backend = 1;
+    uint32 weight = 2;
+  }
+}
+
+message TlsRoute {
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
+  // If empty, the SNI value is ignored.
+  repeated io.linkerd.proxy.tls_route.SniMatch snis = 2;
 
   // Must have at least one rule.
   repeated Rule rules = 3;

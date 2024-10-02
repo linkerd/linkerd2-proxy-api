@@ -12,6 +12,11 @@ pub mod grpc_route {
     include!("gen/io.linkerd.proxy.grpc_route.rs");
 }
 
+#[cfg(feature = "tls-route")]
+pub mod tls_route {
+    include!("gen/io.linkerd.proxy.tls_route.rs");
+}
+
 #[cfg(feature = "http-route")]
 pub mod http_route {
     include!("gen/io.linkerd.proxy.http_route.rs");

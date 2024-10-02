@@ -39,7 +39,7 @@ pub struct OutboundPolicy {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProxyProtocol {
-    #[prost(oneof = "proxy_protocol::Kind", tags = "1, 2, 3, 4, 5")]
+    #[prost(oneof = "proxy_protocol::Kind", tags = "1, 2, 3, 4, 5, 6")]
     pub kind: ::core::option::Option<proxy_protocol::Kind>,
 }
 /// Nested message and enum types in `ProxyProtocol`.
@@ -93,6 +93,12 @@ pub mod proxy_protocol {
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Tls {
+        #[prost(message, repeated, tag = "1")]
+        pub routes: ::prost::alloc::vec::Vec<super::TlsRoute>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Kind {
         #[prost(message, tag = "1")]
@@ -108,6 +114,9 @@ pub mod proxy_protocol {
         /// gRPC policy configuration.
         #[prost(message, tag = "5")]
         Grpc(Grpc),
+        /// TLS policy configuration.
+        #[prost(message, tag = "6")]
+        Tls(Tls),
     }
 }
 /// Outbound-specific HTTP route configuration (based on the
@@ -423,6 +432,76 @@ pub struct OpaqueRoute {
 }
 /// Nested message and enum types in `OpaqueRoute`.
 pub mod opaque_route {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rule {
+        #[prost(message, optional, tag = "1")]
+        pub backends: ::core::option::Option<Distribution>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Distribution {
+        #[prost(oneof = "distribution::Kind", tags = "1, 2, 3")]
+        pub kind: ::core::option::Option<distribution::Kind>,
+    }
+    /// Nested message and enum types in `Distribution`.
+    pub mod distribution {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct Empty {}
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct FirstAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::RouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct RandomAvailable {
+            #[prost(message, repeated, tag = "1")]
+            pub backends: ::prost::alloc::vec::Vec<super::WeightedRouteBackend>,
+        }
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Empty(Empty),
+            /// Use the first available backend in the list.
+            #[prost(message, tag = "2")]
+            FirstAvailable(FirstAvailable),
+            #[prost(message, tag = "3")]
+            RandomAvailable(RandomAvailable),
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<super::Backend>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct WeightedRouteBackend {
+        #[prost(message, optional, tag = "1")]
+        pub backend: ::core::option::Option<RouteBackend>,
+        #[prost(uint32, tag = "2")]
+        pub weight: u32,
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TlsRoute {
+    #[prost(message, optional, tag = "1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
+    /// If empty, the SNI value is ignored.
+    #[prost(message, repeated, tag = "2")]
+    pub snis: ::prost::alloc::vec::Vec<super::tls_route::SniMatch>,
+    /// Must have at least one rule.
+    #[prost(message, repeated, tag = "3")]
+    pub rules: ::prost::alloc::vec::Vec<tls_route::Rule>,
+}
+/// Nested message and enum types in `TlsRoute`.
+pub mod tls_route {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Rule {
