@@ -203,7 +203,7 @@ message GrpcRoute {
   repeated io.linkerd.proxy.http_route.HostMatch hosts = 2;
 
   // Must have at least one rule.
-  repeated Rule rules = 3;
+  repeated Rule rules = 3; 
   message Rule {
     repeated io.linkerd.proxy.grpc_route.GrpcRouteMatch matches = 1;
     repeated Filter filters = 2;
@@ -285,6 +285,9 @@ message OpaqueRoute {
 
   // Must have at least one rule.
   repeated Rule rules = 3;
+
+  RouteError error = 4;
+  
   message Rule {
     Distribution backends = 1;
   }
@@ -313,6 +316,7 @@ message OpaqueRoute {
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
+    BackendError error = 3;
   }
 }
 
@@ -324,6 +328,9 @@ message TlsRoute {
 
   // Must have at least one rule.
   repeated Rule rules = 3;
+
+  RouteError error = 4;
+
   message Rule {
     Distribution backends = 1;
   }
@@ -352,6 +359,7 @@ message TlsRoute {
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
+    BackendError error = 3;
   }
 }
 
@@ -435,4 +443,16 @@ message ExponentialBackoff {
   // The ratio of the base timeout that may be randomly added to a backoff.
   // Must be greater than or equal to 0.0.
   float jitter_ratio = 3;
+}
+
+// Error type that is used to indicate that any traffic
+// that is delivered through a route should be failed.
+message RouteError {
+  string message = 1;
+}
+
+// Error type that is used to indicate that any traffic
+// that targets a particular backend should be failed.
+message BackendError {
+  string message = 1;
 }
