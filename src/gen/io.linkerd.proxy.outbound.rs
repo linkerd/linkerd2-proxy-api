@@ -429,6 +429,8 @@ pub struct OpaqueRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<opaque_route::Rule>,
+    #[prost(message, optional, tag = "4")]
+    pub error: ::core::option::Option<RouteError>,
 }
 /// Nested message and enum types in `OpaqueRoute`.
 pub mod opaque_route {
@@ -486,6 +488,8 @@ pub mod opaque_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
+        #[prost(message, optional, tag = "3")]
+        pub error: ::core::option::Option<super::BackendError>,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -499,6 +503,8 @@ pub struct TlsRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<tls_route::Rule>,
+    #[prost(message, optional, tag = "4")]
+    pub error: ::core::option::Option<RouteError>,
 }
 /// Nested message and enum types in `TlsRoute`.
 pub mod tls_route {
@@ -556,6 +562,8 @@ pub mod tls_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
+        #[prost(message, optional, tag = "3")]
+        pub error: ::core::option::Option<super::BackendError>,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -689,6 +697,22 @@ pub struct ExponentialBackoff {
     /// Must be greater than or equal to 0.0.
     #[prost(float, tag = "3")]
     pub jitter_ratio: f32,
+}
+/// Error type that is used to indicate that any traffic
+/// that is delivered through a route should be failed.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RouteError {
+    #[prost(string, tag = "1")]
+    pub message: ::prost::alloc::string::String,
+}
+/// Error type that is used to indicate that any traffic
+/// that targets a particular backend should be failed.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BackendError {
+    #[prost(string, tag = "1")]
+    pub message: ::prost::alloc::string::String,
 }
 /// Generated client implementations.
 pub mod outbound_policies_client {
