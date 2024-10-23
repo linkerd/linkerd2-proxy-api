@@ -246,11 +246,11 @@ message HttpLocalRateLimit {
   // to. If unset no overall limit is applied.
   Limit total = 1;
 
-  // Fairness for individual identities; each separate source, grouped by
+  // Fairness for individual identities; each separate client, grouped by
   // identity, will have this rate-limit.
   Limit identity = 2;
 
-  // Limit overrides for traffic from a specific sources.
+  // Limit overrides for traffic from a specific client.
   repeated Override overrides = 3;
 
   message Override {
@@ -261,11 +261,6 @@ message HttpLocalRateLimit {
     message ClientIdentities {
       // A list of literal identities.
       repeated Identity identities = 1;
-
-      // A list of identity suffixes.
-      //
-      // If this contains an empty suffix, all identities are matched.
-      repeated IdentitySuffix suffixes = 2;
     }
   }
 

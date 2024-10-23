@@ -314,11 +314,11 @@ pub struct HttpLocalRateLimit {
     /// to. If unset no overall limit is applied.
     #[prost(message, optional, tag = "1")]
     pub total: ::core::option::Option<http_local_rate_limit::Limit>,
-    /// Fairness for individual identities; each separate source, grouped by
+    /// Fairness for individual identities; each separate client, grouped by
     /// identity, will have this rate-limit.
     #[prost(message, optional, tag = "2")]
     pub identity: ::core::option::Option<http_local_rate_limit::Limit>,
-    /// Limit overrides for traffic from a specific sources.
+    /// Limit overrides for traffic from a specific client.
     #[prost(message, repeated, tag = "3")]
     pub overrides: ::prost::alloc::vec::Vec<http_local_rate_limit::Override>,
 }
@@ -340,11 +340,6 @@ pub mod http_local_rate_limit {
             /// A list of literal identities.
             #[prost(message, repeated, tag = "1")]
             pub identities: ::prost::alloc::vec::Vec<super::super::Identity>,
-            /// A list of identity suffixes.
-            ///
-            /// If this contains an empty suffix, all identities are matched.
-            #[prost(message, repeated, tag = "2")]
-            pub suffixes: ::prost::alloc::vec::Vec<super::super::IdentitySuffix>,
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
