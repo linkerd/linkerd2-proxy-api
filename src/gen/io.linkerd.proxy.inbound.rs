@@ -51,18 +51,25 @@ pub mod proxy_protocol {
         /// matched.
         #[prost(message, repeated, tag = "3")]
         pub http_routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        /// If the protocol detected as HTTP, applicable rate limit.
+        #[prost(message, optional, tag = "4")]
+        pub http_local_rate_limit: ::core::option::Option<super::HttpLocalRateLimit>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http1 {
         #[prost(message, repeated, tag = "2")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        #[prost(message, optional, tag = "3")]
+        pub local_rate_limit: ::core::option::Option<super::HttpLocalRateLimit>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
         #[prost(message, repeated, tag = "2")]
         pub routes: ::prost::alloc::vec::Vec<super::HttpRoute>,
+        #[prost(message, optional, tag = "3")]
+        pub local_rate_limit: ::core::option::Option<super::HttpLocalRateLimit>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -298,6 +305,48 @@ pub mod grpc_route {
                 super::super::super::http_route::RequestHeaderModifier,
             ),
         }
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct HttpLocalRateLimit {
+    /// Overall rate-limit, which all traffic coming to this server should abide
+    /// to. If unset no overall limit is applied.
+    #[prost(message, optional, tag = "1")]
+    pub total: ::core::option::Option<http_local_rate_limit::Limit>,
+    /// Fairness for individual identities; each separate client, grouped by
+    /// identity, will have this rate-limit.
+    #[prost(message, optional, tag = "2")]
+    pub identity: ::core::option::Option<http_local_rate_limit::Limit>,
+    /// Limit overrides for traffic from a specific client.
+    #[prost(message, repeated, tag = "3")]
+    pub overrides: ::prost::alloc::vec::Vec<http_local_rate_limit::Override>,
+}
+/// Nested message and enum types in `HttpLocalRateLimit`.
+pub mod http_local_rate_limit {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Override {
+        #[prost(message, optional, tag = "1")]
+        pub limit: ::core::option::Option<Limit>,
+        #[prost(message, optional, tag = "2")]
+        pub clients: ::core::option::Option<r#override::ClientIdentities>,
+    }
+    /// Nested message and enum types in `Override`.
+    pub mod r#override {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct ClientIdentities {
+            /// A list of literal identities.
+            #[prost(message, repeated, tag = "1")]
+            pub identities: ::prost::alloc::vec::Vec<super::super::Identity>,
+        }
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Limit {
+        #[prost(uint64, tag = "1")]
+        pub requests_per_second: u64,
     }
 }
 /// Generated client implementations.
