@@ -27,6 +27,96 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Error type that is used to indicate that any traffic
+// that is delivered through a route should be failed.
+type OpaqueRoute_RouteError int32
+
+const (
+	OpaqueRoute_FORBIDDEN OpaqueRoute_RouteError = 0
+)
+
+// Enum value maps for OpaqueRoute_RouteError.
+var (
+	OpaqueRoute_RouteError_name = map[int32]string{
+		0: "FORBIDDEN",
+	}
+	OpaqueRoute_RouteError_value = map[string]int32{
+		"FORBIDDEN": 0,
+	}
+)
+
+func (x OpaqueRoute_RouteError) Enum() *OpaqueRoute_RouteError {
+	p := new(OpaqueRoute_RouteError)
+	*p = x
+	return p
+}
+
+func (x OpaqueRoute_RouteError) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (OpaqueRoute_RouteError) Descriptor() protoreflect.EnumDescriptor {
+	return file_outbound_proto_enumTypes[0].Descriptor()
+}
+
+func (OpaqueRoute_RouteError) Type() protoreflect.EnumType {
+	return &file_outbound_proto_enumTypes[0]
+}
+
+func (x OpaqueRoute_RouteError) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use OpaqueRoute_RouteError.Descriptor instead.
+func (OpaqueRoute_RouteError) EnumDescriptor() ([]byte, []int) {
+	return file_outbound_proto_rawDescGZIP(), []int{5, 0}
+}
+
+// Error type that is used to indicate that any traffic
+// that is delivered through a route should be failed.
+type TlsRoute_RouteError int32
+
+const (
+	TlsRoute_FORBIDDEN TlsRoute_RouteError = 0
+)
+
+// Enum value maps for TlsRoute_RouteError.
+var (
+	TlsRoute_RouteError_name = map[int32]string{
+		0: "FORBIDDEN",
+	}
+	TlsRoute_RouteError_value = map[string]int32{
+		"FORBIDDEN": 0,
+	}
+)
+
+func (x TlsRoute_RouteError) Enum() *TlsRoute_RouteError {
+	p := new(TlsRoute_RouteError)
+	*p = x
+	return p
+}
+
+func (x TlsRoute_RouteError) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TlsRoute_RouteError) Descriptor() protoreflect.EnumDescriptor {
+	return file_outbound_proto_enumTypes[1].Descriptor()
+}
+
+func (TlsRoute_RouteError) Type() protoreflect.EnumType {
+	return &file_outbound_proto_enumTypes[1]
+}
+
+func (x TlsRoute_RouteError) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TlsRoute_RouteError.Descriptor instead.
+func (TlsRoute_RouteError) EnumDescriptor() ([]byte, []int) {
+	return file_outbound_proto_rawDescGZIP(), []int{6, 0}
+}
+
 type TrafficSpec struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -462,7 +552,8 @@ type OpaqueRoute struct {
 
 	Metadata *meta.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Must have at least one rule.
-	Rules []*OpaqueRoute_Rule `protobuf:"bytes,3,rep,name=rules,proto3" json:"rules,omitempty"`
+	Rules []*OpaqueRoute_Rule    `protobuf:"bytes,3,rep,name=rules,proto3" json:"rules,omitempty"`
+	Error OpaqueRoute_RouteError `protobuf:"varint,4,opt,name=error,proto3,enum=io.linkerd.proxy.outbound.OpaqueRoute_RouteError" json:"error,omitempty"`
 }
 
 func (x *OpaqueRoute) Reset() {
@@ -511,6 +602,13 @@ func (x *OpaqueRoute) GetRules() []*OpaqueRoute_Rule {
 	return nil
 }
 
+func (x *OpaqueRoute) GetError() OpaqueRoute_RouteError {
+	if x != nil {
+		return x.Error
+	}
+	return OpaqueRoute_FORBIDDEN
+}
+
 type TlsRoute struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -520,7 +618,8 @@ type TlsRoute struct {
 	// If empty, the SNI value is ignored.
 	Snis []*tls_route.SniMatch `protobuf:"bytes,2,rep,name=snis,proto3" json:"snis,omitempty"`
 	// Must have at least one rule.
-	Rules []*TlsRoute_Rule `protobuf:"bytes,3,rep,name=rules,proto3" json:"rules,omitempty"`
+	Rules []*TlsRoute_Rule    `protobuf:"bytes,3,rep,name=rules,proto3" json:"rules,omitempty"`
+	Error TlsRoute_RouteError `protobuf:"varint,4,opt,name=error,proto3,enum=io.linkerd.proxy.outbound.TlsRoute_RouteError" json:"error,omitempty"`
 }
 
 func (x *TlsRoute) Reset() {
@@ -574,6 +673,13 @@ func (x *TlsRoute) GetRules() []*TlsRoute_Rule {
 		return x.Rules
 	}
 	return nil
+}
+
+func (x *TlsRoute) GetError() TlsRoute_RouteError {
+	if x != nil {
+		return x.Error
+	}
+	return TlsRoute_FORBIDDEN
 }
 
 type Backend struct {
@@ -2792,7 +2898,8 @@ type OpaqueRoute_RouteBackend struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Backend *Backend `protobuf:"bytes,1,opt,name=backend,proto3" json:"backend,omitempty"`
+	Backend *Backend                          `protobuf:"bytes,1,opt,name=backend,proto3" json:"backend,omitempty"`
+	Invalid *OpaqueRoute_RouteBackend_Invalid `protobuf:"bytes,2,opt,name=invalid,proto3" json:"invalid,omitempty"`
 }
 
 func (x *OpaqueRoute_RouteBackend) Reset() {
@@ -2830,6 +2937,13 @@ func (*OpaqueRoute_RouteBackend) Descriptor() ([]byte, []int) {
 func (x *OpaqueRoute_RouteBackend) GetBackend() *Backend {
 	if x != nil {
 		return x.Backend
+	}
+	return nil
+}
+
+func (x *OpaqueRoute_RouteBackend) GetInvalid() *OpaqueRoute_RouteBackend_Invalid {
+	if x != nil {
+		return x.Invalid
 	}
 	return nil
 }
@@ -3021,6 +3135,53 @@ func (x *OpaqueRoute_Distribution_RandomAvailable) GetBackends() []*OpaqueRoute_
 	return nil
 }
 
+type OpaqueRoute_RouteBackend_Invalid struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *OpaqueRoute_RouteBackend_Invalid) Reset() {
+	*x = OpaqueRoute_RouteBackend_Invalid{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_outbound_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OpaqueRoute_RouteBackend_Invalid) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OpaqueRoute_RouteBackend_Invalid) ProtoMessage() {}
+
+func (x *OpaqueRoute_RouteBackend_Invalid) ProtoReflect() protoreflect.Message {
+	mi := &file_outbound_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OpaqueRoute_RouteBackend_Invalid.ProtoReflect.Descriptor instead.
+func (*OpaqueRoute_RouteBackend_Invalid) Descriptor() ([]byte, []int) {
+	return file_outbound_proto_rawDescGZIP(), []int{5, 2, 0}
+}
+
+func (x *OpaqueRoute_RouteBackend_Invalid) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type TlsRoute_Rule struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -3032,7 +3193,7 @@ type TlsRoute_Rule struct {
 func (x *TlsRoute_Rule) Reset() {
 	*x = TlsRoute_Rule{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[45]
+		mi := &file_outbound_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3045,7 +3206,7 @@ func (x *TlsRoute_Rule) String() string {
 func (*TlsRoute_Rule) ProtoMessage() {}
 
 func (x *TlsRoute_Rule) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[45]
+	mi := &file_outbound_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3084,7 +3245,7 @@ type TlsRoute_Distribution struct {
 func (x *TlsRoute_Distribution) Reset() {
 	*x = TlsRoute_Distribution{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[46]
+		mi := &file_outbound_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3097,7 +3258,7 @@ func (x *TlsRoute_Distribution) String() string {
 func (*TlsRoute_Distribution) ProtoMessage() {}
 
 func (x *TlsRoute_Distribution) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[46]
+	mi := &file_outbound_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3169,13 +3330,14 @@ type TlsRoute_RouteBackend struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Backend *Backend `protobuf:"bytes,1,opt,name=backend,proto3" json:"backend,omitempty"`
+	Backend *Backend                       `protobuf:"bytes,1,opt,name=backend,proto3" json:"backend,omitempty"`
+	Invalid *TlsRoute_RouteBackend_Invalid `protobuf:"bytes,2,opt,name=invalid,proto3" json:"invalid,omitempty"`
 }
 
 func (x *TlsRoute_RouteBackend) Reset() {
 	*x = TlsRoute_RouteBackend{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[47]
+		mi := &file_outbound_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3188,7 +3350,7 @@ func (x *TlsRoute_RouteBackend) String() string {
 func (*TlsRoute_RouteBackend) ProtoMessage() {}
 
 func (x *TlsRoute_RouteBackend) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[47]
+	mi := &file_outbound_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3211,6 +3373,13 @@ func (x *TlsRoute_RouteBackend) GetBackend() *Backend {
 	return nil
 }
 
+func (x *TlsRoute_RouteBackend) GetInvalid() *TlsRoute_RouteBackend_Invalid {
+	if x != nil {
+		return x.Invalid
+	}
+	return nil
+}
+
 type TlsRoute_WeightedRouteBackend struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -3223,7 +3392,7 @@ type TlsRoute_WeightedRouteBackend struct {
 func (x *TlsRoute_WeightedRouteBackend) Reset() {
 	*x = TlsRoute_WeightedRouteBackend{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[48]
+		mi := &file_outbound_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3236,7 +3405,7 @@ func (x *TlsRoute_WeightedRouteBackend) String() string {
 func (*TlsRoute_WeightedRouteBackend) ProtoMessage() {}
 
 func (x *TlsRoute_WeightedRouteBackend) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[48]
+	mi := &file_outbound_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3275,7 +3444,7 @@ type TlsRoute_Distribution_Empty struct {
 func (x *TlsRoute_Distribution_Empty) Reset() {
 	*x = TlsRoute_Distribution_Empty{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[49]
+		mi := &file_outbound_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3288,7 +3457,7 @@ func (x *TlsRoute_Distribution_Empty) String() string {
 func (*TlsRoute_Distribution_Empty) ProtoMessage() {}
 
 func (x *TlsRoute_Distribution_Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[49]
+	mi := &file_outbound_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3315,7 +3484,7 @@ type TlsRoute_Distribution_FirstAvailable struct {
 func (x *TlsRoute_Distribution_FirstAvailable) Reset() {
 	*x = TlsRoute_Distribution_FirstAvailable{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[50]
+		mi := &file_outbound_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3328,7 +3497,7 @@ func (x *TlsRoute_Distribution_FirstAvailable) String() string {
 func (*TlsRoute_Distribution_FirstAvailable) ProtoMessage() {}
 
 func (x *TlsRoute_Distribution_FirstAvailable) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[50]
+	mi := &file_outbound_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3362,7 +3531,7 @@ type TlsRoute_Distribution_RandomAvailable struct {
 func (x *TlsRoute_Distribution_RandomAvailable) Reset() {
 	*x = TlsRoute_Distribution_RandomAvailable{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[51]
+		mi := &file_outbound_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3375,7 +3544,7 @@ func (x *TlsRoute_Distribution_RandomAvailable) String() string {
 func (*TlsRoute_Distribution_RandomAvailable) ProtoMessage() {}
 
 func (x *TlsRoute_Distribution_RandomAvailable) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[51]
+	mi := &file_outbound_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3398,6 +3567,53 @@ func (x *TlsRoute_Distribution_RandomAvailable) GetBackends() []*TlsRoute_Weight
 	return nil
 }
 
+type TlsRoute_RouteBackend_Invalid struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *TlsRoute_RouteBackend_Invalid) Reset() {
+	*x = TlsRoute_RouteBackend_Invalid{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_outbound_proto_msgTypes[53]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TlsRoute_RouteBackend_Invalid) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TlsRoute_RouteBackend_Invalid) ProtoMessage() {}
+
+func (x *TlsRoute_RouteBackend_Invalid) ProtoReflect() protoreflect.Message {
+	mi := &file_outbound_proto_msgTypes[53]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TlsRoute_RouteBackend_Invalid.ProtoReflect.Descriptor instead.
+func (*TlsRoute_RouteBackend_Invalid) Descriptor() ([]byte, []int) {
+	return file_outbound_proto_rawDescGZIP(), []int{6, 2, 0}
+}
+
+func (x *TlsRoute_RouteBackend_Invalid) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 // A strategy for discovering endpoints for a service.
 type Backend_EndpointDiscovery struct {
 	state         protoimpl.MessageState
@@ -3413,7 +3629,7 @@ type Backend_EndpointDiscovery struct {
 func (x *Backend_EndpointDiscovery) Reset() {
 	*x = Backend_EndpointDiscovery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[52]
+		mi := &file_outbound_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3426,7 +3642,7 @@ func (x *Backend_EndpointDiscovery) String() string {
 func (*Backend_EndpointDiscovery) ProtoMessage() {}
 
 func (x *Backend_EndpointDiscovery) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[52]
+	mi := &file_outbound_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3486,7 +3702,7 @@ type Backend_BalanceP2C struct {
 func (x *Backend_BalanceP2C) Reset() {
 	*x = Backend_BalanceP2C{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[53]
+		mi := &file_outbound_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3499,7 +3715,7 @@ func (x *Backend_BalanceP2C) String() string {
 func (*Backend_BalanceP2C) ProtoMessage() {}
 
 func (x *Backend_BalanceP2C) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[53]
+	mi := &file_outbound_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3559,7 +3775,7 @@ type Backend_EndpointDiscovery_DestinationGet struct {
 func (x *Backend_EndpointDiscovery_DestinationGet) Reset() {
 	*x = Backend_EndpointDiscovery_DestinationGet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[54]
+		mi := &file_outbound_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3572,7 +3788,7 @@ func (x *Backend_EndpointDiscovery_DestinationGet) String() string {
 func (*Backend_EndpointDiscovery_DestinationGet) ProtoMessage() {}
 
 func (x *Backend_EndpointDiscovery_DestinationGet) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[54]
+	mi := &file_outbound_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3611,7 +3827,7 @@ type Backend_BalanceP2C_PeakEwma struct {
 func (x *Backend_BalanceP2C_PeakEwma) Reset() {
 	*x = Backend_BalanceP2C_PeakEwma{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[55]
+		mi := &file_outbound_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3624,7 +3840,7 @@ func (x *Backend_BalanceP2C_PeakEwma) String() string {
 func (*Backend_BalanceP2C_PeakEwma) ProtoMessage() {}
 
 func (x *Backend_BalanceP2C_PeakEwma) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[55]
+	mi := &file_outbound_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3666,7 +3882,7 @@ type FailureAccrual_ConsecutiveFailures struct {
 func (x *FailureAccrual_ConsecutiveFailures) Reset() {
 	*x = FailureAccrual_ConsecutiveFailures{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_outbound_proto_msgTypes[56]
+		mi := &file_outbound_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3679,7 +3895,7 @@ func (x *FailureAccrual_ConsecutiveFailures) String() string {
 func (*FailureAccrual_ConsecutiveFailures) ProtoMessage() {}
 
 func (x *FailureAccrual_ConsecutiveFailures) ProtoReflect() protoreflect.Message {
-	mi := &file_outbound_proto_msgTypes[56]
+	mi := &file_outbound_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4123,7 +4339,7 @@ var file_outbound_proto_rawDesc = []byte{
 	0x2e, 0x47, 0x72, 0x70, 0x63, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65,
 	0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
 	0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d,
-	0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xd8, 0x07, 0x0a, 0x0b, 0x4f, 0x70, 0x61,
+	0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xbb, 0x09, 0x0a, 0x0b, 0x4f, 0x70, 0x61,
 	0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61,
 	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x69, 0x6f, 0x2e,
 	0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6d, 0x65,
@@ -4132,123 +4348,151 @@ var file_outbound_proto_rawDesc = []byte{
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72,
 	0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64,
 	0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x75, 0x6c,
-	0x65, 0x52, 0x05, 0x72, 0x75, 0x6c, 0x65, 0x73, 0x1a, 0x57, 0x0a, 0x04, 0x52, 0x75, 0x6c, 0x65,
-	0x12, 0x4f, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x33, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e,
-	0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f,
-	0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72,
-	0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x73, 0x1a, 0xa2, 0x04, 0x0a, 0x0c, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x51, 0x0a, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x39, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70,
-	0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70,
-	0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69,
-	0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x48, 0x00, 0x52, 0x05,
-	0x65, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x6d, 0x0a, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x61,
-	0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x42,
-	0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78,
-	0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75,
-	0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74,
-	0x69, 0x6f, 0x6e, 0x2e, 0x46, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
-	0x6c, 0x65, 0x48, 0x00, 0x52, 0x0e, 0x66, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c,
-	0x61, 0x62, 0x6c, 0x65, 0x12, 0x70, 0x0a, 0x10, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x5f, 0x61,
-	0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x43,
-	0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78,
-	0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75,
-	0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74,
-	0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61,
-	0x62, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x0f, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x1a, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a,
-	0x61, 0x0a, 0x0e, 0x46, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
-	0x65, 0x12, 0x4f, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64,
-	0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e,
-	0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74,
-	0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x73, 0x1a, 0x6a, 0x0a, 0x0f, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69,
-	0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x57, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x3b, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
+	0x65, 0x52, 0x05, 0x72, 0x75, 0x6c, 0x65, 0x73, 0x12, 0x47, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f,
+	0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x31, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
 	0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f,
 	0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e,
-	0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x42, 0x06,
-	0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x1a, 0x4c, 0x0a, 0x0c, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42,
-	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x3c, 0x0a, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f,
+	0x72, 0x1a, 0x57, 0x0a, 0x04, 0x52, 0x75, 0x6c, 0x65, 0x12, 0x4f, 0x0a, 0x08, 0x62, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x69, 0x6f,
+	0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f,
+	0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x1a, 0xa2, 0x04, 0x0a, 0x0c, 0x44,
+	0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x51, 0x0a, 0x05, 0x65,
+	0x6d, 0x70, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x39, 0x2e, 0x69, 0x6f, 0x2e,
+	0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75,
+	0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75,
+	0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x48, 0x00, 0x52, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x6d,
+	0x0a, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x42, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
 	0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f,
-	0x75, 0x6e, 0x64, 0x2e, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x1a, 0x7d, 0x0a, 0x14, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64,
-	0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x4d, 0x0a, 0x07,
-	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e,
-	0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79,
-	0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65,
-	0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65,
-	0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x77,
-	0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x77, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x22, 0xf7, 0x07, 0x0a, 0x08, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65,
-	0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e,
-	0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6d, 0x65, 0x74, 0x61, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64,
-	0x61, 0x74, 0x61, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x38, 0x0a,
-	0x04, 0x73, 0x6e, 0x69, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x69, 0x6f,
-	0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x74,
-	0x6c, 0x73, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x53, 0x6e, 0x69, 0x4d, 0x61, 0x74, 0x63,
-	0x68, 0x52, 0x04, 0x73, 0x6e, 0x69, 0x73, 0x12, 0x3e, 0x0a, 0x05, 0x72, 0x75, 0x6c, 0x65, 0x73,
-	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b,
+	0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e,
+	0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x46, 0x69, 0x72,
+	0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x0e, 0x66,
+	0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x70, 0x0a,
+	0x10, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x43, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
+	0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f,
+	0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e,
+	0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x61, 0x6e,
+	0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x0f,
+	0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x1a,
+	0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x61, 0x0a, 0x0e, 0x46, 0x69, 0x72, 0x73,
+	0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x4f, 0x0a, 0x08, 0x62, 0x61,
+	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x69,
+	0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e,
+	0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52,
+	0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x1a, 0x6a, 0x0a, 0x0f, 0x52,
+	0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x57,
+	0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x3b, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72,
+	0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61,
+	0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65,
+	0x64, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x08, 0x62,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x42, 0x06, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x1a,
+	0xc8, 0x01, 0x0a, 0x0c, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0x12, 0x3c, 0x0a, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70,
+	0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x42, 0x61,
+	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x55,
+	0x0a, 0x07, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x3b, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f,
+	0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x4f, 0x70, 0x61, 0x71,
+	0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x52, 0x07, 0x69, 0x6e,
+	0x76, 0x61, 0x6c, 0x69, 0x64, 0x1a, 0x23, 0x0a, 0x07, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x7d, 0x0a, 0x14, 0x57, 0x65,
+	0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65,
+	0x6e, 0x64, 0x12, 0x4d, 0x0a, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64,
+	0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e,
+	0x4f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74,
+	0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0x1b, 0x0a, 0x0a, 0x52, 0x6f, 0x75,
+	0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x0d, 0x0a, 0x09, 0x46, 0x4f, 0x52, 0x42, 0x49,
+	0x44, 0x44, 0x45, 0x4e, 0x10, 0x00, 0x22, 0xd4, 0x09, 0x0a, 0x08, 0x54, 0x6c, 0x73, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65,
+	0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6d, 0x65, 0x74, 0x61, 0x2e, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x12, 0x38, 0x0a, 0x04, 0x73, 0x6e, 0x69, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x24,
+	0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78,
+	0x79, 0x2e, 0x74, 0x6c, 0x73, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x53, 0x6e, 0x69, 0x4d,
+	0x61, 0x74, 0x63, 0x68, 0x52, 0x04, 0x73, 0x6e, 0x69, 0x73, 0x12, 0x3e, 0x0a, 0x05, 0x72, 0x75,
+	0x6c, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x69, 0x6f, 0x2e, 0x6c,
+	0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74,
+	0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52,
+	0x75, 0x6c, 0x65, 0x52, 0x05, 0x72, 0x75, 0x6c, 0x65, 0x73, 0x12, 0x44, 0x0a, 0x05, 0x65, 0x72,
+	0x72, 0x6f, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x2e, 0x2e, 0x69, 0x6f, 0x2e, 0x6c,
+	0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74,
+	0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52,
+	0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72,
+	0x1a, 0x54, 0x0a, 0x04, 0x52, 0x75, 0x6c, 0x65, 0x12, 0x4c, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b,
+	0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x69, 0x6f, 0x2e,
+	0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75,
+	0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e,
+	0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x62, 0x61,
+	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x1a, 0x93, 0x04, 0x0a, 0x0c, 0x44, 0x69, 0x73, 0x74, 0x72,
+	0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4e, 0x0a, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x36, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b,
 	0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75,
-	0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x75, 0x6c, 0x65,
-	0x52, 0x05, 0x72, 0x75, 0x6c, 0x65, 0x73, 0x1a, 0x54, 0x0a, 0x04, 0x52, 0x75, 0x6c, 0x65, 0x12,
-	0x4c, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x30, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70,
-	0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c,
-	0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74,
-	0x69, 0x6f, 0x6e, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x1a, 0x93, 0x04,
-	0x0a, 0x0c, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4e,
-	0x0a, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x36, 0x2e,
+	0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74,
+	0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x48, 0x00,
+	0x52, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x6a, 0x0a, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74,
+	0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x3f, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72,
+	0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x46, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
+	0x65, 0x48, 0x00, 0x52, 0x0e, 0x66, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61,
+	0x62, 0x6c, 0x65, 0x12, 0x6d, 0x0a, 0x10, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x5f, 0x61, 0x76,
+	0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x40, 0x2e,
 	0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79,
 	0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75,
 	0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e,
-	0x45, 0x6d, 0x70, 0x74, 0x79, 0x48, 0x00, 0x52, 0x05, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x6a,
-	0x0a, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3f, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
-	0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f,
-	0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73,
-	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x46, 0x69, 0x72, 0x73, 0x74, 0x41,
-	0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x0e, 0x66, 0x69, 0x72, 0x73,
-	0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x6d, 0x0a, 0x10, 0x72, 0x61,
-	0x6e, 0x64, 0x6f, 0x6d, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x40, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72,
-	0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64,
-	0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69,
-	0x62, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x48, 0x00, 0x52, 0x0f, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d,
-	0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x1a, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70,
-	0x74, 0x79, 0x1a, 0x5e, 0x0a, 0x0e, 0x46, 0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c,
-	0x61, 0x62, 0x6c, 0x65, 0x12, 0x4c, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b,
-	0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75,
-	0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74,
-	0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x73, 0x1a, 0x67, 0x0a, 0x0f, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69,
-	0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x54, 0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x38, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e,
-	0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f,
-	0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x57, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x65, 0x64, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x42, 0x06, 0x0a, 0x04, 0x6b,
-	0x69, 0x6e, 0x64, 0x1a, 0x4c, 0x0a, 0x0c, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b,
-	0x65, 0x6e, 0x64, 0x12, 0x3c, 0x0a, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72,
-	0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64,
-	0x2e, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x1a, 0x7a, 0x0a, 0x14, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x52, 0x6f, 0x75,
-	0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x4a, 0x0a, 0x07, 0x62, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x69, 0x6f, 0x2e,
-	0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75,
-	0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e,
-	0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x07, 0x62, 0x61,
-	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xf3, 0x05,
+	0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x48,
+	0x00, 0x52, 0x0f, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
+	0x6c, 0x65, 0x1a, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x5e, 0x0a, 0x0e, 0x46,
+	0x69, 0x72, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x4c, 0x0a,
+	0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x30, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f,
+	0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52,
+	0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x1a, 0x67, 0x0a, 0x0f, 0x52,
+	0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x54,
+	0x0a, 0x08, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x38, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72,
+	0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x52, 0x6f,
+	0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52, 0x08, 0x62, 0x61, 0x63, 0x6b,
+	0x65, 0x6e, 0x64, 0x73, 0x42, 0x06, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x1a, 0xc5, 0x01, 0x0a,
+	0x0c, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x3c, 0x0a,
+	0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22,
+	0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78,
+	0x79, 0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x42, 0x61, 0x63, 0x6b, 0x65,
+	0x6e, 0x64, 0x52, 0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x52, 0x0a, 0x07, 0x69,
+	0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x38, 0x2e, 0x69,
+	0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e,
+	0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75, 0x74,
+	0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x49,
+	0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x52, 0x07, 0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x1a,
+	0x23, 0x0a, 0x07, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x1a, 0x7a, 0x0a, 0x14, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x4a, 0x0a, 0x07,
+	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x30, 0x2e,
+	0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79,
+	0x2e, 0x6f, 0x75, 0x74, 0x62, 0x6f, 0x75, 0x6e, 0x64, 0x2e, 0x54, 0x6c, 0x73, 0x52, 0x6f, 0x75,
+	0x74, 0x65, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x52,
+	0x07, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x22, 0x1b, 0x0a, 0x0a, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x0d,
+	0x0a, 0x09, 0x46, 0x4f, 0x52, 0x42, 0x49, 0x44, 0x44, 0x45, 0x4e, 0x10, 0x00, 0x22, 0xf3, 0x05,
 	0x0a, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74,
 	0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x69, 0x6f,
 	0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6d,
@@ -4363,195 +4607,204 @@ func file_outbound_proto_rawDescGZIP() []byte {
 	return file_outbound_proto_rawDescData
 }
 
-var file_outbound_proto_msgTypes = make([]protoimpl.MessageInfo, 57)
+var file_outbound_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_outbound_proto_msgTypes = make([]protoimpl.MessageInfo, 59)
 var file_outbound_proto_goTypes = []any{
-	(*TrafficSpec)(nil),                              // 0: io.linkerd.proxy.outbound.TrafficSpec
-	(*OutboundPolicy)(nil),                           // 1: io.linkerd.proxy.outbound.OutboundPolicy
-	(*ProxyProtocol)(nil),                            // 2: io.linkerd.proxy.outbound.ProxyProtocol
-	(*HttpRoute)(nil),                                // 3: io.linkerd.proxy.outbound.HttpRoute
-	(*GrpcRoute)(nil),                                // 4: io.linkerd.proxy.outbound.GrpcRoute
-	(*OpaqueRoute)(nil),                              // 5: io.linkerd.proxy.outbound.OpaqueRoute
-	(*TlsRoute)(nil),                                 // 6: io.linkerd.proxy.outbound.TlsRoute
-	(*Backend)(nil),                                  // 7: io.linkerd.proxy.outbound.Backend
-	(*Queue)(nil),                                    // 8: io.linkerd.proxy.outbound.Queue
-	(*FailureAccrual)(nil),                           // 9: io.linkerd.proxy.outbound.FailureAccrual
-	(*ExponentialBackoff)(nil),                       // 10: io.linkerd.proxy.outbound.ExponentialBackoff
-	(*ProxyProtocol_Detect)(nil),                     // 11: io.linkerd.proxy.outbound.ProxyProtocol.Detect
-	(*ProxyProtocol_Opaque)(nil),                     // 12: io.linkerd.proxy.outbound.ProxyProtocol.Opaque
-	(*ProxyProtocol_Http1)(nil),                      // 13: io.linkerd.proxy.outbound.ProxyProtocol.Http1
-	(*ProxyProtocol_Http2)(nil),                      // 14: io.linkerd.proxy.outbound.ProxyProtocol.Http2
-	(*ProxyProtocol_Grpc)(nil),                       // 15: io.linkerd.proxy.outbound.ProxyProtocol.Grpc
-	(*ProxyProtocol_Tls)(nil),                        // 16: io.linkerd.proxy.outbound.ProxyProtocol.Tls
-	(*HttpRoute_Rule)(nil),                           // 17: io.linkerd.proxy.outbound.HttpRoute.Rule
-	(*HttpRoute_Filter)(nil),                         // 18: io.linkerd.proxy.outbound.HttpRoute.Filter
-	(*HttpRoute_Distribution)(nil),                   // 19: io.linkerd.proxy.outbound.HttpRoute.Distribution
-	(*HttpRoute_Retry)(nil),                          // 20: io.linkerd.proxy.outbound.HttpRoute.Retry
-	(*HttpRoute_RouteBackend)(nil),                   // 21: io.linkerd.proxy.outbound.HttpRoute.RouteBackend
-	(*HttpRoute_WeightedRouteBackend)(nil),           // 22: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
-	(*HttpRoute_Distribution_Empty)(nil),             // 23: io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
-	(*HttpRoute_Distribution_FirstAvailable)(nil),    // 24: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
-	(*HttpRoute_Distribution_RandomAvailable)(nil),   // 25: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
-	(*HttpRoute_Retry_Conditions)(nil),               // 26: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
-	(*HttpRoute_Retry_Conditions_StatusRange)(nil),   // 27: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
-	(*GrpcRoute_Rule)(nil),                           // 28: io.linkerd.proxy.outbound.GrpcRoute.Rule
-	(*GrpcRoute_Filter)(nil),                         // 29: io.linkerd.proxy.outbound.GrpcRoute.Filter
-	(*GrpcRoute_Distribution)(nil),                   // 30: io.linkerd.proxy.outbound.GrpcRoute.Distribution
-	(*GrpcRoute_Retry)(nil),                          // 31: io.linkerd.proxy.outbound.GrpcRoute.Retry
-	(*GrpcRoute_RouteBackend)(nil),                   // 32: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
-	(*GrpcRoute_WeightedRouteBackend)(nil),           // 33: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
-	(*GrpcRoute_Distribution_Empty)(nil),             // 34: io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
-	(*GrpcRoute_Distribution_FirstAvailable)(nil),    // 35: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
-	(*GrpcRoute_Distribution_RandomAvailable)(nil),   // 36: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
-	(*GrpcRoute_Retry_Conditions)(nil),               // 37: io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
-	(*OpaqueRoute_Rule)(nil),                         // 38: io.linkerd.proxy.outbound.OpaqueRoute.Rule
-	(*OpaqueRoute_Distribution)(nil),                 // 39: io.linkerd.proxy.outbound.OpaqueRoute.Distribution
-	(*OpaqueRoute_RouteBackend)(nil),                 // 40: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
-	(*OpaqueRoute_WeightedRouteBackend)(nil),         // 41: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
-	(*OpaqueRoute_Distribution_Empty)(nil),           // 42: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
-	(*OpaqueRoute_Distribution_FirstAvailable)(nil),  // 43: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
-	(*OpaqueRoute_Distribution_RandomAvailable)(nil), // 44: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
-	(*TlsRoute_Rule)(nil),                            // 45: io.linkerd.proxy.outbound.TlsRoute.Rule
-	(*TlsRoute_Distribution)(nil),                    // 46: io.linkerd.proxy.outbound.TlsRoute.Distribution
-	(*TlsRoute_RouteBackend)(nil),                    // 47: io.linkerd.proxy.outbound.TlsRoute.RouteBackend
-	(*TlsRoute_WeightedRouteBackend)(nil),            // 48: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
-	(*TlsRoute_Distribution_Empty)(nil),              // 49: io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
-	(*TlsRoute_Distribution_FirstAvailable)(nil),     // 50: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
-	(*TlsRoute_Distribution_RandomAvailable)(nil),    // 51: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
-	(*Backend_EndpointDiscovery)(nil),                // 52: io.linkerd.proxy.outbound.Backend.EndpointDiscovery
-	(*Backend_BalanceP2C)(nil),                       // 53: io.linkerd.proxy.outbound.Backend.BalanceP2c
-	(*Backend_EndpointDiscovery_DestinationGet)(nil), // 54: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
-	(*Backend_BalanceP2C_PeakEwma)(nil),              // 55: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
-	(*FailureAccrual_ConsecutiveFailures)(nil),       // 56: io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures
-	(*net.TcpAddress)(nil),                           // 57: io.linkerd.proxy.net.TcpAddress
-	(*meta.Metadata)(nil),                            // 58: io.linkerd.proxy.meta.Metadata
-	(*http_route.HostMatch)(nil),                     // 59: io.linkerd.proxy.http_route.HostMatch
-	(*tls_route.SniMatch)(nil),                       // 60: io.linkerd.proxy.tls_route.SniMatch
-	(*destination.WeightedAddr)(nil),                 // 61: io.linkerd.proxy.destination.WeightedAddr
-	(*duration.Duration)(nil),                        // 62: google.protobuf.Duration
-	(*http_route.HttpRouteMatch)(nil),                // 63: io.linkerd.proxy.http_route.HttpRouteMatch
-	(*http_route.Timeouts)(nil),                      // 64: io.linkerd.proxy.http_route.Timeouts
-	(*http_route.HttpFailureInjector)(nil),           // 65: io.linkerd.proxy.http_route.HttpFailureInjector
-	(*http_route.RequestHeaderModifier)(nil),         // 66: io.linkerd.proxy.http_route.RequestHeaderModifier
-	(*http_route.RequestRedirect)(nil),               // 67: io.linkerd.proxy.http_route.RequestRedirect
-	(*http_route.ResponseHeaderModifier)(nil),        // 68: io.linkerd.proxy.http_route.ResponseHeaderModifier
-	(*grpc_route.GrpcRouteMatch)(nil),                // 69: io.linkerd.proxy.grpc_route.GrpcRouteMatch
-	(*grpc_route.GrpcFailureInjector)(nil),           // 70: io.linkerd.proxy.grpc_route.GrpcFailureInjector
+	(OpaqueRoute_RouteError)(0),                      // 0: io.linkerd.proxy.outbound.OpaqueRoute.RouteError
+	(TlsRoute_RouteError)(0),                         // 1: io.linkerd.proxy.outbound.TlsRoute.RouteError
+	(*TrafficSpec)(nil),                              // 2: io.linkerd.proxy.outbound.TrafficSpec
+	(*OutboundPolicy)(nil),                           // 3: io.linkerd.proxy.outbound.OutboundPolicy
+	(*ProxyProtocol)(nil),                            // 4: io.linkerd.proxy.outbound.ProxyProtocol
+	(*HttpRoute)(nil),                                // 5: io.linkerd.proxy.outbound.HttpRoute
+	(*GrpcRoute)(nil),                                // 6: io.linkerd.proxy.outbound.GrpcRoute
+	(*OpaqueRoute)(nil),                              // 7: io.linkerd.proxy.outbound.OpaqueRoute
+	(*TlsRoute)(nil),                                 // 8: io.linkerd.proxy.outbound.TlsRoute
+	(*Backend)(nil),                                  // 9: io.linkerd.proxy.outbound.Backend
+	(*Queue)(nil),                                    // 10: io.linkerd.proxy.outbound.Queue
+	(*FailureAccrual)(nil),                           // 11: io.linkerd.proxy.outbound.FailureAccrual
+	(*ExponentialBackoff)(nil),                       // 12: io.linkerd.proxy.outbound.ExponentialBackoff
+	(*ProxyProtocol_Detect)(nil),                     // 13: io.linkerd.proxy.outbound.ProxyProtocol.Detect
+	(*ProxyProtocol_Opaque)(nil),                     // 14: io.linkerd.proxy.outbound.ProxyProtocol.Opaque
+	(*ProxyProtocol_Http1)(nil),                      // 15: io.linkerd.proxy.outbound.ProxyProtocol.Http1
+	(*ProxyProtocol_Http2)(nil),                      // 16: io.linkerd.proxy.outbound.ProxyProtocol.Http2
+	(*ProxyProtocol_Grpc)(nil),                       // 17: io.linkerd.proxy.outbound.ProxyProtocol.Grpc
+	(*ProxyProtocol_Tls)(nil),                        // 18: io.linkerd.proxy.outbound.ProxyProtocol.Tls
+	(*HttpRoute_Rule)(nil),                           // 19: io.linkerd.proxy.outbound.HttpRoute.Rule
+	(*HttpRoute_Filter)(nil),                         // 20: io.linkerd.proxy.outbound.HttpRoute.Filter
+	(*HttpRoute_Distribution)(nil),                   // 21: io.linkerd.proxy.outbound.HttpRoute.Distribution
+	(*HttpRoute_Retry)(nil),                          // 22: io.linkerd.proxy.outbound.HttpRoute.Retry
+	(*HttpRoute_RouteBackend)(nil),                   // 23: io.linkerd.proxy.outbound.HttpRoute.RouteBackend
+	(*HttpRoute_WeightedRouteBackend)(nil),           // 24: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
+	(*HttpRoute_Distribution_Empty)(nil),             // 25: io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
+	(*HttpRoute_Distribution_FirstAvailable)(nil),    // 26: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
+	(*HttpRoute_Distribution_RandomAvailable)(nil),   // 27: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
+	(*HttpRoute_Retry_Conditions)(nil),               // 28: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
+	(*HttpRoute_Retry_Conditions_StatusRange)(nil),   // 29: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
+	(*GrpcRoute_Rule)(nil),                           // 30: io.linkerd.proxy.outbound.GrpcRoute.Rule
+	(*GrpcRoute_Filter)(nil),                         // 31: io.linkerd.proxy.outbound.GrpcRoute.Filter
+	(*GrpcRoute_Distribution)(nil),                   // 32: io.linkerd.proxy.outbound.GrpcRoute.Distribution
+	(*GrpcRoute_Retry)(nil),                          // 33: io.linkerd.proxy.outbound.GrpcRoute.Retry
+	(*GrpcRoute_RouteBackend)(nil),                   // 34: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
+	(*GrpcRoute_WeightedRouteBackend)(nil),           // 35: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
+	(*GrpcRoute_Distribution_Empty)(nil),             // 36: io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
+	(*GrpcRoute_Distribution_FirstAvailable)(nil),    // 37: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
+	(*GrpcRoute_Distribution_RandomAvailable)(nil),   // 38: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
+	(*GrpcRoute_Retry_Conditions)(nil),               // 39: io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
+	(*OpaqueRoute_Rule)(nil),                         // 40: io.linkerd.proxy.outbound.OpaqueRoute.Rule
+	(*OpaqueRoute_Distribution)(nil),                 // 41: io.linkerd.proxy.outbound.OpaqueRoute.Distribution
+	(*OpaqueRoute_RouteBackend)(nil),                 // 42: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
+	(*OpaqueRoute_WeightedRouteBackend)(nil),         // 43: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
+	(*OpaqueRoute_Distribution_Empty)(nil),           // 44: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
+	(*OpaqueRoute_Distribution_FirstAvailable)(nil),  // 45: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
+	(*OpaqueRoute_Distribution_RandomAvailable)(nil), // 46: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
+	(*OpaqueRoute_RouteBackend_Invalid)(nil),         // 47: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.Invalid
+	(*TlsRoute_Rule)(nil),                            // 48: io.linkerd.proxy.outbound.TlsRoute.Rule
+	(*TlsRoute_Distribution)(nil),                    // 49: io.linkerd.proxy.outbound.TlsRoute.Distribution
+	(*TlsRoute_RouteBackend)(nil),                    // 50: io.linkerd.proxy.outbound.TlsRoute.RouteBackend
+	(*TlsRoute_WeightedRouteBackend)(nil),            // 51: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
+	(*TlsRoute_Distribution_Empty)(nil),              // 52: io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
+	(*TlsRoute_Distribution_FirstAvailable)(nil),     // 53: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
+	(*TlsRoute_Distribution_RandomAvailable)(nil),    // 54: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
+	(*TlsRoute_RouteBackend_Invalid)(nil),            // 55: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.Invalid
+	(*Backend_EndpointDiscovery)(nil),                // 56: io.linkerd.proxy.outbound.Backend.EndpointDiscovery
+	(*Backend_BalanceP2C)(nil),                       // 57: io.linkerd.proxy.outbound.Backend.BalanceP2c
+	(*Backend_EndpointDiscovery_DestinationGet)(nil), // 58: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
+	(*Backend_BalanceP2C_PeakEwma)(nil),              // 59: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
+	(*FailureAccrual_ConsecutiveFailures)(nil),       // 60: io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures
+	(*net.TcpAddress)(nil),                           // 61: io.linkerd.proxy.net.TcpAddress
+	(*meta.Metadata)(nil),                            // 62: io.linkerd.proxy.meta.Metadata
+	(*http_route.HostMatch)(nil),                     // 63: io.linkerd.proxy.http_route.HostMatch
+	(*tls_route.SniMatch)(nil),                       // 64: io.linkerd.proxy.tls_route.SniMatch
+	(*destination.WeightedAddr)(nil),                 // 65: io.linkerd.proxy.destination.WeightedAddr
+	(*duration.Duration)(nil),                        // 66: google.protobuf.Duration
+	(*http_route.HttpRouteMatch)(nil),                // 67: io.linkerd.proxy.http_route.HttpRouteMatch
+	(*http_route.Timeouts)(nil),                      // 68: io.linkerd.proxy.http_route.Timeouts
+	(*http_route.HttpFailureInjector)(nil),           // 69: io.linkerd.proxy.http_route.HttpFailureInjector
+	(*http_route.RequestHeaderModifier)(nil),         // 70: io.linkerd.proxy.http_route.RequestHeaderModifier
+	(*http_route.RequestRedirect)(nil),               // 71: io.linkerd.proxy.http_route.RequestRedirect
+	(*http_route.ResponseHeaderModifier)(nil),        // 72: io.linkerd.proxy.http_route.ResponseHeaderModifier
+	(*grpc_route.GrpcRouteMatch)(nil),                // 73: io.linkerd.proxy.grpc_route.GrpcRouteMatch
+	(*grpc_route.GrpcFailureInjector)(nil),           // 74: io.linkerd.proxy.grpc_route.GrpcFailureInjector
 }
 var file_outbound_proto_depIdxs = []int32{
-	57,  // 0: io.linkerd.proxy.outbound.TrafficSpec.addr:type_name -> io.linkerd.proxy.net.TcpAddress
-	2,   // 1: io.linkerd.proxy.outbound.OutboundPolicy.protocol:type_name -> io.linkerd.proxy.outbound.ProxyProtocol
-	58,  // 2: io.linkerd.proxy.outbound.OutboundPolicy.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	11,  // 3: io.linkerd.proxy.outbound.ProxyProtocol.detect:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Detect
-	12,  // 4: io.linkerd.proxy.outbound.ProxyProtocol.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
-	13,  // 5: io.linkerd.proxy.outbound.ProxyProtocol.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
-	14,  // 6: io.linkerd.proxy.outbound.ProxyProtocol.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
-	15,  // 7: io.linkerd.proxy.outbound.ProxyProtocol.grpc:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Grpc
-	16,  // 8: io.linkerd.proxy.outbound.ProxyProtocol.tls:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Tls
-	58,  // 9: io.linkerd.proxy.outbound.HttpRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	59,  // 10: io.linkerd.proxy.outbound.HttpRoute.hosts:type_name -> io.linkerd.proxy.http_route.HostMatch
-	17,  // 11: io.linkerd.proxy.outbound.HttpRoute.rules:type_name -> io.linkerd.proxy.outbound.HttpRoute.Rule
-	58,  // 12: io.linkerd.proxy.outbound.GrpcRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	59,  // 13: io.linkerd.proxy.outbound.GrpcRoute.hosts:type_name -> io.linkerd.proxy.http_route.HostMatch
-	28,  // 14: io.linkerd.proxy.outbound.GrpcRoute.rules:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Rule
-	58,  // 15: io.linkerd.proxy.outbound.OpaqueRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	38,  // 16: io.linkerd.proxy.outbound.OpaqueRoute.rules:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Rule
-	58,  // 17: io.linkerd.proxy.outbound.TlsRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	60,  // 18: io.linkerd.proxy.outbound.TlsRoute.snis:type_name -> io.linkerd.proxy.tls_route.SniMatch
-	45,  // 19: io.linkerd.proxy.outbound.TlsRoute.rules:type_name -> io.linkerd.proxy.outbound.TlsRoute.Rule
-	58,  // 20: io.linkerd.proxy.outbound.Backend.metadata:type_name -> io.linkerd.proxy.meta.Metadata
-	61,  // 21: io.linkerd.proxy.outbound.Backend.forward:type_name -> io.linkerd.proxy.destination.WeightedAddr
-	53,  // 22: io.linkerd.proxy.outbound.Backend.balancer:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c
-	8,   // 23: io.linkerd.proxy.outbound.Backend.queue:type_name -> io.linkerd.proxy.outbound.Queue
-	62,  // 24: io.linkerd.proxy.outbound.Queue.failfast_timeout:type_name -> google.protobuf.Duration
-	56,  // 25: io.linkerd.proxy.outbound.FailureAccrual.consecutive_failures:type_name -> io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures
-	62,  // 26: io.linkerd.proxy.outbound.ExponentialBackoff.min_backoff:type_name -> google.protobuf.Duration
-	62,  // 27: io.linkerd.proxy.outbound.ExponentialBackoff.max_backoff:type_name -> google.protobuf.Duration
-	62,  // 28: io.linkerd.proxy.outbound.ProxyProtocol.Detect.timeout:type_name -> google.protobuf.Duration
-	12,  // 29: io.linkerd.proxy.outbound.ProxyProtocol.Detect.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
-	13,  // 30: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
-	14,  // 31: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
-	5,   // 32: io.linkerd.proxy.outbound.ProxyProtocol.Opaque.routes:type_name -> io.linkerd.proxy.outbound.OpaqueRoute
-	3,   // 33: io.linkerd.proxy.outbound.ProxyProtocol.Http1.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
-	9,   // 34: io.linkerd.proxy.outbound.ProxyProtocol.Http1.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	3,   // 35: io.linkerd.proxy.outbound.ProxyProtocol.Http2.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
-	9,   // 36: io.linkerd.proxy.outbound.ProxyProtocol.Http2.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	4,   // 37: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.routes:type_name -> io.linkerd.proxy.outbound.GrpcRoute
-	9,   // 38: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	6,   // 39: io.linkerd.proxy.outbound.ProxyProtocol.Tls.routes:type_name -> io.linkerd.proxy.outbound.TlsRoute
-	63,  // 40: io.linkerd.proxy.outbound.HttpRoute.Rule.matches:type_name -> io.linkerd.proxy.http_route.HttpRouteMatch
-	18,  // 41: io.linkerd.proxy.outbound.HttpRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
-	19,  // 42: io.linkerd.proxy.outbound.HttpRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution
-	62,  // 43: io.linkerd.proxy.outbound.HttpRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
-	64,  // 44: io.linkerd.proxy.outbound.HttpRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
-	20,  // 45: io.linkerd.proxy.outbound.HttpRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry
-	65,  // 46: io.linkerd.proxy.outbound.HttpRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.http_route.HttpFailureInjector
-	66,  // 47: io.linkerd.proxy.outbound.HttpRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
-	67,  // 48: io.linkerd.proxy.outbound.HttpRoute.Filter.redirect:type_name -> io.linkerd.proxy.http_route.RequestRedirect
-	68,  // 49: io.linkerd.proxy.outbound.HttpRoute.Filter.response_header_modifier:type_name -> io.linkerd.proxy.http_route.ResponseHeaderModifier
-	23,  // 50: io.linkerd.proxy.outbound.HttpRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
-	24,  // 51: io.linkerd.proxy.outbound.HttpRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
-	25,  // 52: io.linkerd.proxy.outbound.HttpRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
-	26,  // 53: io.linkerd.proxy.outbound.HttpRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
-	62,  // 54: io.linkerd.proxy.outbound.HttpRoute.Retry.timeout:type_name -> google.protobuf.Duration
-	10,  // 55: io.linkerd.proxy.outbound.HttpRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
-	7,   // 56: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	18,  // 57: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
-	62,  // 58: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
-	21,  // 59: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
-	21,  // 60: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
-	22,  // 61: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
-	27,  // 62: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.status_ranges:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
-	69,  // 63: io.linkerd.proxy.outbound.GrpcRoute.Rule.matches:type_name -> io.linkerd.proxy.grpc_route.GrpcRouteMatch
-	29,  // 64: io.linkerd.proxy.outbound.GrpcRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
-	30,  // 65: io.linkerd.proxy.outbound.GrpcRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution
-	62,  // 66: io.linkerd.proxy.outbound.GrpcRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
-	64,  // 67: io.linkerd.proxy.outbound.GrpcRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
-	31,  // 68: io.linkerd.proxy.outbound.GrpcRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry
-	70,  // 69: io.linkerd.proxy.outbound.GrpcRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.grpc_route.GrpcFailureInjector
-	66,  // 70: io.linkerd.proxy.outbound.GrpcRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
-	34,  // 71: io.linkerd.proxy.outbound.GrpcRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
-	35,  // 72: io.linkerd.proxy.outbound.GrpcRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
-	36,  // 73: io.linkerd.proxy.outbound.GrpcRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
-	37,  // 74: io.linkerd.proxy.outbound.GrpcRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
-	62,  // 75: io.linkerd.proxy.outbound.GrpcRoute.Retry.timeout:type_name -> google.protobuf.Duration
-	10,  // 76: io.linkerd.proxy.outbound.GrpcRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
-	7,   // 77: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	29,  // 78: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
-	62,  // 79: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
-	32,  // 80: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
-	32,  // 81: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
-	33,  // 82: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
-	39,  // 83: io.linkerd.proxy.outbound.OpaqueRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution
-	42,  // 84: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
-	43,  // 85: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
-	44,  // 86: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
-	7,   // 87: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	40,  // 88: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
-	40,  // 89: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
-	41,  // 90: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
-	46,  // 91: io.linkerd.proxy.outbound.TlsRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution
-	49,  // 92: io.linkerd.proxy.outbound.TlsRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
-	50,  // 93: io.linkerd.proxy.outbound.TlsRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
-	51,  // 94: io.linkerd.proxy.outbound.TlsRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
-	7,   // 95: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	47,  // 96: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
-	47,  // 97: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
-	48,  // 98: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
-	54,  // 99: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.dst:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
-	52,  // 100: io.linkerd.proxy.outbound.Backend.BalanceP2c.discovery:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery
-	55,  // 101: io.linkerd.proxy.outbound.Backend.BalanceP2c.peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
-	62,  // 102: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.default_rtt:type_name -> google.protobuf.Duration
-	62,  // 103: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.decay:type_name -> google.protobuf.Duration
-	10,  // 104: io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
-	0,   // 105: io.linkerd.proxy.outbound.OutboundPolicies.Get:input_type -> io.linkerd.proxy.outbound.TrafficSpec
-	0,   // 106: io.linkerd.proxy.outbound.OutboundPolicies.Watch:input_type -> io.linkerd.proxy.outbound.TrafficSpec
-	1,   // 107: io.linkerd.proxy.outbound.OutboundPolicies.Get:output_type -> io.linkerd.proxy.outbound.OutboundPolicy
-	1,   // 108: io.linkerd.proxy.outbound.OutboundPolicies.Watch:output_type -> io.linkerd.proxy.outbound.OutboundPolicy
-	107, // [107:109] is the sub-list for method output_type
-	105, // [105:107] is the sub-list for method input_type
-	105, // [105:105] is the sub-list for extension type_name
-	105, // [105:105] is the sub-list for extension extendee
-	0,   // [0:105] is the sub-list for field type_name
+	61,  // 0: io.linkerd.proxy.outbound.TrafficSpec.addr:type_name -> io.linkerd.proxy.net.TcpAddress
+	4,   // 1: io.linkerd.proxy.outbound.OutboundPolicy.protocol:type_name -> io.linkerd.proxy.outbound.ProxyProtocol
+	62,  // 2: io.linkerd.proxy.outbound.OutboundPolicy.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	13,  // 3: io.linkerd.proxy.outbound.ProxyProtocol.detect:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Detect
+	14,  // 4: io.linkerd.proxy.outbound.ProxyProtocol.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
+	15,  // 5: io.linkerd.proxy.outbound.ProxyProtocol.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
+	16,  // 6: io.linkerd.proxy.outbound.ProxyProtocol.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
+	17,  // 7: io.linkerd.proxy.outbound.ProxyProtocol.grpc:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Grpc
+	18,  // 8: io.linkerd.proxy.outbound.ProxyProtocol.tls:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Tls
+	62,  // 9: io.linkerd.proxy.outbound.HttpRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	63,  // 10: io.linkerd.proxy.outbound.HttpRoute.hosts:type_name -> io.linkerd.proxy.http_route.HostMatch
+	19,  // 11: io.linkerd.proxy.outbound.HttpRoute.rules:type_name -> io.linkerd.proxy.outbound.HttpRoute.Rule
+	62,  // 12: io.linkerd.proxy.outbound.GrpcRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	63,  // 13: io.linkerd.proxy.outbound.GrpcRoute.hosts:type_name -> io.linkerd.proxy.http_route.HostMatch
+	30,  // 14: io.linkerd.proxy.outbound.GrpcRoute.rules:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Rule
+	62,  // 15: io.linkerd.proxy.outbound.OpaqueRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	40,  // 16: io.linkerd.proxy.outbound.OpaqueRoute.rules:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Rule
+	0,   // 17: io.linkerd.proxy.outbound.OpaqueRoute.error:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteError
+	62,  // 18: io.linkerd.proxy.outbound.TlsRoute.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	64,  // 19: io.linkerd.proxy.outbound.TlsRoute.snis:type_name -> io.linkerd.proxy.tls_route.SniMatch
+	48,  // 20: io.linkerd.proxy.outbound.TlsRoute.rules:type_name -> io.linkerd.proxy.outbound.TlsRoute.Rule
+	1,   // 21: io.linkerd.proxy.outbound.TlsRoute.error:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteError
+	62,  // 22: io.linkerd.proxy.outbound.Backend.metadata:type_name -> io.linkerd.proxy.meta.Metadata
+	65,  // 23: io.linkerd.proxy.outbound.Backend.forward:type_name -> io.linkerd.proxy.destination.WeightedAddr
+	57,  // 24: io.linkerd.proxy.outbound.Backend.balancer:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c
+	10,  // 25: io.linkerd.proxy.outbound.Backend.queue:type_name -> io.linkerd.proxy.outbound.Queue
+	66,  // 26: io.linkerd.proxy.outbound.Queue.failfast_timeout:type_name -> google.protobuf.Duration
+	60,  // 27: io.linkerd.proxy.outbound.FailureAccrual.consecutive_failures:type_name -> io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures
+	66,  // 28: io.linkerd.proxy.outbound.ExponentialBackoff.min_backoff:type_name -> google.protobuf.Duration
+	66,  // 29: io.linkerd.proxy.outbound.ExponentialBackoff.max_backoff:type_name -> google.protobuf.Duration
+	66,  // 30: io.linkerd.proxy.outbound.ProxyProtocol.Detect.timeout:type_name -> google.protobuf.Duration
+	14,  // 31: io.linkerd.proxy.outbound.ProxyProtocol.Detect.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
+	15,  // 32: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
+	16,  // 33: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
+	7,   // 34: io.linkerd.proxy.outbound.ProxyProtocol.Opaque.routes:type_name -> io.linkerd.proxy.outbound.OpaqueRoute
+	5,   // 35: io.linkerd.proxy.outbound.ProxyProtocol.Http1.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
+	11,  // 36: io.linkerd.proxy.outbound.ProxyProtocol.Http1.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	5,   // 37: io.linkerd.proxy.outbound.ProxyProtocol.Http2.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
+	11,  // 38: io.linkerd.proxy.outbound.ProxyProtocol.Http2.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	6,   // 39: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.routes:type_name -> io.linkerd.proxy.outbound.GrpcRoute
+	11,  // 40: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	8,   // 41: io.linkerd.proxy.outbound.ProxyProtocol.Tls.routes:type_name -> io.linkerd.proxy.outbound.TlsRoute
+	67,  // 42: io.linkerd.proxy.outbound.HttpRoute.Rule.matches:type_name -> io.linkerd.proxy.http_route.HttpRouteMatch
+	20,  // 43: io.linkerd.proxy.outbound.HttpRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
+	21,  // 44: io.linkerd.proxy.outbound.HttpRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution
+	66,  // 45: io.linkerd.proxy.outbound.HttpRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
+	68,  // 46: io.linkerd.proxy.outbound.HttpRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
+	22,  // 47: io.linkerd.proxy.outbound.HttpRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry
+	69,  // 48: io.linkerd.proxy.outbound.HttpRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.http_route.HttpFailureInjector
+	70,  // 49: io.linkerd.proxy.outbound.HttpRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
+	71,  // 50: io.linkerd.proxy.outbound.HttpRoute.Filter.redirect:type_name -> io.linkerd.proxy.http_route.RequestRedirect
+	72,  // 51: io.linkerd.proxy.outbound.HttpRoute.Filter.response_header_modifier:type_name -> io.linkerd.proxy.http_route.ResponseHeaderModifier
+	25,  // 52: io.linkerd.proxy.outbound.HttpRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
+	26,  // 53: io.linkerd.proxy.outbound.HttpRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
+	27,  // 54: io.linkerd.proxy.outbound.HttpRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
+	28,  // 55: io.linkerd.proxy.outbound.HttpRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
+	66,  // 56: io.linkerd.proxy.outbound.HttpRoute.Retry.timeout:type_name -> google.protobuf.Duration
+	12,  // 57: io.linkerd.proxy.outbound.HttpRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
+	9,   // 58: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	20,  // 59: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
+	66,  // 60: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
+	23,  // 61: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
+	23,  // 62: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
+	24,  // 63: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
+	29,  // 64: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.status_ranges:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
+	73,  // 65: io.linkerd.proxy.outbound.GrpcRoute.Rule.matches:type_name -> io.linkerd.proxy.grpc_route.GrpcRouteMatch
+	31,  // 66: io.linkerd.proxy.outbound.GrpcRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
+	32,  // 67: io.linkerd.proxy.outbound.GrpcRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution
+	66,  // 68: io.linkerd.proxy.outbound.GrpcRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
+	68,  // 69: io.linkerd.proxy.outbound.GrpcRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
+	33,  // 70: io.linkerd.proxy.outbound.GrpcRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry
+	74,  // 71: io.linkerd.proxy.outbound.GrpcRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.grpc_route.GrpcFailureInjector
+	70,  // 72: io.linkerd.proxy.outbound.GrpcRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
+	36,  // 73: io.linkerd.proxy.outbound.GrpcRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
+	37,  // 74: io.linkerd.proxy.outbound.GrpcRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
+	38,  // 75: io.linkerd.proxy.outbound.GrpcRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
+	39,  // 76: io.linkerd.proxy.outbound.GrpcRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
+	66,  // 77: io.linkerd.proxy.outbound.GrpcRoute.Retry.timeout:type_name -> google.protobuf.Duration
+	12,  // 78: io.linkerd.proxy.outbound.GrpcRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
+	9,   // 79: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	31,  // 80: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
+	66,  // 81: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
+	34,  // 82: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
+	34,  // 83: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
+	35,  // 84: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
+	41,  // 85: io.linkerd.proxy.outbound.OpaqueRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution
+	44,  // 86: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
+	45,  // 87: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
+	46,  // 88: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
+	9,   // 89: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	47,  // 90: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.invalid:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.Invalid
+	42,  // 91: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
+	42,  // 92: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
+	43,  // 93: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
+	49,  // 94: io.linkerd.proxy.outbound.TlsRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution
+	52,  // 95: io.linkerd.proxy.outbound.TlsRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
+	53,  // 96: io.linkerd.proxy.outbound.TlsRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
+	54,  // 97: io.linkerd.proxy.outbound.TlsRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
+	9,   // 98: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	55,  // 99: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.invalid:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend.Invalid
+	50,  // 100: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
+	50,  // 101: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
+	51,  // 102: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
+	58,  // 103: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.dst:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
+	56,  // 104: io.linkerd.proxy.outbound.Backend.BalanceP2c.discovery:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery
+	59,  // 105: io.linkerd.proxy.outbound.Backend.BalanceP2c.peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
+	66,  // 106: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.default_rtt:type_name -> google.protobuf.Duration
+	66,  // 107: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.decay:type_name -> google.protobuf.Duration
+	12,  // 108: io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
+	2,   // 109: io.linkerd.proxy.outbound.OutboundPolicies.Get:input_type -> io.linkerd.proxy.outbound.TrafficSpec
+	2,   // 110: io.linkerd.proxy.outbound.OutboundPolicies.Watch:input_type -> io.linkerd.proxy.outbound.TrafficSpec
+	3,   // 111: io.linkerd.proxy.outbound.OutboundPolicies.Get:output_type -> io.linkerd.proxy.outbound.OutboundPolicy
+	3,   // 112: io.linkerd.proxy.outbound.OutboundPolicies.Watch:output_type -> io.linkerd.proxy.outbound.OutboundPolicy
+	111, // [111:113] is the sub-list for method output_type
+	109, // [109:111] is the sub-list for method input_type
+	109, // [109:109] is the sub-list for extension type_name
+	109, // [109:109] is the sub-list for extension extendee
+	0,   // [0:109] is the sub-list for field type_name
 }
 
 func init() { file_outbound_proto_init() }
@@ -5101,7 +5354,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[45].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_Rule); i {
+			switch v := v.(*OpaqueRoute_RouteBackend_Invalid); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5113,7 +5366,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[46].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_Distribution); i {
+			switch v := v.(*TlsRoute_Rule); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5125,7 +5378,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[47].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_RouteBackend); i {
+			switch v := v.(*TlsRoute_Distribution); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5137,7 +5390,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[48].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_WeightedRouteBackend); i {
+			switch v := v.(*TlsRoute_RouteBackend); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5149,7 +5402,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[49].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_Distribution_Empty); i {
+			switch v := v.(*TlsRoute_WeightedRouteBackend); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5161,7 +5414,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[50].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_Distribution_FirstAvailable); i {
+			switch v := v.(*TlsRoute_Distribution_Empty); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5173,7 +5426,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[51].Exporter = func(v any, i int) any {
-			switch v := v.(*TlsRoute_Distribution_RandomAvailable); i {
+			switch v := v.(*TlsRoute_Distribution_FirstAvailable); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5185,7 +5438,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[52].Exporter = func(v any, i int) any {
-			switch v := v.(*Backend_EndpointDiscovery); i {
+			switch v := v.(*TlsRoute_Distribution_RandomAvailable); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5197,7 +5450,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[53].Exporter = func(v any, i int) any {
-			switch v := v.(*Backend_BalanceP2C); i {
+			switch v := v.(*TlsRoute_RouteBackend_Invalid); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5209,7 +5462,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[54].Exporter = func(v any, i int) any {
-			switch v := v.(*Backend_EndpointDiscovery_DestinationGet); i {
+			switch v := v.(*Backend_EndpointDiscovery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5221,7 +5474,7 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[55].Exporter = func(v any, i int) any {
-			switch v := v.(*Backend_BalanceP2C_PeakEwma); i {
+			switch v := v.(*Backend_BalanceP2C); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5233,6 +5486,30 @@ func file_outbound_proto_init() {
 			}
 		}
 		file_outbound_proto_msgTypes[56].Exporter = func(v any, i int) any {
+			switch v := v.(*Backend_EndpointDiscovery_DestinationGet); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_outbound_proto_msgTypes[57].Exporter = func(v any, i int) any {
+			switch v := v.(*Backend_BalanceP2C_PeakEwma); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_outbound_proto_msgTypes[58].Exporter = func(v any, i int) any {
 			switch v := v.(*FailureAccrual_ConsecutiveFailures); i {
 			case 0:
 				return &v.state
@@ -5289,15 +5566,15 @@ func file_outbound_proto_init() {
 		(*OpaqueRoute_Distribution_FirstAvailable_)(nil),
 		(*OpaqueRoute_Distribution_RandomAvailable_)(nil),
 	}
-	file_outbound_proto_msgTypes[46].OneofWrappers = []any{
+	file_outbound_proto_msgTypes[47].OneofWrappers = []any{
 		(*TlsRoute_Distribution_Empty_)(nil),
 		(*TlsRoute_Distribution_FirstAvailable_)(nil),
 		(*TlsRoute_Distribution_RandomAvailable_)(nil),
 	}
-	file_outbound_proto_msgTypes[52].OneofWrappers = []any{
+	file_outbound_proto_msgTypes[54].OneofWrappers = []any{
 		(*Backend_EndpointDiscovery_Dst)(nil),
 	}
-	file_outbound_proto_msgTypes[53].OneofWrappers = []any{
+	file_outbound_proto_msgTypes[55].OneofWrappers = []any{
 		(*Backend_BalanceP2C_PeakEwma_)(nil),
 	}
 	type x struct{}
@@ -5305,13 +5582,14 @@ func file_outbound_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_outbound_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   57,
+			NumEnums:      2,
+			NumMessages:   59,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_outbound_proto_goTypes,
 		DependencyIndexes: file_outbound_proto_depIdxs,
+		EnumInfos:         file_outbound_proto_enumTypes,
 		MessageInfos:      file_outbound_proto_msgTypes,
 	}.Build()
 	File_outbound_proto = out.File
