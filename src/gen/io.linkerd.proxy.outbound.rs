@@ -429,8 +429,8 @@ pub struct OpaqueRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<opaque_route::Rule>,
-    #[prost(enumeration = "opaque_route::RouteError", tag = "4")]
-    pub error: i32,
+    #[prost(message, optional, tag = "4")]
+    pub error: ::core::option::Option<opaque_route::RouteError>,
 }
 /// Nested message and enum types in `OpaqueRoute`.
 pub mod opaque_route {
@@ -502,36 +502,45 @@ pub mod opaque_route {
     }
     /// Error type that is used to indicate that any traffic
     /// that is delivered through a route should be failed.
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::prost::Enumeration
-    )]
-    #[repr(i32)]
-    pub enum RouteError {
-        Forbidden = 0,
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteError {
+        #[prost(enumeration = "route_error::Kind", tag = "1")]
+        pub kind: i32,
     }
-    impl RouteError {
-        /// String value of the enum field names used in the ProtoBuf definition.
-        ///
-        /// The values are not transformed in any way and thus are considered stable
-        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-        pub fn as_str_name(&self) -> &'static str {
-            match self {
-                RouteError::Forbidden => "FORBIDDEN",
-            }
+    /// Nested message and enum types in `RouteError`.
+    pub mod route_error {
+        #[derive(
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
+        )]
+        #[repr(i32)]
+        pub enum Kind {
+            Forbidden = 0,
         }
-        /// Creates an enum from field names used in the ProtoBuf definition.
-        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-            match value {
-                "FORBIDDEN" => Some(Self::Forbidden),
-                _ => None,
+        impl Kind {
+            /// String value of the enum field names used in the ProtoBuf definition.
+            ///
+            /// The values are not transformed in any way and thus are considered stable
+            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+            pub fn as_str_name(&self) -> &'static str {
+                match self {
+                    Kind::Forbidden => "FORBIDDEN",
+                }
+            }
+            /// Creates an enum from field names used in the ProtoBuf definition.
+            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+                match value {
+                    "FORBIDDEN" => Some(Self::Forbidden),
+                    _ => None,
+                }
             }
         }
     }
@@ -547,8 +556,8 @@ pub struct TlsRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<tls_route::Rule>,
-    #[prost(enumeration = "tls_route::RouteError", tag = "4")]
-    pub error: i32,
+    #[prost(message, optional, tag = "4")]
+    pub error: ::core::option::Option<tls_route::RouteError>,
 }
 /// Nested message and enum types in `TlsRoute`.
 pub mod tls_route {
@@ -620,36 +629,45 @@ pub mod tls_route {
     }
     /// Error type that is used to indicate that any traffic
     /// that is delivered through a route should be failed.
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::prost::Enumeration
-    )]
-    #[repr(i32)]
-    pub enum RouteError {
-        Forbidden = 0,
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct RouteError {
+        #[prost(enumeration = "route_error::Kind", tag = "1")]
+        pub kind: i32,
     }
-    impl RouteError {
-        /// String value of the enum field names used in the ProtoBuf definition.
-        ///
-        /// The values are not transformed in any way and thus are considered stable
-        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-        pub fn as_str_name(&self) -> &'static str {
-            match self {
-                RouteError::Forbidden => "FORBIDDEN",
-            }
+    /// Nested message and enum types in `RouteError`.
+    pub mod route_error {
+        #[derive(
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
+        )]
+        #[repr(i32)]
+        pub enum Kind {
+            Forbidden = 0,
         }
-        /// Creates an enum from field names used in the ProtoBuf definition.
-        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-            match value {
-                "FORBIDDEN" => Some(Self::Forbidden),
-                _ => None,
+        impl Kind {
+            /// String value of the enum field names used in the ProtoBuf definition.
+            ///
+            /// The values are not transformed in any way and thus are considered stable
+            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+            pub fn as_str_name(&self) -> &'static str {
+                match self {
+                    Kind::Forbidden => "FORBIDDEN",
+                }
+            }
+            /// Creates an enum from field names used in the ProtoBuf definition.
+            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+                match value {
+                    "FORBIDDEN" => Some(Self::Forbidden),
+                    _ => None,
+                }
             }
         }
     }
