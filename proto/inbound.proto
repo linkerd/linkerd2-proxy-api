@@ -71,6 +71,9 @@ message ProxyProtocol {
     // matched.
     repeated HttpRoute http_routes = 3;
 
+    // If the protocol detected as HTTP, applicable rate limit.
+    HttpLocalRateLimit http_local_rate_limit = 4;
+
     // Never implemented.
     reserved 2;
   }
@@ -78,12 +81,16 @@ message ProxyProtocol {
   message Http1 {
     repeated HttpRoute routes = 2;
 
+    HttpLocalRateLimit local_rate_limit = 3;
+ 
     // Never implemented.
     reserved 1;
   }
 
   message Http2 {
     repeated HttpRoute routes = 2;
+
+    HttpLocalRateLimit local_rate_limit = 3;
 
     // Never implemented.
     reserved 1;
@@ -231,5 +238,33 @@ message GrpcRoute {
       io.linkerd.proxy.grpc_route.GrpcFailureInjector failure_injector = 1;
       io.linkerd.proxy.http_route.RequestHeaderModifier request_header_modifier = 2;
     }
+  }
+}
+
+message HttpLocalRateLimit {
+  // Overall rate-limit, which all traffic coming to this server should abide
+  // to. If unset no overall limit is applied.
+  Limit total = 1;
+
+  // Fairness for individual identities; each separate client, grouped by
+  // identity, will have this rate-limit.
+  Limit identity = 2;
+
+  // Limit overrides for traffic from a specific client.
+  repeated Override overrides = 3;
+
+  message Override {
+    Limit limit = 1;
+
+    ClientIdentities clients = 2;
+
+    message ClientIdentities {
+      // A list of literal identities.
+      repeated Identity identities = 1;
+    }
+  }
+
+  message Limit {
+    uint64 requestsPerSecond = 1;
   }
 }

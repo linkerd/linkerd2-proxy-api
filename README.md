@@ -26,7 +26,7 @@ authenticed pod-to-pod communication.
 ### `inbound`
 
 The inbound API is used by the proxy to discover inbound serving
-policies--especially per-port authorization requirements.
+policies, i.e. per-port authorization requirements and rate-limiting poilcy.
 
 ### `tap`
 
