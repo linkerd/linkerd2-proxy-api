@@ -322,11 +322,15 @@ message OpaqueRoute {
     RouteBackend backend = 1;
     uint32 weight = 2;
   }
-  
+
   // Error type that is used to indicate that any traffic
   // that is delivered through a route should be failed.
-  enum RouteError {
-    FORBIDDEN = 0;
+  message RouteError {
+    Kind kind = 1;
+
+    enum Kind {
+      FORBIDDEN = 0;
+    }
   }
 }
 
@@ -378,8 +382,12 @@ message TlsRoute {
 
   // Error type that is used to indicate that any traffic
   // that is delivered through a route should be failed.
-  enum RouteError {
-    FORBIDDEN = 0;
+  message RouteError {
+    Kind kind = 1;
+
+    enum Kind {
+      FORBIDDEN = 0;
+    }
   }
 }
 
