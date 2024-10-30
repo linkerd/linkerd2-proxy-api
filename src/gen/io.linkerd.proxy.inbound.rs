@@ -310,16 +310,19 @@ pub mod grpc_route {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpLocalRateLimit {
+    /// Describes the associated HTTPLocalRateLimitPolicy resource
+    #[prost(message, optional, tag = "1")]
+    pub metadata: ::core::option::Option<super::meta::Metadata>,
     /// Overall rate-limit, which all traffic coming to this server should abide
     /// to. If unset no overall limit is applied.
-    #[prost(message, optional, tag = "1")]
+    #[prost(message, optional, tag = "2")]
     pub total: ::core::option::Option<http_local_rate_limit::Limit>,
     /// Fairness for individual identities; each separate client, grouped by
     /// identity, will have this rate-limit.
-    #[prost(message, optional, tag = "2")]
+    #[prost(message, optional, tag = "3")]
     pub identity: ::core::option::Option<http_local_rate_limit::Limit>,
     /// Limit overrides for traffic from a specific client.
-    #[prost(message, repeated, tag = "3")]
+    #[prost(message, repeated, tag = "4")]
     pub overrides: ::prost::alloc::vec::Vec<http_local_rate_limit::Override>,
 }
 /// Nested message and enum types in `HttpLocalRateLimit`.

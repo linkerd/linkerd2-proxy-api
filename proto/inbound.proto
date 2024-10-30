@@ -242,16 +242,19 @@ message GrpcRoute {
 }
 
 message HttpLocalRateLimit {
+  // Describes the associated HTTPLocalRateLimitPolicy resource
+  io.linkerd.proxy.meta.Metadata metadata = 1;
+
   // Overall rate-limit, which all traffic coming to this server should abide
   // to. If unset no overall limit is applied.
-  Limit total = 1;
+  Limit total = 2;
 
   // Fairness for individual identities; each separate client, grouped by
   // identity, will have this rate-limit.
-  Limit identity = 2;
+  Limit identity = 3;
 
   // Limit overrides for traffic from a specific client.
-  repeated Override overrides = 3;
+  repeated Override overrides = 4;
 
   message Override {
     Limit limit = 1;
