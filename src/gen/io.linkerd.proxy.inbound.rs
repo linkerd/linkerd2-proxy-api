@@ -348,8 +348,8 @@ pub mod http_local_rate_limit {
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Limit {
-        #[prost(uint64, tag = "1")]
-        pub requests_per_second: u64,
+        #[prost(uint32, tag = "1")]
+        pub requests_per_second: u32,
     }
 }
 /// Generated client implementations.
