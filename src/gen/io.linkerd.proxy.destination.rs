@@ -82,6 +82,10 @@ pub struct WeightedAddr {
     /// connections over HTTP/2.
     #[prost(message, optional, tag = "8")]
     pub http2: ::core::option::Option<Http2ClientParams>,
+    /// A reference to the metadata for this endpoint, usually a Pod. This may be
+    /// omitted when the resource type is unknown.
+    #[prost(message, optional, tag = "9")]
+    pub resource_ref: ::core::option::Option<super::meta::Metadata>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -280,6 +284,14 @@ pub struct DestinationProfile {
     /// No endpoint should be set If the target is unknown.
     #[prost(message, optional, tag = "6")]
     pub endpoint: ::core::option::Option<WeightedAddr>,
+    /// A reference to the metadata for this destination, usually a service. May be
+    /// omitted if the destination is not a service.
+    #[prost(message, optional, tag = "7")]
+    pub parent_ref: ::core::option::Option<super::meta::Metadata>,
+    /// A reference to the metadata for a ServiceProfile resource. This is omitted
+    /// when no ServiceProfile resource exists.
+    #[prost(message, optional, tag = "8")]
+    pub profile_ref: ::core::option::Option<super::meta::Metadata>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -428,6 +440,9 @@ pub struct WeightedDst {
     /// relative to other weights in the same dst_overrides list.
     #[prost(uint32, tag = "2")]
     pub weight: u32,
+    /// A reference to the metadata for a Service resource.
+    #[prost(message, optional, tag = "3")]
+    pub backend_ref: ::core::option::Option<super::meta::Metadata>,
 }
 /// Generated client implementations.
 pub mod destination_client {
