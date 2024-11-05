@@ -7,6 +7,7 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/destination";
 import "google/protobuf/duration.proto";
 
 import "http_types.proto";
+import "meta.proto";
 import "net.proto";
 
 /// Destination Service ///
@@ -107,6 +108,10 @@ message WeightedAddr {
   // is HTTP/2 or when the H2 ProtocolHint is used to transport HTTP/1
   // connections over HTTP/2.
   Http2ClientParams http2 = 8;
+
+  // A reference to the metadata for this endpoint, usually a Pod. This may be
+  // omitted when the resource type is unknown.
+  meta.Metadata resource_ref = 9;
 }
 
 message TlsIdentity {
@@ -255,6 +260,14 @@ message DestinationProfile {
   //
   // No endpoint should be set If the target is unknown.
   WeightedAddr endpoint = 6;
+
+  // A reference to the metadata for this destination, usually a service. May be
+  // omitted if the destination is not a service.
+  meta.Metadata parent_ref = 7;
+
+  // A reference to the metadata for a ServiceProfile resource. This is omitted
+  // when no ServiceProfile resource exists.
+  meta.Metadata profile_ref = 8;
 }
 
 message Route {
@@ -348,4 +361,6 @@ message WeightedDst {
   // The proportion of requests to send to this destination.  This value is
   // relative to other weights in the same dst_overrides list.
   uint32 weight = 2;
+  // A reference to the metadata for a Service resource.
+  meta.Metadata backend_ref = 3;
 }
