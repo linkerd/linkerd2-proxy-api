@@ -14,7 +14,7 @@ rust-version = "1.59"
 [features]
 default = []
 arbitrary = ["quickcheck"]
-destination = ["http-types", "net", "prost-types", "tonic/codegen"]
+destination = ["http-types", "meta", "net", "prost-types", "tonic/codegen"]
 grpc-route = ["http-route"]
 http-route = ["http-types"]
 http-types = ["http", "thiserror"]
