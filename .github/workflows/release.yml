@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v43-rust
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - run: just rs-fetch
       - run: just rs-gen-check
       - run: just rs-test-build
@@ -58,7 +58,7 @@ jobs:
     container: docker://ghcr.io/linkerd/dev:v43-rust
     steps:
       - if: needs.meta.outputs.publish
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - if: needs.meta.outputs.publish
         shell: bash
         run: |
@@ -69,7 +69,7 @@ jobs:
             exit 1
           fi
       - if: needs.meta.outputs.publish
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
+        uses: softprops/action-gh-release@e7a8f85e1c67a31e6ed99a94b41bd0b71bbee6b8
         with:
           name: ${{ needs.meta.outputs.version }}
           generate_release_notes: true
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v43-rust
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - if: '!needs.meta.outputs.publish'
         run: just rs-publish --dry-run
       - if: needs.meta.outputs.publish
