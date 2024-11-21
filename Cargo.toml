@@ -28,21 +28,21 @@ inbound = [
     "tonic/codegen",
 ]
 outbound = [
-    "tls-route",
-    "opaque-route",
-    "grpc-route",
     "destination",
+    "grpc-route",
     "http-route",
     "meta",
     "net",
+    "opaque-route",
     "prost-types",
+    "tls-route",
     "tonic/codegen",
 ]
 meta = []
 net = ["ipnet", "thiserror"]
+opaque-route = []
 tap = ["h2", "http-types", "net", "prost-types", "tonic/codegen"]
 tls-route = []
-opaque-route = []
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--cfg", "docsrs"]
