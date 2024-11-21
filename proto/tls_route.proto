@@ -5,15 +5,14 @@ option go_package = "github.com/linkerd/linkerd2-proxy-api/go/tls_route";
 
 // Describes how to match an `SNI` ClientHello extension.
 message SniMatch {
-    oneof match {
-        // Match an exact SNI, e.g. www.example.com.
-        string exact = 1;
+  oneof match {
+    // Match an exact SNI, e.g. www.example.com.
+    string exact = 1;
 
-        // Match a SNI as a wildcard suffix, e.g. *.example.com.
-        Suffix suffix = 2;
-    }
+    // Match a SNI as a wildcard suffix, e.g. *.example.com.
+    Suffix suffix = 2;
+  }
 
-    // A match like `*.example.com` is encoded as [com, example].
-    message Suffix { repeated string reverse_labels = 1; }
+  // A match like `*.example.com` is encoded as [com, example].
+  message Suffix { repeated string reverse_labels = 1; }
 }
-

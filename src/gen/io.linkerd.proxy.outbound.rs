@@ -429,8 +429,6 @@ pub struct OpaqueRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<opaque_route::Rule>,
-    #[prost(message, optional, tag = "4")]
-    pub error: ::core::option::Option<opaque_route::RouteError>,
 }
 /// Nested message and enum types in `OpaqueRoute`.
 pub mod opaque_route {
@@ -439,6 +437,25 @@ pub mod opaque_route {
     pub struct Rule {
         #[prost(message, optional, tag = "1")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, repeated, tag = "2")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Filter {
+        #[prost(oneof = "filter::Kind", tags = "1, 2")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Invalid(super::super::super::opaque_route::Invalid),
+            #[prost(message, tag = "2")]
+            Forbidden(super::super::super::opaque_route::Forbidden),
+        }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -480,17 +497,8 @@ pub mod opaque_route {
     pub struct RouteBackend {
         #[prost(message, optional, tag = "1")]
         pub backend: ::core::option::Option<super::Backend>,
-        #[prost(message, optional, tag = "2")]
-        pub invalid: ::core::option::Option<route_backend::Invalid>,
-    }
-    /// Nested message and enum types in `RouteBackend`.
-    pub mod route_backend {
-        #[allow(clippy::derive_partial_eq_without_eq)]
-        #[derive(Clone, PartialEq, ::prost::Message)]
-        pub struct Invalid {
-            #[prost(string, tag = "1")]
-            pub message: ::prost::alloc::string::String,
-        }
+        #[prost(message, repeated, tag = "3")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -499,50 +507,6 @@ pub mod opaque_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
-    }
-    /// Error type that is used to indicate that any traffic
-    /// that is delivered through a route should be failed.
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct RouteError {
-        #[prost(enumeration = "route_error::Kind", tag = "1")]
-        pub kind: i32,
-    }
-    /// Nested message and enum types in `RouteError`.
-    pub mod route_error {
-        #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::prost::Enumeration
-        )]
-        #[repr(i32)]
-        pub enum Kind {
-            Forbidden = 0,
-        }
-        impl Kind {
-            /// String value of the enum field names used in the ProtoBuf definition.
-            ///
-            /// The values are not transformed in any way and thus are considered stable
-            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-            pub fn as_str_name(&self) -> &'static str {
-                match self {
-                    Kind::Forbidden => "FORBIDDEN",
-                }
-            }
-            /// Creates an enum from field names used in the ProtoBuf definition.
-            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-                match value {
-                    "FORBIDDEN" => Some(Self::Forbidden),
-                    _ => None,
-                }
-            }
-        }
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -556,8 +520,6 @@ pub struct TlsRoute {
     /// Must have at least one rule.
     #[prost(message, repeated, tag = "3")]
     pub rules: ::prost::alloc::vec::Vec<tls_route::Rule>,
-    #[prost(message, optional, tag = "4")]
-    pub error: ::core::option::Option<tls_route::RouteError>,
 }
 /// Nested message and enum types in `TlsRoute`.
 pub mod tls_route {
@@ -566,6 +528,25 @@ pub mod tls_route {
     pub struct Rule {
         #[prost(message, optional, tag = "1")]
         pub backends: ::core::option::Option<Distribution>,
+        #[prost(message, repeated, tag = "2")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
+    }
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Filter {
+        #[prost(oneof = "filter::Kind", tags = "1, 2")]
+        pub kind: ::core::option::Option<filter::Kind>,
+    }
+    /// Nested message and enum types in `Filter`.
+    pub mod filter {
+        #[allow(clippy::derive_partial_eq_without_eq)]
+        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        pub enum Kind {
+            #[prost(message, tag = "1")]
+            Invalid(super::super::super::opaque_route::Invalid),
+            #[prost(message, tag = "2")]
+            Forbidden(super::super::super::opaque_route::Forbidden),
+        }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -607,17 +588,8 @@ pub mod tls_route {
     pub struct RouteBackend {
         #[prost(message, optional, tag = "1")]
         pub backend: ::core::option::Option<super::Backend>,
-        #[prost(message, optional, tag = "2")]
-        pub invalid: ::core::option::Option<route_backend::Invalid>,
-    }
-    /// Nested message and enum types in `RouteBackend`.
-    pub mod route_backend {
-        #[allow(clippy::derive_partial_eq_without_eq)]
-        #[derive(Clone, PartialEq, ::prost::Message)]
-        pub struct Invalid {
-            #[prost(string, tag = "1")]
-            pub message: ::prost::alloc::string::String,
-        }
+        #[prost(message, repeated, tag = "3")]
+        pub filters: ::prost::alloc::vec::Vec<Filter>,
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -626,50 +598,6 @@ pub mod tls_route {
         pub backend: ::core::option::Option<RouteBackend>,
         #[prost(uint32, tag = "2")]
         pub weight: u32,
-    }
-    /// Error type that is used to indicate that any traffic
-    /// that is delivered through a route should be failed.
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct RouteError {
-        #[prost(enumeration = "route_error::Kind", tag = "1")]
-        pub kind: i32,
-    }
-    /// Nested message and enum types in `RouteError`.
-    pub mod route_error {
-        #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::prost::Enumeration
-        )]
-        #[repr(i32)]
-        pub enum Kind {
-            Forbidden = 0,
-        }
-        impl Kind {
-            /// String value of the enum field names used in the ProtoBuf definition.
-            ///
-            /// The values are not transformed in any way and thus are considered stable
-            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-            pub fn as_str_name(&self) -> &'static str {
-                match self {
-                    Kind::Forbidden => "FORBIDDEN",
-                }
-            }
-            /// Creates an enum from field names used in the ProtoBuf definition.
-            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-                match value {
-                    "FORBIDDEN" => Some(Self::Forbidden),
-                    _ => None,
-                }
-            }
-        }
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
