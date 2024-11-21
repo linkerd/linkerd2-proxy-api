@@ -17,6 +17,11 @@ pub mod tls_route {
     include!("gen/io.linkerd.proxy.tls_route.rs");
 }
 
+#[cfg(feature = "opaque-route")]
+pub mod opaque_route {
+    include!("gen/io.linkerd.proxy.opaque_route.rs");
+}
+
 #[cfg(feature = "http-route")]
 pub mod http_route {
     include!("gen/io.linkerd.proxy.http_route.rs");

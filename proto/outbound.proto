@@ -8,6 +8,7 @@ import "net.proto";
 import "destination.proto";
 import "meta.proto";
 import "grpc_route.proto";
+import "opaque_route.proto";
 import "tls_route.proto";
 import "http_route.proto";
 import "google/protobuf/duration.proto";
@@ -286,10 +287,18 @@ message OpaqueRoute {
   // Must have at least one rule.
   repeated Rule rules = 3;
 
-  RouteError error = 4;
+  reserved 4;
   
   message Rule {
     Distribution backends = 1;
+    repeated Filter filters = 2;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.opaque_route.InvalidBackendError invalid_backend_error = 1;
+      io.linkerd.proxy.opaque_route.RouteError route_error = 2;
+    }
   }
 
   message Distribution {
@@ -311,26 +320,13 @@ message OpaqueRoute {
 
   message RouteBackend {
     Backend backend = 1;
-    Invalid invalid = 2;
-    
-    message Invalid {
-      string message = 1;
-    }
+    reserved 2;
+    repeated Filter filters = 3;
   }
 
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
-  }
-
-  // Error type that is used to indicate that any traffic
-  // that is delivered through a route should be failed.
-  message RouteError {
-    Kind kind = 1;
-
-    enum Kind {
-      FORBIDDEN = 0;
-    }
   }
 }
 
@@ -343,10 +339,18 @@ message TlsRoute {
   // Must have at least one rule.
   repeated Rule rules = 3;
 
-  RouteError error = 4;
+  reserved 4;
 
   message Rule {
     Distribution backends = 1;
+    repeated Filter filters = 2;
+  }
+
+  message Filter {
+    oneof kind {
+      io.linkerd.proxy.tls_route.InvalidBackendError invalid_backend_error = 1;
+      io.linkerd.proxy.tls_route.RouteError route_error = 2;
+    }
   }
 
   message Distribution {
@@ -368,26 +372,13 @@ message TlsRoute {
 
   message RouteBackend {
     Backend backend = 1;
-    Invalid invalid = 2;
-    
-    message Invalid {
-      string message = 1;
-    }
+    reserved 2;
+    repeated Filter filters = 3;
   }
 
   message WeightedRouteBackend {
     RouteBackend backend = 1;
     uint32 weight = 2;
-  }
-
-  // Error type that is used to indicate that any traffic
-  // that is delivered through a route should be failed.
-  message RouteError {
-    Kind kind = 1;
-
-    enum Kind {
-      FORBIDDEN = 0;
-    }
   }
 }
 

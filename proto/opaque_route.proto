@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package io.linkerd.proxy.opaque_route;
+option go_package = "github.com/linkerd/linkerd2-proxy-api/go/opaque_route";
+
+// Error type that is used to indicate that this backend
+// is invalid and traffic targeted to it should be failed.
+message InvalidBackendError {
+  string message = 1;
+}
+
+// Error type that is used to indicate that any traffic
+// that is delivered through a route should be failed.
+message RouteError {
+  Kind kind = 1;
+
+  enum Kind {
+    FORBIDDEN = 0;
+  }
+}

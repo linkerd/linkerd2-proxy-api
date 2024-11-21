@@ -29,6 +29,7 @@ inbound = [
 ]
 outbound = [
     "tls-route",
+    "opaque-route",
     "grpc-route",
     "destination",
     "http-route",
@@ -41,6 +42,7 @@ meta = []
 net = ["ipnet", "thiserror"]
 tap = ["h2", "http-types", "net", "prost-types", "tonic/codegen"]
 tls-route = []
+opaque-route = []
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--cfg", "docsrs"]
