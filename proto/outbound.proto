@@ -296,8 +296,8 @@ message OpaqueRoute {
 
   message Filter {
     oneof kind {
-      io.linkerd.proxy.opaque_route.InvalidBackendError invalid_backend_error = 1;
-      io.linkerd.proxy.opaque_route.RouteError route_error = 2;
+      io.linkerd.proxy.opaque_route.Invalid invalid = 1;
+      io.linkerd.proxy.opaque_route.Forbidden forbidden = 2;
     }
   }
 
@@ -348,8 +348,8 @@ message TlsRoute {
 
   message Filter {
     oneof kind {
-      io.linkerd.proxy.tls_route.InvalidBackendError invalid_backend_error = 1;
-      io.linkerd.proxy.tls_route.RouteError route_error = 2;
+      io.linkerd.proxy.opaque_route.Invalid invalid = 1;
+      io.linkerd.proxy.opaque_route.Forbidden forbidden = 2;
     }
   }
 

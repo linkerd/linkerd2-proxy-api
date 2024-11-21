@@ -20,49 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type RouteError_Kind int32
-
-const (
-	RouteError_FORBIDDEN RouteError_Kind = 0
-)
-
-// Enum value maps for RouteError_Kind.
-var (
-	RouteError_Kind_name = map[int32]string{
-		0: "FORBIDDEN",
-	}
-	RouteError_Kind_value = map[string]int32{
-		"FORBIDDEN": 0,
-	}
-)
-
-func (x RouteError_Kind) Enum() *RouteError_Kind {
-	p := new(RouteError_Kind)
-	*p = x
-	return p
-}
-
-func (x RouteError_Kind) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RouteError_Kind) Descriptor() protoreflect.EnumDescriptor {
-	return file_tls_route_proto_enumTypes[0].Descriptor()
-}
-
-func (RouteError_Kind) Type() protoreflect.EnumType {
-	return &file_tls_route_proto_enumTypes[0]
-}
-
-func (x RouteError_Kind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RouteError_Kind.Descriptor instead.
-func (RouteError_Kind) EnumDescriptor() ([]byte, []int) {
-	return file_tls_route_proto_rawDescGZIP(), []int{2, 0}
-}
-
 // Describes how to match an `SNI` ClientHello extension.
 type SniMatch struct {
 	state         protoimpl.MessageState
@@ -145,100 +102,6 @@ func (*SniMatch_Exact) isSniMatch_Match() {}
 
 func (*SniMatch_Suffix_) isSniMatch_Match() {}
 
-// Error type that is used to indicate that this backend
-// is invalid and traffic targeted to it should be failed.
-type InvalidBackendError struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-}
-
-func (x *InvalidBackendError) Reset() {
-	*x = InvalidBackendError{}
-	mi := &file_tls_route_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *InvalidBackendError) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*InvalidBackendError) ProtoMessage() {}
-
-func (x *InvalidBackendError) ProtoReflect() protoreflect.Message {
-	mi := &file_tls_route_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use InvalidBackendError.ProtoReflect.Descriptor instead.
-func (*InvalidBackendError) Descriptor() ([]byte, []int) {
-	return file_tls_route_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *InvalidBackendError) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-// Error type that is used to indicate that any traffic
-// that is delivered through a route should be failed.
-type RouteError struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Kind RouteError_Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=io.linkerd.proxy.tls_route.RouteError_Kind" json:"kind,omitempty"`
-}
-
-func (x *RouteError) Reset() {
-	*x = RouteError{}
-	mi := &file_tls_route_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RouteError) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RouteError) ProtoMessage() {}
-
-func (x *RouteError) ProtoReflect() protoreflect.Message {
-	mi := &file_tls_route_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RouteError.ProtoReflect.Descriptor instead.
-func (*RouteError) Descriptor() ([]byte, []int) {
-	return file_tls_route_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *RouteError) GetKind() RouteError_Kind {
-	if x != nil {
-		return x.Kind
-	}
-	return RouteError_FORBIDDEN
-}
-
 // A match like `*.example.com` is encoded as [com, example].
 type SniMatch_Suffix struct {
 	state         protoimpl.MessageState
@@ -250,7 +113,7 @@ type SniMatch_Suffix struct {
 
 func (x *SniMatch_Suffix) Reset() {
 	*x = SniMatch_Suffix{}
-	mi := &file_tls_route_proto_msgTypes[3]
+	mi := &file_tls_route_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -262,7 +125,7 @@ func (x *SniMatch_Suffix) String() string {
 func (*SniMatch_Suffix) ProtoMessage() {}
 
 func (x *SniMatch_Suffix) ProtoReflect() protoreflect.Message {
-	mi := &file_tls_route_proto_msgTypes[3]
+	mi := &file_tls_route_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -301,20 +164,11 @@ var file_tls_route_proto_rawDesc = []byte{
 	0x66, 0x69, 0x78, 0x12, 0x25, 0x0a, 0x0e, 0x72, 0x65, 0x76, 0x65, 0x72, 0x73, 0x65, 0x5f, 0x6c,
 	0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0d, 0x72, 0x65, 0x76,
 	0x65, 0x72, 0x73, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x42, 0x07, 0x0a, 0x05, 0x6d, 0x61,
-	0x74, 0x63, 0x68, 0x22, 0x2f, 0x0a, 0x13, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x42, 0x61,
-	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x22, 0x64, 0x0a, 0x0a, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72,
-	0x6f, 0x72, 0x12, 0x3f, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x2b, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72,
-	0x6f, 0x78, 0x79, 0x2e, 0x74, 0x6c, 0x73, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x52, 0x6f,
-	0x75, 0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x2e, 0x4b, 0x69, 0x6e, 0x64, 0x52, 0x04, 0x6b,
-	0x69, 0x6e, 0x64, 0x22, 0x15, 0x0a, 0x04, 0x4b, 0x69, 0x6e, 0x64, 0x12, 0x0d, 0x0a, 0x09, 0x46,
-	0x4f, 0x52, 0x42, 0x49, 0x44, 0x44, 0x45, 0x4e, 0x10, 0x00, 0x42, 0x34, 0x5a, 0x32, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64,
-	0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d,
-	0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x74, 0x6c, 0x73, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x63, 0x68, 0x42, 0x34, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72,
+	0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f,
+	0x74, 0x6c, 0x73, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -329,23 +183,18 @@ func file_tls_route_proto_rawDescGZIP() []byte {
 	return file_tls_route_proto_rawDescData
 }
 
-var file_tls_route_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_tls_route_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_tls_route_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_tls_route_proto_goTypes = []any{
-	(RouteError_Kind)(0),        // 0: io.linkerd.proxy.tls_route.RouteError.Kind
-	(*SniMatch)(nil),            // 1: io.linkerd.proxy.tls_route.SniMatch
-	(*InvalidBackendError)(nil), // 2: io.linkerd.proxy.tls_route.InvalidBackendError
-	(*RouteError)(nil),          // 3: io.linkerd.proxy.tls_route.RouteError
-	(*SniMatch_Suffix)(nil),     // 4: io.linkerd.proxy.tls_route.SniMatch.Suffix
+	(*SniMatch)(nil),        // 0: io.linkerd.proxy.tls_route.SniMatch
+	(*SniMatch_Suffix)(nil), // 1: io.linkerd.proxy.tls_route.SniMatch.Suffix
 }
 var file_tls_route_proto_depIdxs = []int32{
-	4, // 0: io.linkerd.proxy.tls_route.SniMatch.suffix:type_name -> io.linkerd.proxy.tls_route.SniMatch.Suffix
-	0, // 1: io.linkerd.proxy.tls_route.RouteError.kind:type_name -> io.linkerd.proxy.tls_route.RouteError.Kind
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 0: io.linkerd.proxy.tls_route.SniMatch.suffix:type_name -> io.linkerd.proxy.tls_route.SniMatch.Suffix
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_tls_route_proto_init() }
@@ -362,14 +211,13 @@ func file_tls_route_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_tls_route_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   4,
+			NumEnums:      0,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_tls_route_proto_goTypes,
 		DependencyIndexes: file_tls_route_proto_depIdxs,
-		EnumInfos:         file_tls_route_proto_enumTypes,
 		MessageInfos:      file_tls_route_proto_msgTypes,
 	}.Build()
 	File_tls_route_proto = out.File

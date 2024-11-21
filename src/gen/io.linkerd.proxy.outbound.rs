@@ -452,9 +452,9 @@ pub mod opaque_route {
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Kind {
             #[prost(message, tag = "1")]
-            InvalidBackendError(super::super::super::opaque_route::InvalidBackendError),
+            Invalid(super::super::super::opaque_route::Invalid),
             #[prost(message, tag = "2")]
-            RouteError(super::super::super::opaque_route::RouteError),
+            Forbidden(super::super::super::opaque_route::Forbidden),
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]
@@ -543,9 +543,9 @@ pub mod tls_route {
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Kind {
             #[prost(message, tag = "1")]
-            InvalidBackendError(super::super::super::tls_route::InvalidBackendError),
+            Invalid(super::super::super::opaque_route::Invalid),
             #[prost(message, tag = "2")]
-            RouteError(super::super::super::tls_route::RouteError),
+            Forbidden(super::super::super::opaque_route::Forbidden),
         }
     }
     #[allow(clippy::derive_partial_eq_without_eq)]

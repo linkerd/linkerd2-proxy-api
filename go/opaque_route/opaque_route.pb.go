@@ -20,52 +20,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type RouteError_Kind int32
-
-const (
-	RouteError_FORBIDDEN RouteError_Kind = 0
-)
-
-// Enum value maps for RouteError_Kind.
-var (
-	RouteError_Kind_name = map[int32]string{
-		0: "FORBIDDEN",
-	}
-	RouteError_Kind_value = map[string]int32{
-		"FORBIDDEN": 0,
-	}
-)
-
-func (x RouteError_Kind) Enum() *RouteError_Kind {
-	p := new(RouteError_Kind)
-	*p = x
-	return p
-}
-
-func (x RouteError_Kind) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RouteError_Kind) Descriptor() protoreflect.EnumDescriptor {
-	return file_opaque_route_proto_enumTypes[0].Descriptor()
-}
-
-func (RouteError_Kind) Type() protoreflect.EnumType {
-	return &file_opaque_route_proto_enumTypes[0]
-}
-
-func (x RouteError_Kind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RouteError_Kind.Descriptor instead.
-func (RouteError_Kind) EnumDescriptor() ([]byte, []int) {
-	return file_opaque_route_proto_rawDescGZIP(), []int{1, 0}
-}
-
-// Error type that is used to indicate that this backend
-// is invalid and traffic targeted to it should be failed.
-type InvalidBackendError struct {
+// Used to indicate that the policy is invalid.
+type Invalid struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -73,20 +29,20 @@ type InvalidBackendError struct {
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (x *InvalidBackendError) Reset() {
-	*x = InvalidBackendError{}
+func (x *Invalid) Reset() {
+	*x = Invalid{}
 	mi := &file_opaque_route_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *InvalidBackendError) String() string {
+func (x *Invalid) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*InvalidBackendError) ProtoMessage() {}
+func (*Invalid) ProtoMessage() {}
 
-func (x *InvalidBackendError) ProtoReflect() protoreflect.Message {
+func (x *Invalid) ProtoReflect() protoreflect.Message {
 	mi := &file_opaque_route_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,42 +54,39 @@ func (x *InvalidBackendError) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use InvalidBackendError.ProtoReflect.Descriptor instead.
-func (*InvalidBackendError) Descriptor() ([]byte, []int) {
+// Deprecated: Use Invalid.ProtoReflect.Descriptor instead.
+func (*Invalid) Descriptor() ([]byte, []int) {
 	return file_opaque_route_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *InvalidBackendError) GetMessage() string {
+func (x *Invalid) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-// Error type that is used to indicate that any traffic
-// that is delivered through a route should be failed.
-type RouteError struct {
+// Used to indicate that traffic is forbidden.
+type Forbidden struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Kind RouteError_Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=io.linkerd.proxy.opaque_route.RouteError_Kind" json:"kind,omitempty"`
 }
 
-func (x *RouteError) Reset() {
-	*x = RouteError{}
+func (x *Forbidden) Reset() {
+	*x = Forbidden{}
 	mi := &file_opaque_route_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RouteError) String() string {
+func (x *Forbidden) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RouteError) ProtoMessage() {}
+func (*Forbidden) ProtoMessage() {}
 
-func (x *RouteError) ProtoReflect() protoreflect.Message {
+func (x *Forbidden) ProtoReflect() protoreflect.Message {
 	mi := &file_opaque_route_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -145,16 +98,9 @@ func (x *RouteError) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RouteError.ProtoReflect.Descriptor instead.
-func (*RouteError) Descriptor() ([]byte, []int) {
+// Deprecated: Use Forbidden.ProtoReflect.Descriptor instead.
+func (*Forbidden) Descriptor() ([]byte, []int) {
 	return file_opaque_route_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *RouteError) GetKind() RouteError_Kind {
-	if x != nil {
-		return x.Kind
-	}
-	return RouteError_FORBIDDEN
 }
 
 var File_opaque_route_proto protoreflect.FileDescriptor
@@ -163,20 +109,14 @@ var file_opaque_route_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x6f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1d, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64,
 	0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x5f, 0x72, 0x6f,
-	0x75, 0x74, 0x65, 0x22, 0x2f, 0x0a, 0x13, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x42, 0x61,
-	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x22, 0x67, 0x0a, 0x0a, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72,
-	0x6f, 0x72, 0x12, 0x42, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x2e, 0x2e, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2e, 0x70, 0x72,
-	0x6f, 0x78, 0x79, 0x2e, 0x6f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65,
-	0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x2e, 0x4b, 0x69, 0x6e, 0x64,
-	0x52, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x22, 0x15, 0x0a, 0x04, 0x4b, 0x69, 0x6e, 0x64, 0x12, 0x0d,
-	0x0a, 0x09, 0x46, 0x4f, 0x52, 0x42, 0x49, 0x44, 0x44, 0x45, 0x4e, 0x10, 0x00, 0x42, 0x37, 0x5a,
-	0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b,
-	0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f,
-	0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x6f, 0x70, 0x61, 0x71, 0x75, 0x65,
-	0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x74, 0x65, 0x22, 0x23, 0x0a, 0x07, 0x49, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x12, 0x18,
+	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x0b, 0x0a, 0x09, 0x46, 0x6f, 0x72, 0x62,
+	0x69, 0x64, 0x64, 0x65, 0x6e, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x65, 0x72, 0x64, 0x2f, 0x6c, 0x69, 0x6e, 0x6b,
+	0x65, 0x72, 0x64, 0x32, 0x2d, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67,
+	0x6f, 0x2f, 0x6f, 0x70, 0x61, 0x71, 0x75, 0x65, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -191,20 +131,17 @@ func file_opaque_route_proto_rawDescGZIP() []byte {
 	return file_opaque_route_proto_rawDescData
 }
 
-var file_opaque_route_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_opaque_route_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_opaque_route_proto_goTypes = []any{
-	(RouteError_Kind)(0),        // 0: io.linkerd.proxy.opaque_route.RouteError.Kind
-	(*InvalidBackendError)(nil), // 1: io.linkerd.proxy.opaque_route.InvalidBackendError
-	(*RouteError)(nil),          // 2: io.linkerd.proxy.opaque_route.RouteError
+	(*Invalid)(nil),   // 0: io.linkerd.proxy.opaque_route.Invalid
+	(*Forbidden)(nil), // 1: io.linkerd.proxy.opaque_route.Forbidden
 }
 var file_opaque_route_proto_depIdxs = []int32{
-	0, // 0: io.linkerd.proxy.opaque_route.RouteError.kind:type_name -> io.linkerd.proxy.opaque_route.RouteError.Kind
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_opaque_route_proto_init() }
@@ -217,14 +154,13 @@ func file_opaque_route_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_opaque_route_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_opaque_route_proto_goTypes,
 		DependencyIndexes: file_opaque_route_proto_depIdxs,
-		EnumInfos:         file_opaque_route_proto_enumTypes,
 		MessageInfos:      file_opaque_route_proto_msgTypes,
 	}.Build()
 	File_opaque_route_proto = out.File

@@ -16,19 +16,3 @@ message SniMatch {
   // A match like `*.example.com` is encoded as [com, example].
   message Suffix { repeated string reverse_labels = 1; }
 }
-
-// Error type that is used to indicate that this backend
-// is invalid and traffic targeted to it should be failed.
-message InvalidBackendError {
-  string message = 1;
-}
-
-// Error type that is used to indicate that any traffic
-// that is delivered through a route should be failed.
-message RouteError {
-  Kind kind = 1;
-
-  enum Kind {
-    FORBIDDEN = 0;
-  }
-}
