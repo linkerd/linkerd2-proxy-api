@@ -81,7 +81,7 @@ impl TryFrom<IpNetwork> for ipnet::IpNet {
             .ok_or(InvalidIpNetwork::Ip(InvalidIpAddress))?
             .try_into()
             .map_err(InvalidIpNetwork::Ip)?;
-        let prefix_len = if (0..=std::u8::MAX as u32).contains(&net.prefix_len) {
+        let prefix_len = if (0..=u8::MAX as u32).contains(&net.prefix_len) {
             net.prefix_len as u8
         } else {
             return Err(InvalidIpNetwork::PrefixLen(ipnet::PrefixLenError));

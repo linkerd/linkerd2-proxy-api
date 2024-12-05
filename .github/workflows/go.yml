@@ -16,7 +16,7 @@ jobs:
   go:
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v43-go
+    container: docker://ghcr.io/linkerd/dev:v44-go
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - run: just go-mod-check
