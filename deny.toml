@@ -1,3 +1,4 @@
+[graph]
 targets = [
     { triple = "x86_64-unknown-linux-gnu" },
     { triple = "aarch64-unknown-linux-gnu" },
@@ -7,10 +8,6 @@ targets = [
 [advisories]
 db-path = "~/.cargo/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
-vulnerability = "deny"
-unmaintained = "warn"
-yanked = "deny"
-notice = "warn"
 ignore = []
 
 [licenses]
@@ -26,23 +23,17 @@ exceptions = [
         "Unicode-DFS-2016",
     ], name = "unicode-ident" },
 ]
-
-unlicensed = "deny"
 allow = [
     "Apache-2.0",
     "MIT",
 ]
-deny = []
-copyleft = "deny"
-allow-osi-fsf-free = "neither"
-default = "deny"
 confidence-threshold = 0.8
+
 [bans]
 multiple-versions = "deny"
 # Wildcard dependencies are used for all workspace-local crates.
 wildcards = "allow"
 highlight = "all"
-deny = []
 skip = [
     { name = "syn" },
 ]

@@ -40,13 +40,14 @@ jobs:
   test:
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v43-rust
+    container: docker://ghcr.io/linkerd/dev:v44-rust
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - run: just rs-fetch
       - run: just rs-gen-check
       - run: just rs-test-build
-      - run: just rs-test
+      # No tests to run in this repo.
+      #- run: just rs-test
 
   # Publish a GitHub release with platform-specific static binaries.
   release:
@@ -55,7 +56,7 @@ jobs:
       contents: write
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v43-rust
+    container: docker://ghcr.io/linkerd/dev:v44-rust
     steps:
       - if: needs.meta.outputs.publish
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -79,7 +80,7 @@ jobs:
     needs: [meta, release]
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v43-rust
+    container: docker://ghcr.io/linkerd/dev:v44-rust
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - if: '!needs.meta.outputs.publish'
