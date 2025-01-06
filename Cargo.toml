@@ -13,18 +13,18 @@ rust-version = "1.59"
 
 [features]
 default = []
-arbitrary = ["quickcheck"]
-destination = ["http-types", "meta", "net", "prost-types", "tonic/codegen"]
+arbitrary = ["dep:quickcheck"]
+destination = ["http-types", "meta", "net", "dep:prost-types", "tonic/codegen"]
 grpc-route = ["http-route"]
 http-route = ["http-types"]
-http-types = ["http", "thiserror"]
-identity = ["prost-types", "tonic/codegen"]
+http-types = ["dep:http", "dep:thiserror"]
+identity = ["dep:prost-types", "tonic/codegen"]
 inbound = [
     "grpc-route",
     "http-route",
     "meta",
     "net",
-    "prost-types",
+    "dep:prost-types",
     "tonic/codegen",
 ]
 outbound = [
@@ -34,14 +34,14 @@ outbound = [
     "meta",
     "net",
     "opaque-route",
-    "prost-types",
+    "dep:prost-types",
     "tls-route",
     "tonic/codegen",
 ]
 meta = []
-net = ["ipnet", "thiserror"]
+net = ["dep:ipnet", "dep:thiserror"]
 opaque-route = []
-tap = ["h2", "http-types", "net", "prost-types", "tonic/codegen"]
+tap = ["dep:h2", "http-types", "net", "dep:prost-types", "tonic/codegen"]
 tls-route = []
 
 [package.metadata.docs.rs]
