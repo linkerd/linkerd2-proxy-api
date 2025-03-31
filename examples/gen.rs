@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build_client(true)
         .build_server(true)
         .out_dir(out_dir)
-        .compile(&proto_files, &[proto_dir])
+        .compile_protos(&proto_files, &[proto_dir])
     {
         eprintln!("{}", e.to_string().replace("\\n", "\n").trim_end());
         std::process::exit(1);
