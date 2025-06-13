@@ -52,7 +52,7 @@ all-features = true
 h2 = { version = "0.4", optional = true }
 http = { version = "1.2", optional = true }
 ipnet = { version = "2", optional = true }
-prost = "0.13"
+prost = "0.14"
 prost-types = { version = "0.13", optional = true }
 quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "2", optional = true }
