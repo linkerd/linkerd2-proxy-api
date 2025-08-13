@@ -332,7 +332,7 @@ checksum = "201de327520df007757c1f0adce6e827fe8562fbc28bfd9c15571c66ca1f5f79"
 
 [[package]]
 name = "linkerd2-proxy-api"
-version = "0.16.0"
+version = "0.17.0"
 dependencies = [
  "h2",
  "http",
