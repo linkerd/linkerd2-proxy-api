@@ -58,11 +58,11 @@ quickcheck = { version = "1", default-features = false, optional = true }
 thiserror = { version = "2", optional = true }
 
 [dependencies.tonic]
-version = "0.12"
+version = "0.13"
 default-features = false
 features = ["prost"]
 
 [dev-dependencies.tonic-build]
-version = "0.12"
+version = "0.13"
 default-features = false
 features = ["prost"]
