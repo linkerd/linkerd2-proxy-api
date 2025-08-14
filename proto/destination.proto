@@ -236,7 +236,28 @@ message DestinationProfile {
   // Indicates that connections on this service address should be handled as
   // opaque TCP streams. HTTP routes returned on for such services will be
   // ignored.
-  bool opaque_protocol = 4;
+  //
+  // DEPRECATED: use `protocol` instead. Servers should continue to set this to
+  // `true` if this destination should be treated as opaque.
+  bool opaque_protocol = 4 [deprecated = true];
+
+  // Indicates what protocol connections on this service address should be.
+  // If not set, the service did not specify a protocol, the proxy may choose
+  // to treat connections as opaque TCP streams or attempt protocol detection.
+  optional Protocol protocol = 9;
+
+  enum Protocol {
+    // An unknown protocol was set by the user.
+    UNKNOWN = 0;
+    // Do protocol detection.
+    DETECT = 1;
+    // Treat the conection as an opaque TCP stream and ignore HTTP routes returned
+    // for such services.
+    OPAQUE = 2;
+    HTTP1 = 3;
+    HTTP2 = 4;
+    TLS = 5;
+  }
 
   // A list of routes, each with a RequestMatch.  If a request matches
   // more than one route, the first match wins.
