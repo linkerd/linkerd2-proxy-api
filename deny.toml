@@ -37,7 +37,10 @@ highlight = "all"
 skip = [
     { name = "syn" },
 ]
-skip-tree = []
+skip-tree = [
+    # socket v0.6 is still propagating through the ecosystem
+    { name = "socket2", version = "0.5" },
+]
 
 [sources]
 unknown-registry = "deny"
