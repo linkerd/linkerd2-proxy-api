@@ -9,7 +9,7 @@ pub struct GrpcRouteMatch {
     #[prost(message, repeated, tag = "2")]
     pub headers: ::prost::alloc::vec::Vec<super::http_route::HeaderMatch>,
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GrpcRpcMatch {
     #[prost(string, tag = "1")]
     pub service: ::prost::alloc::string::String,
@@ -17,7 +17,7 @@ pub struct GrpcRpcMatch {
     pub method: ::prost::alloc::string::String,
 }
 /// Configures a route to respond with a fixed response.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GrpcFailureInjector {
     /// The status code to use in the `grpc-status` response. Must be specified.
     #[prost(uint32, tag = "1")]
