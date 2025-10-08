@@ -26,21 +26,21 @@ pub mod observe_request {
             #[prost(message, repeated, tag = "1")]
             pub matches: ::prost::alloc::vec::Vec<super::Match>,
         }
-        #[derive(Clone, PartialEq, ::prost::Message)]
+        #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct Label {
             #[prost(string, tag = "1")]
             pub key: ::prost::alloc::string::String,
             #[prost(string, tag = "2")]
             pub value: ::prost::alloc::string::String,
         }
-        #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct Tcp {
             #[prost(oneof = "tcp::Match", tags = "1, 3")]
             pub r#match: ::core::option::Option<tcp::Match>,
         }
         /// Nested message and enum types in `Tcp`.
         pub mod tcp {
-            #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
             pub struct Netmask {
                 #[prost(message, optional, tag = "1")]
                 pub ip: ::core::option::Option<
@@ -51,7 +51,7 @@ pub mod observe_request {
             }
             /// If either a minimum or maximum is not specified, the range is
             /// considered to be over a discrete value.
-            #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
             pub struct PortRange {
                 /// Minimum matching port value (inclusive), if specified.
                 #[prost(uint32, tag = "1")]
@@ -60,7 +60,7 @@ pub mod observe_request {
                 #[prost(uint32, tag = "2")]
                 pub max: u32,
             }
-            #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
+            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
             pub enum Match {
                 #[prost(message, tag = "1")]
                 Netmask(Netmask),
@@ -68,21 +68,21 @@ pub mod observe_request {
                 Ports(PortRange),
             }
         }
-        #[derive(Clone, PartialEq, ::prost::Message)]
+        #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct Http {
             #[prost(oneof = "http::Match", tags = "1, 3, 2, 4")]
             pub r#match: ::core::option::Option<http::Match>,
         }
         /// Nested message and enum types in `Http`.
         pub mod http {
-            #[derive(Clone, PartialEq, ::prost::Message)]
+            #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
             pub struct StringMatch {
                 #[prost(oneof = "string_match::Match", tags = "1, 2")]
                 pub r#match: ::core::option::Option<string_match::Match>,
             }
             /// Nested message and enum types in `StringMatch`.
             pub mod string_match {
-                #[derive(Clone, PartialEq, ::prost::Oneof)]
+                #[derive(Clone, PartialEq, Eq, Hash, ::prost::Oneof)]
                 pub enum Match {
                     #[prost(string, tag = "1")]
                     Exact(::prost::alloc::string::String),
@@ -90,7 +90,7 @@ pub mod observe_request {
                     Prefix(::prost::alloc::string::String),
                 }
             }
-            #[derive(Clone, PartialEq, ::prost::Oneof)]
+            #[derive(Clone, PartialEq, Eq, Hash, ::prost::Oneof)]
             pub enum Match {
                 #[prost(message, tag = "1")]
                 Scheme(super::super::super::super::http_types::Scheme),
@@ -123,43 +123,43 @@ pub mod observe_request {
             RouteLabel(Label),
         }
     }
-    #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+    #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
     pub struct Extract {
         #[prost(oneof = "extract::Extract", tags = "1")]
         pub extract: ::core::option::Option<extract::Extract>,
     }
     /// Nested message and enum types in `Extract`.
     pub mod extract {
-        #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct Http {
             #[prost(oneof = "http::Extract", tags = "1")]
             pub extract: ::core::option::Option<http::Extract>,
         }
         /// Nested message and enum types in `Http`.
         pub mod http {
-            #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
             pub struct Headers {}
-            #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
+            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
             pub enum Extract {
                 #[prost(message, tag = "1")]
                 Headers(Headers),
             }
         }
-        #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
         pub enum Extract {
             #[prost(message, tag = "1")]
             Http(Http),
         }
     }
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Eos {
     #[prost(oneof = "eos::End", tags = "1, 2")]
     pub end: ::core::option::Option<eos::End>,
 }
 /// Nested message and enum types in `Eos`.
 pub mod eos {
-    #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
+    #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
     pub enum End {
         #[prost(uint32, tag = "1")]
         GrpcStatusCode(u32),
@@ -209,7 +209,7 @@ pub mod tap_event {
     }
     /// Nested message and enum types in `Http`.
     pub mod http {
-        #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct StreamId {
             /// A randomized base (stable across a process's runtime)
             #[prost(uint32, tag = "1")]
@@ -338,6 +338,17 @@ pub mod tap_client {
     pub struct TapClient<T> {
         inner: tonic::client::Grpc<T>,
     }
+    impl TapClient<tonic::transport::Channel> {
+        /// Attempt to create a new client by connecting to a given endpoint.
+        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
+        where
+            D: TryInto<tonic::transport::Endpoint>,
+            D::Error: Into<StdError>,
+        {
+            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
+            Ok(Self::new(conn))
+        }
+    }
     impl<T> TapClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::Body>,
@@ -418,7 +429,7 @@ pub mod tap_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/io.linkerd.proxy.tap.Tap/Observe",
             );
@@ -561,7 +572,7 @@ pub mod tap_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = ObserveSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,

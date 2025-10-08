@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Generate rust bindings.
     let out_dir = PathBuf::from("src").join("gen");
-    if let Err(e) = tonic_build::configure()
+    if let Err(e) = tonic_prost_build::configure()
         .build_client(true)
         .build_server(true)
         .out_dir(out_dir)
