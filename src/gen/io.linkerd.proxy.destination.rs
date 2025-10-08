@@ -237,8 +237,17 @@ pub struct DestinationProfile {
     /// Indicates that connections on this service address should be handled as
     /// opaque TCP streams. HTTP routes returned on for such services will be
     /// ignored.
+    ///
+    /// DEPRECATED: use `protocol` instead. Servers should continue to set this to
+    /// `true` if this destination should be treated as opaque.
+    #[deprecated]
     #[prost(bool, tag = "4")]
     pub opaque_protocol: bool,
+    /// Indicates what protocol connections on this service address should be.
+    /// If not set, the service did not specify a protocol, the proxy may choose
+    /// to treat connections as opaque TCP streams or attempt protocol detection.
+    #[prost(enumeration = "destination_profile::Protocol", optional, tag = "9")]
+    pub protocol: ::core::option::Option<i32>,
     /// A list of routes, each with a RequestMatch.  If a request matches
     /// more than one route, the first match wins.
     #[prost(message, repeated, tag = "1")]
@@ -271,6 +280,61 @@ pub struct DestinationProfile {
     /// when no ServiceProfile resource exists.
     #[prost(message, optional, tag = "8")]
     pub profile_ref: ::core::option::Option<super::meta::Metadata>,
+}
+/// Nested message and enum types in `DestinationProfile`.
+pub mod destination_profile {
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
+    #[repr(i32)]
+    pub enum Protocol {
+        /// An unknown protocol was set by the user.
+        Unknown = 0,
+        /// Do protocol detection.
+        Detect = 1,
+        /// Treat the conection as an opaque TCP stream and ignore HTTP routes returned
+        /// for such services.
+        Opaque = 2,
+        Http1 = 3,
+        Http2 = 4,
+        Tls = 5,
+    }
+    impl Protocol {
+        /// String value of the enum field names used in the ProtoBuf definition.
+        ///
+        /// The values are not transformed in any way and thus are considered stable
+        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+        pub fn as_str_name(&self) -> &'static str {
+            match self {
+                Self::Unknown => "UNKNOWN",
+                Self::Detect => "DETECT",
+                Self::Opaque => "OPAQUE",
+                Self::Http1 => "HTTP1",
+                Self::Http2 => "HTTP2",
+                Self::Tls => "TLS",
+            }
+        }
+        /// Creates an enum from field names used in the ProtoBuf definition.
+        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+            match value {
+                "UNKNOWN" => Some(Self::Unknown),
+                "DETECT" => Some(Self::Detect),
+                "OPAQUE" => Some(Self::Opaque),
+                "HTTP1" => Some(Self::Http1),
+                "HTTP2" => Some(Self::Http2),
+                "TLS" => Some(Self::Tls),
+                _ => None,
+            }
+        }
+    }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Route {
