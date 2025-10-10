@@ -180,6 +180,7 @@ message ObserveTraceRequest {
   optional uint32 max_samples_per_second = 2;
   google.protobuf.Duration report_interval = 3;
 
+
   // Encodes request-matching logic.
   io.linkerd.proxy.tap.ObserveRequest.Match match = 4;
 }
