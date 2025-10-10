@@ -322,6 +322,20 @@ pub mod tap_event {
         Http(Http),
     }
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObserveTraceRequest {
+    #[prost(float, optional, tag = "1")]
+    pub sample_percent: ::core::option::Option<f32>,
+    #[prost(uint32, optional, tag = "2")]
+    pub max_samples_per_second: ::core::option::Option<u32>,
+    #[prost(message, optional, tag = "3")]
+    pub report_interval: ::core::option::Option<::prost_types::Duration>,
+    /// Encodes request-matching logic.
+    #[prost(message, optional, tag = "4")]
+    pub r#match: ::core::option::Option<observe_request::Match>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct ObserveTraceResponse {}
 /// Generated client implementations.
 pub mod tap_client {
     #![allow(
@@ -427,6 +441,32 @@ pub mod tap_client {
                 .insert(GrpcMethod::new("io.linkerd.proxy.tap.Tap", "Observe"));
             self.inner.server_streaming(req, path, codec).await
         }
+        pub async fn observe_trace(
+            &mut self,
+            request: impl tonic::IntoStreamingRequest<
+                Message = super::ObserveTraceRequest,
+            >,
+        ) -> std::result::Result<
+            tonic::Response<super::ObserveTraceResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/io.linkerd.proxy.tap.Tap/ObserveTrace",
+            );
+            let mut req = request.into_streaming_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("io.linkerd.proxy.tap.Tap", "ObserveTrace"));
+            self.inner.client_streaming(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -452,6 +492,13 @@ pub mod tap_server {
             &self,
             request: tonic::Request<super::ObserveRequest>,
         ) -> std::result::Result<tonic::Response<Self::ObserveStream>, tonic::Status>;
+        async fn observe_trace(
+            &self,
+            request: tonic::Request<tonic::Streaming<super::ObserveTraceRequest>>,
+        ) -> std::result::Result<
+            tonic::Response<super::ObserveTraceResponse>,
+            tonic::Status,
+        >;
     }
     /// A service exposed by proxy instances to setup
     #[derive(Debug)]
@@ -572,6 +619,53 @@ pub mod tap_server {
                                 max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/io.linkerd.proxy.tap.Tap/ObserveTrace" => {
+                    #[allow(non_camel_case_types)]
+                    struct ObserveTraceSvc<T: Tap>(pub Arc<T>);
+                    impl<
+                        T: Tap,
+                    > tonic::server::ClientStreamingService<super::ObserveTraceRequest>
+                    for ObserveTraceSvc<T> {
+                        type Response = super::ObserveTraceResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<
+                                tonic::Streaming<super::ObserveTraceRequest>,
+                            >,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as Tap>::observe_trace(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = ObserveTraceSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.client_streaming(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)

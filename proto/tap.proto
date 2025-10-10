@@ -12,6 +12,7 @@ import "net.proto";
 // A service exposed by proxy instances to setup
 service Tap {
   rpc Observe(ObserveRequest) returns (stream TapEvent) {}
+  rpc ObserveTrace(stream ObserveTraceRequest) returns (ObserveTraceResponse) {}
 }
 
 message ObserveRequest {
@@ -173,3 +174,14 @@ message TapEvent {
     }
   }
 }
+
+message ObserveTraceRequest {
+  optional float sample_percent = 1;
+  optional uint32 max_samples_per_second = 2;
+  google.protobuf.Duration report_interval = 3;
+
+  // Encodes request-matching logic.
+  io.linkerd.proxy.tap.ObserveRequest.Match match = 4;
+}
+
+message ObserveTraceResponse {}
