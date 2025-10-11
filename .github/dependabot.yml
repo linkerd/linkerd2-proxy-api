@@ -4,6 +4,13 @@ updates:
     directory: /
     schedule:
       interval: daily
+    groups:
+      prost:
+        patterns:
+          - "prost*"
+      tonic:
+        patterns:
+          - "tonic*"
 
   - package-ecosystem: gomod
     directory: /
