@@ -157,3 +157,98 @@ var Tap_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "tap.proto",
 }
+
+const (
+	Instrument_Watch_FullMethodName = "/io.linkerd.proxy.tap.Instrument/Watch"
+)
+
+// InstrumentClient is the client API for Instrument service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type InstrumentClient interface {
+	Watch(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[WatchRequest, WatchResposne], error)
+}
+
+type instrumentClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewInstrumentClient(cc grpc.ClientConnInterface) InstrumentClient {
+	return &instrumentClient{cc}
+}
+
+func (c *instrumentClient) Watch(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[WatchRequest, WatchResposne], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &Instrument_ServiceDesc.Streams[0], Instrument_Watch_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[WatchRequest, WatchResposne]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Instrument_WatchClient = grpc.ClientStreamingClient[WatchRequest, WatchResposne]
+
+// InstrumentServer is the server API for Instrument service.
+// All implementations must embed UnimplementedInstrumentServer
+// for forward compatibility.
+type InstrumentServer interface {
+	Watch(grpc.ClientStreamingServer[WatchRequest, WatchResposne]) error
+	mustEmbedUnimplementedInstrumentServer()
+}
+
+// UnimplementedInstrumentServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedInstrumentServer struct{}
+
+func (UnimplementedInstrumentServer) Watch(grpc.ClientStreamingServer[WatchRequest, WatchResposne]) error {
+	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
+}
+func (UnimplementedInstrumentServer) mustEmbedUnimplementedInstrumentServer() {}
+func (UnimplementedInstrumentServer) testEmbeddedByValue()                    {}
+
+// UnsafeInstrumentServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to InstrumentServer will
+// result in compilation errors.
+type UnsafeInstrumentServer interface {
+	mustEmbedUnimplementedInstrumentServer()
+}
+
+func RegisterInstrumentServer(s grpc.ServiceRegistrar, srv InstrumentServer) {
+	// If the following call pancis, it indicates UnimplementedInstrumentServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&Instrument_ServiceDesc, srv)
+}
+
+func _Instrument_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(InstrumentServer).Watch(&grpc.GenericServerStream[WatchRequest, WatchResposne]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Instrument_WatchServer = grpc.ClientStreamingServer[WatchRequest, WatchResposne]
+
+// Instrument_ServiceDesc is the grpc.ServiceDesc for Instrument service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Instrument_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "io.linkerd.proxy.tap.Instrument",
+	HandlerType: (*InstrumentServer)(nil),
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Watch",
+			Handler:       _Instrument_Watch_Handler,
+			ClientStreams: true,
+		},
+	},
+	Metadata: "tap.proto",
+}

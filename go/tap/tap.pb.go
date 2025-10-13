@@ -70,7 +70,79 @@ func (x TapEvent_ProxyDirection) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TapEvent_ProxyDirection.Descriptor instead.
 func (TapEvent_ProxyDirection) EnumDescriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 0}
+	return file_tap_proto_rawDescGZIP(), []int{4, 0}
+}
+
+type WatchRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchRequest) Reset() {
+	*x = WatchRequest{}
+	mi := &file_tap_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchRequest) ProtoMessage() {}
+
+func (x *WatchRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tap_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WatchRequest.ProtoReflect.Descriptor instead.
+func (*WatchRequest) Descriptor() ([]byte, []int) {
+	return file_tap_proto_rawDescGZIP(), []int{0}
+}
+
+type WatchResposne struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchResposne) Reset() {
+	*x = WatchResposne{}
+	mi := &file_tap_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchResposne) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchResposne) ProtoMessage() {}
+
+func (x *WatchResposne) ProtoReflect() protoreflect.Message {
+	mi := &file_tap_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WatchResposne.ProtoReflect.Descriptor instead.
+func (*WatchResposne) Descriptor() ([]byte, []int) {
+	return file_tap_proto_rawDescGZIP(), []int{1}
 }
 
 type ObserveRequest struct {
@@ -88,7 +160,7 @@ type ObserveRequest struct {
 
 func (x *ObserveRequest) Reset() {
 	*x = ObserveRequest{}
-	mi := &file_tap_proto_msgTypes[0]
+	mi := &file_tap_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -100,7 +172,7 @@ func (x *ObserveRequest) String() string {
 func (*ObserveRequest) ProtoMessage() {}
 
 func (x *ObserveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[0]
+	mi := &file_tap_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,7 +185,7 @@ func (x *ObserveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest.ProtoReflect.Descriptor instead.
 func (*ObserveRequest) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0}
+	return file_tap_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ObserveRequest) GetLimit() uint32 {
@@ -150,7 +222,7 @@ type Eos struct {
 
 func (x *Eos) Reset() {
 	*x = Eos{}
-	mi := &file_tap_proto_msgTypes[1]
+	mi := &file_tap_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -162,7 +234,7 @@ func (x *Eos) String() string {
 func (*Eos) ProtoMessage() {}
 
 func (x *Eos) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[1]
+	mi := &file_tap_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -175,7 +247,7 @@ func (x *Eos) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Eos.ProtoReflect.Descriptor instead.
 func (*Eos) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{1}
+	return file_tap_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Eos) GetEnd() isEos_End {
@@ -237,7 +309,7 @@ type TapEvent struct {
 
 func (x *TapEvent) Reset() {
 	*x = TapEvent{}
-	mi := &file_tap_proto_msgTypes[2]
+	mi := &file_tap_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -249,7 +321,7 @@ func (x *TapEvent) String() string {
 func (*TapEvent) ProtoMessage() {}
 
 func (x *TapEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[2]
+	mi := &file_tap_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -262,7 +334,7 @@ func (x *TapEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent.ProtoReflect.Descriptor instead.
 func (*TapEvent) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2}
+	return file_tap_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TapEvent) GetSource() *net.TcpAddress {
@@ -346,7 +418,7 @@ type ObserveTraceRequest struct {
 
 func (x *ObserveTraceRequest) Reset() {
 	*x = ObserveTraceRequest{}
-	mi := &file_tap_proto_msgTypes[3]
+	mi := &file_tap_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -358,7 +430,7 @@ func (x *ObserveTraceRequest) String() string {
 func (*ObserveTraceRequest) ProtoMessage() {}
 
 func (x *ObserveTraceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[3]
+	mi := &file_tap_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -371,7 +443,7 @@ func (x *ObserveTraceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveTraceRequest.ProtoReflect.Descriptor instead.
 func (*ObserveTraceRequest) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{3}
+	return file_tap_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ObserveTraceRequest) GetSamplePercent() float32 {
@@ -410,7 +482,7 @@ type ObserveTraceResponse struct {
 
 func (x *ObserveTraceResponse) Reset() {
 	*x = ObserveTraceResponse{}
-	mi := &file_tap_proto_msgTypes[4]
+	mi := &file_tap_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -422,7 +494,7 @@ func (x *ObserveTraceResponse) String() string {
 func (*ObserveTraceResponse) ProtoMessage() {}
 
 func (x *ObserveTraceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[4]
+	mi := &file_tap_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -435,7 +507,7 @@ func (x *ObserveTraceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveTraceResponse.ProtoReflect.Descriptor instead.
 func (*ObserveTraceResponse) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{4}
+	return file_tap_proto_rawDescGZIP(), []int{6}
 }
 
 type ObserveRequest_Match struct {
@@ -457,7 +529,7 @@ type ObserveRequest_Match struct {
 
 func (x *ObserveRequest_Match) Reset() {
 	*x = ObserveRequest_Match{}
-	mi := &file_tap_proto_msgTypes[5]
+	mi := &file_tap_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -469,7 +541,7 @@ func (x *ObserveRequest_Match) String() string {
 func (*ObserveRequest_Match) ProtoMessage() {}
 
 func (x *ObserveRequest_Match) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[5]
+	mi := &file_tap_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -482,7 +554,7 @@ func (x *ObserveRequest_Match) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *ObserveRequest_Match) GetMatch() isObserveRequest_Match_Match {
@@ -628,7 +700,7 @@ type ObserveRequest_Extract struct {
 
 func (x *ObserveRequest_Extract) Reset() {
 	*x = ObserveRequest_Extract{}
-	mi := &file_tap_proto_msgTypes[6]
+	mi := &file_tap_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -640,7 +712,7 @@ func (x *ObserveRequest_Extract) String() string {
 func (*ObserveRequest_Extract) ProtoMessage() {}
 
 func (x *ObserveRequest_Extract) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[6]
+	mi := &file_tap_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -653,7 +725,7 @@ func (x *ObserveRequest_Extract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Extract.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Extract) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 1}
+	return file_tap_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *ObserveRequest_Extract) GetExtract() isObserveRequest_Extract_Extract {
@@ -691,7 +763,7 @@ type ObserveRequest_Match_Seq struct {
 
 func (x *ObserveRequest_Match_Seq) Reset() {
 	*x = ObserveRequest_Match_Seq{}
-	mi := &file_tap_proto_msgTypes[7]
+	mi := &file_tap_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -703,7 +775,7 @@ func (x *ObserveRequest_Match_Seq) String() string {
 func (*ObserveRequest_Match_Seq) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Seq) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[7]
+	mi := &file_tap_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -716,7 +788,7 @@ func (x *ObserveRequest_Match_Seq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match_Seq.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Seq) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 0}
 }
 
 func (x *ObserveRequest_Match_Seq) GetMatches() []*ObserveRequest_Match {
@@ -736,7 +808,7 @@ type ObserveRequest_Match_Label struct {
 
 func (x *ObserveRequest_Match_Label) Reset() {
 	*x = ObserveRequest_Match_Label{}
-	mi := &file_tap_proto_msgTypes[8]
+	mi := &file_tap_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -748,7 +820,7 @@ func (x *ObserveRequest_Match_Label) String() string {
 func (*ObserveRequest_Match_Label) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Label) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[8]
+	mi := &file_tap_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -761,7 +833,7 @@ func (x *ObserveRequest_Match_Label) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match_Label.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Label) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 1}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 1}
 }
 
 func (x *ObserveRequest_Match_Label) GetKey() string {
@@ -791,7 +863,7 @@ type ObserveRequest_Match_Tcp struct {
 
 func (x *ObserveRequest_Match_Tcp) Reset() {
 	*x = ObserveRequest_Match_Tcp{}
-	mi := &file_tap_proto_msgTypes[9]
+	mi := &file_tap_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -803,7 +875,7 @@ func (x *ObserveRequest_Match_Tcp) String() string {
 func (*ObserveRequest_Match_Tcp) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Tcp) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[9]
+	mi := &file_tap_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -816,7 +888,7 @@ func (x *ObserveRequest_Match_Tcp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match_Tcp.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Tcp) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 2}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 2}
 }
 
 func (x *ObserveRequest_Match_Tcp) GetMatch() isObserveRequest_Match_Tcp_Match {
@@ -875,7 +947,7 @@ type ObserveRequest_Match_Http struct {
 
 func (x *ObserveRequest_Match_Http) Reset() {
 	*x = ObserveRequest_Match_Http{}
-	mi := &file_tap_proto_msgTypes[10]
+	mi := &file_tap_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -887,7 +959,7 @@ func (x *ObserveRequest_Match_Http) String() string {
 func (*ObserveRequest_Match_Http) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Http) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[10]
+	mi := &file_tap_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +972,7 @@ func (x *ObserveRequest_Match_Http) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match_Http.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Http) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 3}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 3}
 }
 
 func (x *ObserveRequest_Match_Http) GetMatch() isObserveRequest_Match_Http_Match {
@@ -984,7 +1056,7 @@ type ObserveRequest_Match_Tcp_Netmask struct {
 
 func (x *ObserveRequest_Match_Tcp_Netmask) Reset() {
 	*x = ObserveRequest_Match_Tcp_Netmask{}
-	mi := &file_tap_proto_msgTypes[11]
+	mi := &file_tap_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -996,7 +1068,7 @@ func (x *ObserveRequest_Match_Tcp_Netmask) String() string {
 func (*ObserveRequest_Match_Tcp_Netmask) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Tcp_Netmask) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[11]
+	mi := &file_tap_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1009,7 +1081,7 @@ func (x *ObserveRequest_Match_Tcp_Netmask) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Match_Tcp_Netmask.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Tcp_Netmask) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 2, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 2, 0}
 }
 
 func (x *ObserveRequest_Match_Tcp_Netmask) GetIp() *net.IPAddress {
@@ -1040,7 +1112,7 @@ type ObserveRequest_Match_Tcp_PortRange struct {
 
 func (x *ObserveRequest_Match_Tcp_PortRange) Reset() {
 	*x = ObserveRequest_Match_Tcp_PortRange{}
-	mi := &file_tap_proto_msgTypes[12]
+	mi := &file_tap_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1052,7 +1124,7 @@ func (x *ObserveRequest_Match_Tcp_PortRange) String() string {
 func (*ObserveRequest_Match_Tcp_PortRange) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Tcp_PortRange) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[12]
+	mi := &file_tap_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1065,7 +1137,7 @@ func (x *ObserveRequest_Match_Tcp_PortRange) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use ObserveRequest_Match_Tcp_PortRange.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Tcp_PortRange) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 2, 1}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 2, 1}
 }
 
 func (x *ObserveRequest_Match_Tcp_PortRange) GetMin() uint32 {
@@ -1095,7 +1167,7 @@ type ObserveRequest_Match_Http_StringMatch struct {
 
 func (x *ObserveRequest_Match_Http_StringMatch) Reset() {
 	*x = ObserveRequest_Match_Http_StringMatch{}
-	mi := &file_tap_proto_msgTypes[13]
+	mi := &file_tap_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1107,7 +1179,7 @@ func (x *ObserveRequest_Match_Http_StringMatch) String() string {
 func (*ObserveRequest_Match_Http_StringMatch) ProtoMessage() {}
 
 func (x *ObserveRequest_Match_Http_StringMatch) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[13]
+	mi := &file_tap_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1120,7 +1192,7 @@ func (x *ObserveRequest_Match_Http_StringMatch) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use ObserveRequest_Match_Http_StringMatch.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Match_Http_StringMatch) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 0, 3, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 0, 3, 0}
 }
 
 func (x *ObserveRequest_Match_Http_StringMatch) GetMatch() isObserveRequest_Match_Http_StringMatch_Match {
@@ -1177,7 +1249,7 @@ type ObserveRequest_Extract_Http struct {
 
 func (x *ObserveRequest_Extract_Http) Reset() {
 	*x = ObserveRequest_Extract_Http{}
-	mi := &file_tap_proto_msgTypes[14]
+	mi := &file_tap_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1189,7 +1261,7 @@ func (x *ObserveRequest_Extract_Http) String() string {
 func (*ObserveRequest_Extract_Http) ProtoMessage() {}
 
 func (x *ObserveRequest_Extract_Http) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[14]
+	mi := &file_tap_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1202,7 +1274,7 @@ func (x *ObserveRequest_Extract_Http) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObserveRequest_Extract_Http.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Extract_Http) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 1, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 1, 0}
 }
 
 func (x *ObserveRequest_Extract_Http) GetExtract() isObserveRequest_Extract_Http_Extract {
@@ -1239,7 +1311,7 @@ type ObserveRequest_Extract_Http_Headers struct {
 
 func (x *ObserveRequest_Extract_Http_Headers) Reset() {
 	*x = ObserveRequest_Extract_Http_Headers{}
-	mi := &file_tap_proto_msgTypes[15]
+	mi := &file_tap_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1251,7 +1323,7 @@ func (x *ObserveRequest_Extract_Http_Headers) String() string {
 func (*ObserveRequest_Extract_Http_Headers) ProtoMessage() {}
 
 func (x *ObserveRequest_Extract_Http_Headers) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[15]
+	mi := &file_tap_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1264,7 +1336,7 @@ func (x *ObserveRequest_Extract_Http_Headers) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use ObserveRequest_Extract_Http_Headers.ProtoReflect.Descriptor instead.
 func (*ObserveRequest_Extract_Http_Headers) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{0, 1, 0, 0}
+	return file_tap_proto_rawDescGZIP(), []int{2, 1, 0, 0}
 }
 
 type TapEvent_EndpointMeta struct {
@@ -1276,7 +1348,7 @@ type TapEvent_EndpointMeta struct {
 
 func (x *TapEvent_EndpointMeta) Reset() {
 	*x = TapEvent_EndpointMeta{}
-	mi := &file_tap_proto_msgTypes[16]
+	mi := &file_tap_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1288,7 +1360,7 @@ func (x *TapEvent_EndpointMeta) String() string {
 func (*TapEvent_EndpointMeta) ProtoMessage() {}
 
 func (x *TapEvent_EndpointMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[16]
+	mi := &file_tap_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1301,7 +1373,7 @@ func (x *TapEvent_EndpointMeta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_EndpointMeta.ProtoReflect.Descriptor instead.
 func (*TapEvent_EndpointMeta) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 0}
+	return file_tap_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *TapEvent_EndpointMeta) GetLabels() map[string]string {
@@ -1320,7 +1392,7 @@ type TapEvent_RouteMeta struct {
 
 func (x *TapEvent_RouteMeta) Reset() {
 	*x = TapEvent_RouteMeta{}
-	mi := &file_tap_proto_msgTypes[17]
+	mi := &file_tap_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1332,7 +1404,7 @@ func (x *TapEvent_RouteMeta) String() string {
 func (*TapEvent_RouteMeta) ProtoMessage() {}
 
 func (x *TapEvent_RouteMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[17]
+	mi := &file_tap_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1345,7 +1417,7 @@ func (x *TapEvent_RouteMeta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_RouteMeta.ProtoReflect.Descriptor instead.
 func (*TapEvent_RouteMeta) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 1}
+	return file_tap_proto_rawDescGZIP(), []int{4, 1}
 }
 
 func (x *TapEvent_RouteMeta) GetLabels() map[string]string {
@@ -1369,7 +1441,7 @@ type TapEvent_Http struct {
 
 func (x *TapEvent_Http) Reset() {
 	*x = TapEvent_Http{}
-	mi := &file_tap_proto_msgTypes[18]
+	mi := &file_tap_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1381,7 +1453,7 @@ func (x *TapEvent_Http) String() string {
 func (*TapEvent_Http) ProtoMessage() {}
 
 func (x *TapEvent_Http) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[18]
+	mi := &file_tap_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1394,7 +1466,7 @@ func (x *TapEvent_Http) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_Http.ProtoReflect.Descriptor instead.
 func (*TapEvent_Http) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 2}
+	return file_tap_proto_rawDescGZIP(), []int{4, 2}
 }
 
 func (x *TapEvent_Http) GetEvent() isTapEvent_Http_Event {
@@ -1465,7 +1537,7 @@ type TapEvent_Http_StreamId struct {
 
 func (x *TapEvent_Http_StreamId) Reset() {
 	*x = TapEvent_Http_StreamId{}
-	mi := &file_tap_proto_msgTypes[21]
+	mi := &file_tap_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1477,7 +1549,7 @@ func (x *TapEvent_Http_StreamId) String() string {
 func (*TapEvent_Http_StreamId) ProtoMessage() {}
 
 func (x *TapEvent_Http_StreamId) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[21]
+	mi := &file_tap_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1490,7 +1562,7 @@ func (x *TapEvent_Http_StreamId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_Http_StreamId.ProtoReflect.Descriptor instead.
 func (*TapEvent_Http_StreamId) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 2, 0}
+	return file_tap_proto_rawDescGZIP(), []int{4, 2, 0}
 }
 
 func (x *TapEvent_Http_StreamId) GetBase() uint32 {
@@ -1521,7 +1593,7 @@ type TapEvent_Http_RequestInit struct {
 
 func (x *TapEvent_Http_RequestInit) Reset() {
 	*x = TapEvent_Http_RequestInit{}
-	mi := &file_tap_proto_msgTypes[22]
+	mi := &file_tap_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1533,7 +1605,7 @@ func (x *TapEvent_Http_RequestInit) String() string {
 func (*TapEvent_Http_RequestInit) ProtoMessage() {}
 
 func (x *TapEvent_Http_RequestInit) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[22]
+	mi := &file_tap_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1546,7 +1618,7 @@ func (x *TapEvent_Http_RequestInit) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_Http_RequestInit.ProtoReflect.Descriptor instead.
 func (*TapEvent_Http_RequestInit) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 2, 1}
+	return file_tap_proto_rawDescGZIP(), []int{4, 2, 1}
 }
 
 func (x *TapEvent_Http_RequestInit) GetId() *TapEvent_Http_StreamId {
@@ -1603,7 +1675,7 @@ type TapEvent_Http_ResponseInit struct {
 
 func (x *TapEvent_Http_ResponseInit) Reset() {
 	*x = TapEvent_Http_ResponseInit{}
-	mi := &file_tap_proto_msgTypes[23]
+	mi := &file_tap_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1615,7 +1687,7 @@ func (x *TapEvent_Http_ResponseInit) String() string {
 func (*TapEvent_Http_ResponseInit) ProtoMessage() {}
 
 func (x *TapEvent_Http_ResponseInit) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[23]
+	mi := &file_tap_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1628,7 +1700,7 @@ func (x *TapEvent_Http_ResponseInit) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_Http_ResponseInit.ProtoReflect.Descriptor instead.
 func (*TapEvent_Http_ResponseInit) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 2, 2}
+	return file_tap_proto_rawDescGZIP(), []int{4, 2, 2}
 }
 
 func (x *TapEvent_Http_ResponseInit) GetId() *TapEvent_Http_StreamId {
@@ -1673,7 +1745,7 @@ type TapEvent_Http_ResponseEnd struct {
 
 func (x *TapEvent_Http_ResponseEnd) Reset() {
 	*x = TapEvent_Http_ResponseEnd{}
-	mi := &file_tap_proto_msgTypes[24]
+	mi := &file_tap_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1685,7 +1757,7 @@ func (x *TapEvent_Http_ResponseEnd) String() string {
 func (*TapEvent_Http_ResponseEnd) ProtoMessage() {}
 
 func (x *TapEvent_Http_ResponseEnd) ProtoReflect() protoreflect.Message {
-	mi := &file_tap_proto_msgTypes[24]
+	mi := &file_tap_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1698,7 +1770,7 @@ func (x *TapEvent_Http_ResponseEnd) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TapEvent_Http_ResponseEnd.ProtoReflect.Descriptor instead.
 func (*TapEvent_Http_ResponseEnd) Descriptor() ([]byte, []int) {
-	return file_tap_proto_rawDescGZIP(), []int{2, 2, 3}
+	return file_tap_proto_rawDescGZIP(), []int{4, 2, 3}
 }
 
 func (x *TapEvent_Http_ResponseEnd) GetId() *TapEvent_Http_StreamId {
@@ -1747,7 +1819,9 @@ var File_tap_proto protoreflect.FileDescriptor
 
 const file_tap_proto_rawDesc = "" +
 	"\n" +
-	"\ttap.proto\x12\x14io.linkerd.proxy.tap\x1a\x1egoogle/protobuf/duration.proto\x1a\x10http_types.proto\x1a\tnet.proto\"\xbf\x0e\n" +
+	"\ttap.proto\x12\x14io.linkerd.proxy.tap\x1a\x1egoogle/protobuf/duration.proto\x1a\x10http_types.proto\x1a\tnet.proto\"\x0e\n" +
+	"\fWatchRequest\"\x0f\n" +
+	"\rWatchResposne\"\xbf\x0e\n" +
 	"\x0eObserveRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12@\n" +
 	"\x05match\x18\x02 \x01(\v2*.io.linkerd.proxy.tap.ObserveRequest.MatchR\x05match\x12F\n" +
@@ -1862,7 +1936,10 @@ const file_tap_proto_rawDesc = "" +
 	"\x14ObserveTraceResponse2\xc5\x01\n" +
 	"\x03Tap\x12S\n" +
 	"\aObserve\x12$.io.linkerd.proxy.tap.ObserveRequest\x1a\x1e.io.linkerd.proxy.tap.TapEvent\"\x000\x01\x12i\n" +
-	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
+	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x012b\n" +
+	"\n" +
+	"Instrument\x12T\n" +
+	"\x05Watch\x12\".io.linkerd.proxy.tap.WatchRequest\x1a#.io.linkerd.proxy.tap.WatchResposne\"\x00(\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
 
 var (
 	file_tap_proto_rawDescOnce sync.Once
@@ -1877,94 +1954,98 @@ func file_tap_proto_rawDescGZIP() []byte {
 }
 
 var file_tap_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_tap_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_tap_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_tap_proto_goTypes = []any{
 	(TapEvent_ProxyDirection)(0),                  // 0: io.linkerd.proxy.tap.TapEvent.ProxyDirection
-	(*ObserveRequest)(nil),                        // 1: io.linkerd.proxy.tap.ObserveRequest
-	(*Eos)(nil),                                   // 2: io.linkerd.proxy.tap.Eos
-	(*TapEvent)(nil),                              // 3: io.linkerd.proxy.tap.TapEvent
-	(*ObserveTraceRequest)(nil),                   // 4: io.linkerd.proxy.tap.ObserveTraceRequest
-	(*ObserveTraceResponse)(nil),                  // 5: io.linkerd.proxy.tap.ObserveTraceResponse
-	(*ObserveRequest_Match)(nil),                  // 6: io.linkerd.proxy.tap.ObserveRequest.Match
-	(*ObserveRequest_Extract)(nil),                // 7: io.linkerd.proxy.tap.ObserveRequest.Extract
-	(*ObserveRequest_Match_Seq)(nil),              // 8: io.linkerd.proxy.tap.ObserveRequest.Match.Seq
-	(*ObserveRequest_Match_Label)(nil),            // 9: io.linkerd.proxy.tap.ObserveRequest.Match.Label
-	(*ObserveRequest_Match_Tcp)(nil),              // 10: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
-	(*ObserveRequest_Match_Http)(nil),             // 11: io.linkerd.proxy.tap.ObserveRequest.Match.Http
-	(*ObserveRequest_Match_Tcp_Netmask)(nil),      // 12: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
-	(*ObserveRequest_Match_Tcp_PortRange)(nil),    // 13: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
-	(*ObserveRequest_Match_Http_StringMatch)(nil), // 14: io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
-	(*ObserveRequest_Extract_Http)(nil),           // 15: io.linkerd.proxy.tap.ObserveRequest.Extract.Http
-	(*ObserveRequest_Extract_Http_Headers)(nil),   // 16: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
-	(*TapEvent_EndpointMeta)(nil),                 // 17: io.linkerd.proxy.tap.TapEvent.EndpointMeta
-	(*TapEvent_RouteMeta)(nil),                    // 18: io.linkerd.proxy.tap.TapEvent.RouteMeta
-	(*TapEvent_Http)(nil),                         // 19: io.linkerd.proxy.tap.TapEvent.Http
-	nil,                                           // 20: io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
-	nil,                                           // 21: io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
-	(*TapEvent_Http_StreamId)(nil),                // 22: io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	(*TapEvent_Http_RequestInit)(nil),             // 23: io.linkerd.proxy.tap.TapEvent.Http.RequestInit
-	(*TapEvent_Http_ResponseInit)(nil),            // 24: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
-	(*TapEvent_Http_ResponseEnd)(nil),             // 25: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
-	(*net.TcpAddress)(nil),                        // 26: io.linkerd.proxy.net.TcpAddress
-	(*duration.Duration)(nil),                     // 27: google.protobuf.Duration
-	(*http_types.Scheme)(nil),                     // 28: io.linkerd.proxy.http_types.Scheme
-	(*http_types.HttpMethod)(nil),                 // 29: io.linkerd.proxy.http_types.HttpMethod
-	(*net.IPAddress)(nil),                         // 30: io.linkerd.proxy.net.IPAddress
-	(*http_types.Headers)(nil),                    // 31: io.linkerd.proxy.http_types.Headers
+	(*WatchRequest)(nil),                          // 1: io.linkerd.proxy.tap.WatchRequest
+	(*WatchResposne)(nil),                         // 2: io.linkerd.proxy.tap.WatchResposne
+	(*ObserveRequest)(nil),                        // 3: io.linkerd.proxy.tap.ObserveRequest
+	(*Eos)(nil),                                   // 4: io.linkerd.proxy.tap.Eos
+	(*TapEvent)(nil),                              // 5: io.linkerd.proxy.tap.TapEvent
+	(*ObserveTraceRequest)(nil),                   // 6: io.linkerd.proxy.tap.ObserveTraceRequest
+	(*ObserveTraceResponse)(nil),                  // 7: io.linkerd.proxy.tap.ObserveTraceResponse
+	(*ObserveRequest_Match)(nil),                  // 8: io.linkerd.proxy.tap.ObserveRequest.Match
+	(*ObserveRequest_Extract)(nil),                // 9: io.linkerd.proxy.tap.ObserveRequest.Extract
+	(*ObserveRequest_Match_Seq)(nil),              // 10: io.linkerd.proxy.tap.ObserveRequest.Match.Seq
+	(*ObserveRequest_Match_Label)(nil),            // 11: io.linkerd.proxy.tap.ObserveRequest.Match.Label
+	(*ObserveRequest_Match_Tcp)(nil),              // 12: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
+	(*ObserveRequest_Match_Http)(nil),             // 13: io.linkerd.proxy.tap.ObserveRequest.Match.Http
+	(*ObserveRequest_Match_Tcp_Netmask)(nil),      // 14: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
+	(*ObserveRequest_Match_Tcp_PortRange)(nil),    // 15: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
+	(*ObserveRequest_Match_Http_StringMatch)(nil), // 16: io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
+	(*ObserveRequest_Extract_Http)(nil),           // 17: io.linkerd.proxy.tap.ObserveRequest.Extract.Http
+	(*ObserveRequest_Extract_Http_Headers)(nil),   // 18: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
+	(*TapEvent_EndpointMeta)(nil),                 // 19: io.linkerd.proxy.tap.TapEvent.EndpointMeta
+	(*TapEvent_RouteMeta)(nil),                    // 20: io.linkerd.proxy.tap.TapEvent.RouteMeta
+	(*TapEvent_Http)(nil),                         // 21: io.linkerd.proxy.tap.TapEvent.Http
+	nil,                                           // 22: io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
+	nil,                                           // 23: io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
+	(*TapEvent_Http_StreamId)(nil),                // 24: io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	(*TapEvent_Http_RequestInit)(nil),             // 25: io.linkerd.proxy.tap.TapEvent.Http.RequestInit
+	(*TapEvent_Http_ResponseInit)(nil),            // 26: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
+	(*TapEvent_Http_ResponseEnd)(nil),             // 27: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
+	(*net.TcpAddress)(nil),                        // 28: io.linkerd.proxy.net.TcpAddress
+	(*duration.Duration)(nil),                     // 29: google.protobuf.Duration
+	(*http_types.Scheme)(nil),                     // 30: io.linkerd.proxy.http_types.Scheme
+	(*http_types.HttpMethod)(nil),                 // 31: io.linkerd.proxy.http_types.HttpMethod
+	(*net.IPAddress)(nil),                         // 32: io.linkerd.proxy.net.IPAddress
+	(*http_types.Headers)(nil),                    // 33: io.linkerd.proxy.http_types.Headers
 }
 var file_tap_proto_depIdxs = []int32{
-	6,  // 0: io.linkerd.proxy.tap.ObserveRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	7,  // 1: io.linkerd.proxy.tap.ObserveRequest.extract:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract
-	26, // 2: io.linkerd.proxy.tap.TapEvent.source:type_name -> io.linkerd.proxy.net.TcpAddress
-	17, // 3: io.linkerd.proxy.tap.TapEvent.source_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
-	18, // 4: io.linkerd.proxy.tap.TapEvent.route_meta:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta
-	26, // 5: io.linkerd.proxy.tap.TapEvent.destination:type_name -> io.linkerd.proxy.net.TcpAddress
-	17, // 6: io.linkerd.proxy.tap.TapEvent.destination_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
+	8,  // 0: io.linkerd.proxy.tap.ObserveRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	9,  // 1: io.linkerd.proxy.tap.ObserveRequest.extract:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract
+	28, // 2: io.linkerd.proxy.tap.TapEvent.source:type_name -> io.linkerd.proxy.net.TcpAddress
+	19, // 3: io.linkerd.proxy.tap.TapEvent.source_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
+	20, // 4: io.linkerd.proxy.tap.TapEvent.route_meta:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta
+	28, // 5: io.linkerd.proxy.tap.TapEvent.destination:type_name -> io.linkerd.proxy.net.TcpAddress
+	19, // 6: io.linkerd.proxy.tap.TapEvent.destination_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
 	0,  // 7: io.linkerd.proxy.tap.TapEvent.proxy_direction:type_name -> io.linkerd.proxy.tap.TapEvent.ProxyDirection
-	19, // 8: io.linkerd.proxy.tap.TapEvent.http:type_name -> io.linkerd.proxy.tap.TapEvent.Http
-	27, // 9: io.linkerd.proxy.tap.ObserveTraceRequest.report_interval:type_name -> google.protobuf.Duration
-	6,  // 10: io.linkerd.proxy.tap.ObserveTraceRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	8,  // 11: io.linkerd.proxy.tap.ObserveRequest.Match.all:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
-	8,  // 12: io.linkerd.proxy.tap.ObserveRequest.Match.any:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
-	6,  // 13: io.linkerd.proxy.tap.ObserveRequest.Match.not:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	10, // 14: io.linkerd.proxy.tap.ObserveRequest.Match.source:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
-	10, // 15: io.linkerd.proxy.tap.ObserveRequest.Match.destination:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
-	11, // 16: io.linkerd.proxy.tap.ObserveRequest.Match.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http
-	9,  // 17: io.linkerd.proxy.tap.ObserveRequest.Match.destination_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
-	9,  // 18: io.linkerd.proxy.tap.ObserveRequest.Match.route_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
-	15, // 19: io.linkerd.proxy.tap.ObserveRequest.Extract.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http
-	6,  // 20: io.linkerd.proxy.tap.ObserveRequest.Match.Seq.matches:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	12, // 21: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.netmask:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
-	13, // 22: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.ports:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
-	28, // 23: io.linkerd.proxy.tap.ObserveRequest.Match.Http.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
-	29, // 24: io.linkerd.proxy.tap.ObserveRequest.Match.Http.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	14, // 25: io.linkerd.proxy.tap.ObserveRequest.Match.Http.authority:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
-	14, // 26: io.linkerd.proxy.tap.ObserveRequest.Match.Http.path:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
-	30, // 27: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask.ip:type_name -> io.linkerd.proxy.net.IPAddress
-	16, // 28: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.headers:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
-	20, // 29: io.linkerd.proxy.tap.TapEvent.EndpointMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
-	21, // 30: io.linkerd.proxy.tap.TapEvent.RouteMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
-	23, // 31: io.linkerd.proxy.tap.TapEvent.Http.request_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.RequestInit
-	24, // 32: io.linkerd.proxy.tap.TapEvent.Http.response_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
-	25, // 33: io.linkerd.proxy.tap.TapEvent.Http.response_end:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
-	22, // 34: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	29, // 35: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	28, // 36: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
-	31, // 37: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
-	22, // 38: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	27, // 39: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.since_request_init:type_name -> google.protobuf.Duration
-	31, // 40: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
-	22, // 41: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	27, // 42: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_request_init:type_name -> google.protobuf.Duration
-	27, // 43: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_response_init:type_name -> google.protobuf.Duration
-	2,  // 44: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.eos:type_name -> io.linkerd.proxy.tap.Eos
-	31, // 45: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.trailers:type_name -> io.linkerd.proxy.http_types.Headers
-	1,  // 46: io.linkerd.proxy.tap.Tap.Observe:input_type -> io.linkerd.proxy.tap.ObserveRequest
-	4,  // 47: io.linkerd.proxy.tap.Tap.ObserveTrace:input_type -> io.linkerd.proxy.tap.ObserveTraceRequest
-	3,  // 48: io.linkerd.proxy.tap.Tap.Observe:output_type -> io.linkerd.proxy.tap.TapEvent
-	5,  // 49: io.linkerd.proxy.tap.Tap.ObserveTrace:output_type -> io.linkerd.proxy.tap.ObserveTraceResponse
-	48, // [48:50] is the sub-list for method output_type
-	46, // [46:48] is the sub-list for method input_type
+	21, // 8: io.linkerd.proxy.tap.TapEvent.http:type_name -> io.linkerd.proxy.tap.TapEvent.Http
+	29, // 9: io.linkerd.proxy.tap.ObserveTraceRequest.report_interval:type_name -> google.protobuf.Duration
+	8,  // 10: io.linkerd.proxy.tap.ObserveTraceRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	10, // 11: io.linkerd.proxy.tap.ObserveRequest.Match.all:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
+	10, // 12: io.linkerd.proxy.tap.ObserveRequest.Match.any:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
+	8,  // 13: io.linkerd.proxy.tap.ObserveRequest.Match.not:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	12, // 14: io.linkerd.proxy.tap.ObserveRequest.Match.source:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
+	12, // 15: io.linkerd.proxy.tap.ObserveRequest.Match.destination:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
+	13, // 16: io.linkerd.proxy.tap.ObserveRequest.Match.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http
+	11, // 17: io.linkerd.proxy.tap.ObserveRequest.Match.destination_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
+	11, // 18: io.linkerd.proxy.tap.ObserveRequest.Match.route_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
+	17, // 19: io.linkerd.proxy.tap.ObserveRequest.Extract.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http
+	8,  // 20: io.linkerd.proxy.tap.ObserveRequest.Match.Seq.matches:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	14, // 21: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.netmask:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
+	15, // 22: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.ports:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
+	30, // 23: io.linkerd.proxy.tap.ObserveRequest.Match.Http.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	31, // 24: io.linkerd.proxy.tap.ObserveRequest.Match.Http.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	16, // 25: io.linkerd.proxy.tap.ObserveRequest.Match.Http.authority:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
+	16, // 26: io.linkerd.proxy.tap.ObserveRequest.Match.Http.path:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
+	32, // 27: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask.ip:type_name -> io.linkerd.proxy.net.IPAddress
+	18, // 28: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.headers:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
+	22, // 29: io.linkerd.proxy.tap.TapEvent.EndpointMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
+	23, // 30: io.linkerd.proxy.tap.TapEvent.RouteMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
+	25, // 31: io.linkerd.proxy.tap.TapEvent.Http.request_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.RequestInit
+	26, // 32: io.linkerd.proxy.tap.TapEvent.Http.response_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
+	27, // 33: io.linkerd.proxy.tap.TapEvent.Http.response_end:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
+	24, // 34: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	31, // 35: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	30, // 36: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	33, // 37: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
+	24, // 38: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	29, // 39: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.since_request_init:type_name -> google.protobuf.Duration
+	33, // 40: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
+	24, // 41: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	29, // 42: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_request_init:type_name -> google.protobuf.Duration
+	29, // 43: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_response_init:type_name -> google.protobuf.Duration
+	4,  // 44: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.eos:type_name -> io.linkerd.proxy.tap.Eos
+	33, // 45: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.trailers:type_name -> io.linkerd.proxy.http_types.Headers
+	3,  // 46: io.linkerd.proxy.tap.Tap.Observe:input_type -> io.linkerd.proxy.tap.ObserveRequest
+	6,  // 47: io.linkerd.proxy.tap.Tap.ObserveTrace:input_type -> io.linkerd.proxy.tap.ObserveTraceRequest
+	1,  // 48: io.linkerd.proxy.tap.Instrument.Watch:input_type -> io.linkerd.proxy.tap.WatchRequest
+	5,  // 49: io.linkerd.proxy.tap.Tap.Observe:output_type -> io.linkerd.proxy.tap.TapEvent
+	7,  // 50: io.linkerd.proxy.tap.Tap.ObserveTrace:output_type -> io.linkerd.proxy.tap.ObserveTraceResponse
+	2,  // 51: io.linkerd.proxy.tap.Instrument.Watch:output_type -> io.linkerd.proxy.tap.WatchResposne
+	49, // [49:52] is the sub-list for method output_type
+	46, // [46:49] is the sub-list for method input_type
 	46, // [46:46] is the sub-list for extension type_name
 	46, // [46:46] is the sub-list for extension extendee
 	0,  // [0:46] is the sub-list for field type_name
@@ -1975,15 +2056,15 @@ func file_tap_proto_init() {
 	if File_tap_proto != nil {
 		return
 	}
-	file_tap_proto_msgTypes[1].OneofWrappers = []any{
+	file_tap_proto_msgTypes[3].OneofWrappers = []any{
 		(*Eos_GrpcStatusCode)(nil),
 		(*Eos_ResetErrorCode)(nil),
 	}
-	file_tap_proto_msgTypes[2].OneofWrappers = []any{
+	file_tap_proto_msgTypes[4].OneofWrappers = []any{
 		(*TapEvent_Http_)(nil),
 	}
-	file_tap_proto_msgTypes[3].OneofWrappers = []any{}
-	file_tap_proto_msgTypes[5].OneofWrappers = []any{
+	file_tap_proto_msgTypes[5].OneofWrappers = []any{}
+	file_tap_proto_msgTypes[7].OneofWrappers = []any{
 		(*ObserveRequest_Match_All)(nil),
 		(*ObserveRequest_Match_Any)(nil),
 		(*ObserveRequest_Match_Not)(nil),
@@ -1993,27 +2074,27 @@ func file_tap_proto_init() {
 		(*ObserveRequest_Match_DestinationLabel)(nil),
 		(*ObserveRequest_Match_RouteLabel)(nil),
 	}
-	file_tap_proto_msgTypes[6].OneofWrappers = []any{
+	file_tap_proto_msgTypes[8].OneofWrappers = []any{
 		(*ObserveRequest_Extract_Http_)(nil),
 	}
-	file_tap_proto_msgTypes[9].OneofWrappers = []any{
+	file_tap_proto_msgTypes[11].OneofWrappers = []any{
 		(*ObserveRequest_Match_Tcp_Netmask_)(nil),
 		(*ObserveRequest_Match_Tcp_Ports)(nil),
 	}
-	file_tap_proto_msgTypes[10].OneofWrappers = []any{
+	file_tap_proto_msgTypes[12].OneofWrappers = []any{
 		(*ObserveRequest_Match_Http_Scheme)(nil),
 		(*ObserveRequest_Match_Http_Method)(nil),
 		(*ObserveRequest_Match_Http_Authority)(nil),
 		(*ObserveRequest_Match_Http_Path)(nil),
 	}
-	file_tap_proto_msgTypes[13].OneofWrappers = []any{
+	file_tap_proto_msgTypes[15].OneofWrappers = []any{
 		(*ObserveRequest_Match_Http_StringMatch_Exact)(nil),
 		(*ObserveRequest_Match_Http_StringMatch_Prefix)(nil),
 	}
-	file_tap_proto_msgTypes[14].OneofWrappers = []any{
+	file_tap_proto_msgTypes[16].OneofWrappers = []any{
 		(*ObserveRequest_Extract_Http_Headers_)(nil),
 	}
-	file_tap_proto_msgTypes[18].OneofWrappers = []any{
+	file_tap_proto_msgTypes[20].OneofWrappers = []any{
 		(*TapEvent_Http_RequestInit_)(nil),
 		(*TapEvent_Http_ResponseInit_)(nil),
 		(*TapEvent_Http_ResponseEnd_)(nil),
@@ -2024,9 +2105,9 @@ func file_tap_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tap_proto_rawDesc), len(file_tap_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   25,
+			NumMessages:   27,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_tap_proto_goTypes,
 		DependencyIndexes: file_tap_proto_depIdxs,

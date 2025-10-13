@@ -15,6 +15,14 @@ service Tap {
   rpc ObserveTrace(stream ObserveTraceRequest) returns (ObserveTraceResponse) {}
 }
 
+service Instrument {
+  rpc Watch(stream WatchRequest) returns (WatchResposne) {}
+}
+
+message WatchRequest {}
+
+message WatchResposne {}
+
 message ObserveRequest {
   // Limits the number of event keys that will be returned by this tap.
   uint32 limit = 1;
