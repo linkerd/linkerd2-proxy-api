@@ -111,6 +111,7 @@ func (*WatchRequest) Descriptor() ([]byte, []int) {
 
 type WatchResposne struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Traces        [][]byte               `protobuf:"bytes,1,rep,name=traces,proto3" json:"traces,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -143,6 +144,13 @@ func (x *WatchResposne) ProtoReflect() protoreflect.Message {
 // Deprecated: Use WatchResposne.ProtoReflect.Descriptor instead.
 func (*WatchResposne) Descriptor() ([]byte, []int) {
 	return file_tap_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *WatchResposne) GetTraces() [][]byte {
+	if x != nil {
+		return x.Traces
+	}
+	return nil
 }
 
 type ObserveRequest struct {
@@ -1820,8 +1828,9 @@ var File_tap_proto protoreflect.FileDescriptor
 const file_tap_proto_rawDesc = "" +
 	"\n" +
 	"\ttap.proto\x12\x14io.linkerd.proxy.tap\x1a\x1egoogle/protobuf/duration.proto\x1a\x10http_types.proto\x1a\tnet.proto\"\x0e\n" +
-	"\fWatchRequest\"\x0f\n" +
-	"\rWatchResposne\"\xbf\x0e\n" +
+	"\fWatchRequest\"'\n" +
+	"\rWatchResposne\x12\x16\n" +
+	"\x06traces\x18\x01 \x03(\fR\x06traces\"\xbf\x0e\n" +
 	"\x0eObserveRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12@\n" +
 	"\x05match\x18\x02 \x01(\v2*.io.linkerd.proxy.tap.ObserveRequest.MatchR\x05match\x12F\n" +
@@ -1936,10 +1945,10 @@ const file_tap_proto_rawDesc = "" +
 	"\x14ObserveTraceResponse2\xc5\x01\n" +
 	"\x03Tap\x12S\n" +
 	"\aObserve\x12$.io.linkerd.proxy.tap.ObserveRequest\x1a\x1e.io.linkerd.proxy.tap.TapEvent\"\x000\x01\x12i\n" +
-	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x012b\n" +
+	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x012d\n" +
 	"\n" +
-	"Instrument\x12T\n" +
-	"\x05Watch\x12\".io.linkerd.proxy.tap.WatchRequest\x1a#.io.linkerd.proxy.tap.WatchResposne\"\x00(\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
+	"Instrument\x12V\n" +
+	"\x05Watch\x12\".io.linkerd.proxy.tap.WatchRequest\x1a#.io.linkerd.proxy.tap.WatchResposne\"\x00(\x010\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
 
 var (
 	file_tap_proto_rawDescOnce sync.Once

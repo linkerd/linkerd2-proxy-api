@@ -16,12 +16,14 @@ service Tap {
 }
 
 service Instrument {
-  rpc Watch(stream WatchRequest) returns (WatchResposne) {}
+  rpc Watch(stream WatchRequest) returns (stream WatchResposne) {}
 }
 
 message WatchRequest {}
 
-message WatchResposne {}
+message WatchResposne {
+  repeated bytes traces = 1;
+}
 
 message ObserveRequest {
   // Limits the number of event keys that will be returned by this tap.
