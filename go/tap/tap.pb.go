@@ -75,6 +75,7 @@ func (TapEvent_ProxyDirection) EnumDescriptor() ([]byte, []int) {
 
 type WatchRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Match         *ObserveRequest_Match  `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -107,6 +108,13 @@ func (x *WatchRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use WatchRequest.ProtoReflect.Descriptor instead.
 func (*WatchRequest) Descriptor() ([]byte, []int) {
 	return file_tap_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *WatchRequest) GetMatch() *ObserveRequest_Match {
+	if x != nil {
+		return x.Match
+	}
+	return nil
 }
 
 type WatchResposne struct {
@@ -1827,8 +1835,9 @@ var File_tap_proto protoreflect.FileDescriptor
 
 const file_tap_proto_rawDesc = "" +
 	"\n" +
-	"\ttap.proto\x12\x14io.linkerd.proxy.tap\x1a\x1egoogle/protobuf/duration.proto\x1a\x10http_types.proto\x1a\tnet.proto\"\x0e\n" +
-	"\fWatchRequest\"'\n" +
+	"\ttap.proto\x12\x14io.linkerd.proxy.tap\x1a\x1egoogle/protobuf/duration.proto\x1a\x10http_types.proto\x1a\tnet.proto\"P\n" +
+	"\fWatchRequest\x12@\n" +
+	"\x05match\x18\x01 \x01(\v2*.io.linkerd.proxy.tap.ObserveRequest.MatchR\x05match\"'\n" +
 	"\rWatchResposne\x12\x16\n" +
 	"\x06traces\x18\x01 \x03(\fR\x06traces\"\xbf\x0e\n" +
 	"\x0eObserveRequest\x12\x14\n" +
@@ -1945,10 +1954,10 @@ const file_tap_proto_rawDesc = "" +
 	"\x14ObserveTraceResponse2\xc5\x01\n" +
 	"\x03Tap\x12S\n" +
 	"\aObserve\x12$.io.linkerd.proxy.tap.ObserveRequest\x1a\x1e.io.linkerd.proxy.tap.TapEvent\"\x000\x01\x12i\n" +
-	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x012d\n" +
+	"\fObserveTrace\x12).io.linkerd.proxy.tap.ObserveTraceRequest\x1a*.io.linkerd.proxy.tap.ObserveTraceResponse\"\x00(\x012b\n" +
 	"\n" +
-	"Instrument\x12V\n" +
-	"\x05Watch\x12\".io.linkerd.proxy.tap.WatchRequest\x1a#.io.linkerd.proxy.tap.WatchResposne\"\x00(\x010\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
+	"Instrument\x12T\n" +
+	"\x05Watch\x12\".io.linkerd.proxy.tap.WatchRequest\x1a#.io.linkerd.proxy.tap.WatchResposne\"\x000\x01B.Z,github.com/linkerd/linkerd2-proxy-api/go/tapb\x06proto3"
 
 var (
 	file_tap_proto_rawDescOnce sync.Once
@@ -2001,63 +2010,64 @@ var file_tap_proto_goTypes = []any{
 	(*http_types.Headers)(nil),                    // 33: io.linkerd.proxy.http_types.Headers
 }
 var file_tap_proto_depIdxs = []int32{
-	8,  // 0: io.linkerd.proxy.tap.ObserveRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	9,  // 1: io.linkerd.proxy.tap.ObserveRequest.extract:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract
-	28, // 2: io.linkerd.proxy.tap.TapEvent.source:type_name -> io.linkerd.proxy.net.TcpAddress
-	19, // 3: io.linkerd.proxy.tap.TapEvent.source_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
-	20, // 4: io.linkerd.proxy.tap.TapEvent.route_meta:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta
-	28, // 5: io.linkerd.proxy.tap.TapEvent.destination:type_name -> io.linkerd.proxy.net.TcpAddress
-	19, // 6: io.linkerd.proxy.tap.TapEvent.destination_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
-	0,  // 7: io.linkerd.proxy.tap.TapEvent.proxy_direction:type_name -> io.linkerd.proxy.tap.TapEvent.ProxyDirection
-	21, // 8: io.linkerd.proxy.tap.TapEvent.http:type_name -> io.linkerd.proxy.tap.TapEvent.Http
-	29, // 9: io.linkerd.proxy.tap.ObserveTraceRequest.report_interval:type_name -> google.protobuf.Duration
-	8,  // 10: io.linkerd.proxy.tap.ObserveTraceRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	10, // 11: io.linkerd.proxy.tap.ObserveRequest.Match.all:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
-	10, // 12: io.linkerd.proxy.tap.ObserveRequest.Match.any:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
-	8,  // 13: io.linkerd.proxy.tap.ObserveRequest.Match.not:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	12, // 14: io.linkerd.proxy.tap.ObserveRequest.Match.source:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
-	12, // 15: io.linkerd.proxy.tap.ObserveRequest.Match.destination:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
-	13, // 16: io.linkerd.proxy.tap.ObserveRequest.Match.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http
-	11, // 17: io.linkerd.proxy.tap.ObserveRequest.Match.destination_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
-	11, // 18: io.linkerd.proxy.tap.ObserveRequest.Match.route_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
-	17, // 19: io.linkerd.proxy.tap.ObserveRequest.Extract.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http
-	8,  // 20: io.linkerd.proxy.tap.ObserveRequest.Match.Seq.matches:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
-	14, // 21: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.netmask:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
-	15, // 22: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.ports:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
-	30, // 23: io.linkerd.proxy.tap.ObserveRequest.Match.Http.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
-	31, // 24: io.linkerd.proxy.tap.ObserveRequest.Match.Http.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	16, // 25: io.linkerd.proxy.tap.ObserveRequest.Match.Http.authority:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
-	16, // 26: io.linkerd.proxy.tap.ObserveRequest.Match.Http.path:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
-	32, // 27: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask.ip:type_name -> io.linkerd.proxy.net.IPAddress
-	18, // 28: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.headers:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
-	22, // 29: io.linkerd.proxy.tap.TapEvent.EndpointMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
-	23, // 30: io.linkerd.proxy.tap.TapEvent.RouteMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
-	25, // 31: io.linkerd.proxy.tap.TapEvent.Http.request_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.RequestInit
-	26, // 32: io.linkerd.proxy.tap.TapEvent.Http.response_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
-	27, // 33: io.linkerd.proxy.tap.TapEvent.Http.response_end:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
-	24, // 34: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	31, // 35: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
-	30, // 36: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
-	33, // 37: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
-	24, // 38: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	29, // 39: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.since_request_init:type_name -> google.protobuf.Duration
-	33, // 40: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
-	24, // 41: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
-	29, // 42: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_request_init:type_name -> google.protobuf.Duration
-	29, // 43: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_response_init:type_name -> google.protobuf.Duration
-	4,  // 44: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.eos:type_name -> io.linkerd.proxy.tap.Eos
-	33, // 45: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.trailers:type_name -> io.linkerd.proxy.http_types.Headers
-	3,  // 46: io.linkerd.proxy.tap.Tap.Observe:input_type -> io.linkerd.proxy.tap.ObserveRequest
-	6,  // 47: io.linkerd.proxy.tap.Tap.ObserveTrace:input_type -> io.linkerd.proxy.tap.ObserveTraceRequest
-	1,  // 48: io.linkerd.proxy.tap.Instrument.Watch:input_type -> io.linkerd.proxy.tap.WatchRequest
-	5,  // 49: io.linkerd.proxy.tap.Tap.Observe:output_type -> io.linkerd.proxy.tap.TapEvent
-	7,  // 50: io.linkerd.proxy.tap.Tap.ObserveTrace:output_type -> io.linkerd.proxy.tap.ObserveTraceResponse
-	2,  // 51: io.linkerd.proxy.tap.Instrument.Watch:output_type -> io.linkerd.proxy.tap.WatchResposne
-	49, // [49:52] is the sub-list for method output_type
-	46, // [46:49] is the sub-list for method input_type
-	46, // [46:46] is the sub-list for extension type_name
-	46, // [46:46] is the sub-list for extension extendee
-	0,  // [0:46] is the sub-list for field type_name
+	8,  // 0: io.linkerd.proxy.tap.WatchRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	8,  // 1: io.linkerd.proxy.tap.ObserveRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	9,  // 2: io.linkerd.proxy.tap.ObserveRequest.extract:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract
+	28, // 3: io.linkerd.proxy.tap.TapEvent.source:type_name -> io.linkerd.proxy.net.TcpAddress
+	19, // 4: io.linkerd.proxy.tap.TapEvent.source_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
+	20, // 5: io.linkerd.proxy.tap.TapEvent.route_meta:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta
+	28, // 6: io.linkerd.proxy.tap.TapEvent.destination:type_name -> io.linkerd.proxy.net.TcpAddress
+	19, // 7: io.linkerd.proxy.tap.TapEvent.destination_meta:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta
+	0,  // 8: io.linkerd.proxy.tap.TapEvent.proxy_direction:type_name -> io.linkerd.proxy.tap.TapEvent.ProxyDirection
+	21, // 9: io.linkerd.proxy.tap.TapEvent.http:type_name -> io.linkerd.proxy.tap.TapEvent.Http
+	29, // 10: io.linkerd.proxy.tap.ObserveTraceRequest.report_interval:type_name -> google.protobuf.Duration
+	8,  // 11: io.linkerd.proxy.tap.ObserveTraceRequest.match:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	10, // 12: io.linkerd.proxy.tap.ObserveRequest.Match.all:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
+	10, // 13: io.linkerd.proxy.tap.ObserveRequest.Match.any:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Seq
+	8,  // 14: io.linkerd.proxy.tap.ObserveRequest.Match.not:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	12, // 15: io.linkerd.proxy.tap.ObserveRequest.Match.source:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
+	12, // 16: io.linkerd.proxy.tap.ObserveRequest.Match.destination:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp
+	13, // 17: io.linkerd.proxy.tap.ObserveRequest.Match.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http
+	11, // 18: io.linkerd.proxy.tap.ObserveRequest.Match.destination_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
+	11, // 19: io.linkerd.proxy.tap.ObserveRequest.Match.route_label:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Label
+	17, // 20: io.linkerd.proxy.tap.ObserveRequest.Extract.http:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http
+	8,  // 21: io.linkerd.proxy.tap.ObserveRequest.Match.Seq.matches:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match
+	14, // 22: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.netmask:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask
+	15, // 23: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.ports:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.PortRange
+	30, // 24: io.linkerd.proxy.tap.ObserveRequest.Match.Http.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	31, // 25: io.linkerd.proxy.tap.ObserveRequest.Match.Http.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	16, // 26: io.linkerd.proxy.tap.ObserveRequest.Match.Http.authority:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
+	16, // 27: io.linkerd.proxy.tap.ObserveRequest.Match.Http.path:type_name -> io.linkerd.proxy.tap.ObserveRequest.Match.Http.StringMatch
+	32, // 28: io.linkerd.proxy.tap.ObserveRequest.Match.Tcp.Netmask.ip:type_name -> io.linkerd.proxy.net.IPAddress
+	18, // 29: io.linkerd.proxy.tap.ObserveRequest.Extract.Http.headers:type_name -> io.linkerd.proxy.tap.ObserveRequest.Extract.Http.Headers
+	22, // 30: io.linkerd.proxy.tap.TapEvent.EndpointMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.EndpointMeta.LabelsEntry
+	23, // 31: io.linkerd.proxy.tap.TapEvent.RouteMeta.labels:type_name -> io.linkerd.proxy.tap.TapEvent.RouteMeta.LabelsEntry
+	25, // 32: io.linkerd.proxy.tap.TapEvent.Http.request_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.RequestInit
+	26, // 33: io.linkerd.proxy.tap.TapEvent.Http.response_init:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseInit
+	27, // 34: io.linkerd.proxy.tap.TapEvent.Http.response_end:type_name -> io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd
+	24, // 35: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	31, // 36: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.method:type_name -> io.linkerd.proxy.http_types.HttpMethod
+	30, // 37: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.scheme:type_name -> io.linkerd.proxy.http_types.Scheme
+	33, // 38: io.linkerd.proxy.tap.TapEvent.Http.RequestInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
+	24, // 39: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	29, // 40: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.since_request_init:type_name -> google.protobuf.Duration
+	33, // 41: io.linkerd.proxy.tap.TapEvent.Http.ResponseInit.headers:type_name -> io.linkerd.proxy.http_types.Headers
+	24, // 42: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.id:type_name -> io.linkerd.proxy.tap.TapEvent.Http.StreamId
+	29, // 43: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_request_init:type_name -> google.protobuf.Duration
+	29, // 44: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.since_response_init:type_name -> google.protobuf.Duration
+	4,  // 45: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.eos:type_name -> io.linkerd.proxy.tap.Eos
+	33, // 46: io.linkerd.proxy.tap.TapEvent.Http.ResponseEnd.trailers:type_name -> io.linkerd.proxy.http_types.Headers
+	3,  // 47: io.linkerd.proxy.tap.Tap.Observe:input_type -> io.linkerd.proxy.tap.ObserveRequest
+	6,  // 48: io.linkerd.proxy.tap.Tap.ObserveTrace:input_type -> io.linkerd.proxy.tap.ObserveTraceRequest
+	1,  // 49: io.linkerd.proxy.tap.Instrument.Watch:input_type -> io.linkerd.proxy.tap.WatchRequest
+	5,  // 50: io.linkerd.proxy.tap.Tap.Observe:output_type -> io.linkerd.proxy.tap.TapEvent
+	7,  // 51: io.linkerd.proxy.tap.Tap.ObserveTrace:output_type -> io.linkerd.proxy.tap.ObserveTraceResponse
+	2,  // 52: io.linkerd.proxy.tap.Instrument.Watch:output_type -> io.linkerd.proxy.tap.WatchResposne
+	50, // [50:53] is the sub-list for method output_type
+	47, // [47:50] is the sub-list for method input_type
+	47, // [47:47] is the sub-list for extension type_name
+	47, // [47:47] is the sub-list for extension extendee
+	0,  // [0:47] is the sub-list for field type_name
 }
 
 func init() { file_tap_proto_init() }

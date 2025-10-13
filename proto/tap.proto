@@ -16,10 +16,12 @@ service Tap {
 }
 
 service Instrument {
-  rpc Watch(stream WatchRequest) returns (stream WatchResposne) {}
+  rpc Watch(WatchRequest) returns (stream WatchResposne) {}
 }
 
-message WatchRequest {}
+message WatchRequest {
+  ObserveRequest.Match match = 1;
+}
 
 message WatchResposne {
   repeated bytes traces = 1;

@@ -166,7 +166,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type InstrumentClient interface {
-	Watch(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[WatchRequest, WatchResposne], error)
+	Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchResposne], error)
 }
 
 type instrumentClient struct {
@@ -177,24 +177,30 @@ func NewInstrumentClient(cc grpc.ClientConnInterface) InstrumentClient {
 	return &instrumentClient{cc}
 }
 
-func (c *instrumentClient) Watch(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[WatchRequest, WatchResposne], error) {
+func (c *instrumentClient) Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchResposne], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Instrument_ServiceDesc.Streams[0], Instrument_Watch_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	x := &grpc.GenericClientStream[WatchRequest, WatchResposne]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Instrument_WatchClient = grpc.BidiStreamingClient[WatchRequest, WatchResposne]
+type Instrument_WatchClient = grpc.ServerStreamingClient[WatchResposne]
 
 // InstrumentServer is the server API for Instrument service.
 // All implementations must embed UnimplementedInstrumentServer
 // for forward compatibility.
 type InstrumentServer interface {
-	Watch(grpc.BidiStreamingServer[WatchRequest, WatchResposne]) error
+	Watch(*WatchRequest, grpc.ServerStreamingServer[WatchResposne]) error
 	mustEmbedUnimplementedInstrumentServer()
 }
 
@@ -205,7 +211,7 @@ type InstrumentServer interface {
 // pointer dereference when methods are called.
 type UnimplementedInstrumentServer struct{}
 
-func (UnimplementedInstrumentServer) Watch(grpc.BidiStreamingServer[WatchRequest, WatchResposne]) error {
+func (UnimplementedInstrumentServer) Watch(*WatchRequest, grpc.ServerStreamingServer[WatchResposne]) error {
 	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
 }
 func (UnimplementedInstrumentServer) mustEmbedUnimplementedInstrumentServer() {}
@@ -230,11 +236,15 @@ func RegisterInstrumentServer(s grpc.ServiceRegistrar, srv InstrumentServer) {
 }
 
 func _Instrument_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(InstrumentServer).Watch(&grpc.GenericServerStream[WatchRequest, WatchResposne]{ServerStream: stream})
+	m := new(WatchRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(InstrumentServer).Watch(m, &grpc.GenericServerStream[WatchRequest, WatchResposne]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Instrument_WatchServer = grpc.BidiStreamingServer[WatchRequest, WatchResposne]
+type Instrument_WatchServer = grpc.ServerStreamingServer[WatchResposne]
 
 // Instrument_ServiceDesc is the grpc.ServiceDesc for Instrument service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -248,7 +258,6 @@ var Instrument_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Watch",
 			Handler:       _Instrument_Watch_Handler,
 			ServerStreams: true,
-			ClientStreams: true,
 		},
 	},
 	Metadata: "tap.proto",
