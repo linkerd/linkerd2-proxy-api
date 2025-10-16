@@ -20,11 +20,14 @@ service Instrument {
 }
 
 message WatchRequest {
-  ObserveRequest.Match match = 1;
+  string id = 1;
+  ObserveRequest.Match match = 2;
 }
 
 message WatchResposne {
-  repeated bytes traces = 1;
+  oneof kind {
+    bytes spans = 1;
+  }
 }
 
 message ObserveRequest {
@@ -192,9 +195,13 @@ message ObserveTraceRequest {
   optional uint32 max_samples_per_second = 2;
   google.protobuf.Duration report_interval = 3;
 
+  repeated TraceMatch matches = 4;
+}
 
+message TraceMatch {
+  string id = 1;
   // Encodes request-matching logic.
-  io.linkerd.proxy.tap.ObserveRequest.Match match = 4;
+  ObserveRequest.Match match = 2;
 }
 
 message ObserveTraceResponse {}
