@@ -4,6 +4,31 @@ updates:
     directory: /
     schedule:
       interval: daily
+    groups:
+      futures:
+        patterns:
+          - "futures*"
+      grpc:
+        patterns:
+          - "prost*"
+          - "tonic*"
+      hyper:
+        patterns:
+          - "hyper*"
+      pin-project:
+        patterns:
+          - "pin-project*"
+      rand:
+        patterns:
+          - "rand"
+          - "rand_*"
+      regex:
+        patterns:
+          - "regex"
+          - "regex-*"
+      tracing:
+        patterns:
+          - "tracing*"
 
   - package-ecosystem: gomod
     directory: /
