@@ -86,6 +86,12 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures Retry-After header handling.
+    RetryAfterConfig retry_after = 4;
   }
 
   message Http2 {
@@ -93,6 +99,12 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures Retry-After header handling.
+    RetryAfterConfig retry_after = 4;
   }
 
   message Grpc {
@@ -100,6 +112,12 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures Retry-After header handling.
+    RetryAfterConfig retry_after = 4;
   }
 
   message Tls {
@@ -442,15 +460,57 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
+// Configures failure accrual policies for circuit breaking.
+// Setting a numeric policy field to zero disables that policy.
 message FailureAccrual {
   message ConsecutiveFailures {
+    // Maximum consecutive failures before the circuit trips.
+    // Set to 0 to disable (an unset field has the same effect).
     uint32 max_failures = 1;
+    // Must be set. Controls the ejection duration before probe requests
+    // are allowed after any policy (not just CF) trips the circuit.
     ExponentialBackoff backoff = 2;
   }
 
-  oneof kind {
-    ConsecutiveFailures consecutive_failures = 1;
+  message SuccessRate {
+    // Success rate threshold in [0.0, 1.0]. The circuit trips when the
+    // EWMA success rate drops below this value. Set to 0.0 to disable.
+    // Defined as `double` (not `float`) because this value is compared
+    // against the proxy's f64 EWMA on every request.
+    double threshold = 1;
+    // EWMA decay window for success rate tracking.
+    google.protobuf.Duration decay = 2;
+    // Minimum requests before the success rate policy can trip (cold-start guard).
+    uint32 min_requests = 3;
   }
+
+  // Must be set. Set `max_failures` to 0 to disable the consecutive
+  // failure policy while retaining the shared backoff.
+  ConsecutiveFailures consecutive_failures = 1;
+
+  // Success rate policy. If set, the circuit trips when the EWMA success
+  // rate drops below the threshold.
+  SuccessRate success_rate = 2;
+}
+
+// Configures load biasing for 429-aware load balancing.
+// When enabled, the load balancer injects artificial penalties on
+// rate-limited endpoints, causing P2C to prefer other endpoints.
+message LoadBiasConfig {
+  // Whether load biasing is enabled.
+  bool enabled = 1;
+  // The penalty duration to inject when a 429 response is received.
+  google.protobuf.Duration penalty = 2;
+  // The EWMA decay window for the penalty.
+  google.protobuf.Duration penalty_decay = 3;
+}
+
+// Configures handling of Retry-After headers from 429 responses.
+message RetryAfterConfig {
+  // Maximum Retry-After duration the proxy will honor. Values exceeding
+  // this cap are clamped. When absent, the proxy uses
+  // DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
+  google.protobuf.Duration max_duration = 1;
 }
 
 message ExponentialBackoff {
@@ -461,5 +521,6 @@ message ExponentialBackoff {
   google.protobuf.Duration max_backoff = 2;
   // The ratio of the base timeout that may be randomly added to a backoff.
   // Must be greater than or equal to 0.0.
+  // `float` is sufficient for a coarse duration multiplier.
   float jitter_ratio = 3;
 }
