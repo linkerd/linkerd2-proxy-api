@@ -20,6 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Err(e) = tonic_prost_build::configure()
         .build_client(true)
         .build_server(true)
+        .build_transport(true)
         .out_dir(out_dir)
         .compile_protos(&proto_files, &[proto_dir])
     {
