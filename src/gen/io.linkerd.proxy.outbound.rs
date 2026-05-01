@@ -67,6 +67,12 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If set, configures load biasing for 429-aware load balancing.
+        #[prost(message, optional, tag = "3")]
+        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
+        /// If set, configures Retry-After header handling.
+        #[prost(message, optional, tag = "4")]
+        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
@@ -75,6 +81,12 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If set, configures load biasing for 429-aware load balancing.
+        #[prost(message, optional, tag = "3")]
+        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
+        /// If set, configures Retry-After header handling.
+        #[prost(message, optional, tag = "4")]
+        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
@@ -83,6 +95,12 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
+        /// If set, configures load biasing for 429-aware load balancing.
+        #[prost(message, optional, tag = "3")]
+        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
+        /// If set, configures Retry-After header handling.
+        #[prost(message, optional, tag = "4")]
+        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Tls {
@@ -626,25 +644,73 @@ pub struct Queue {
     #[prost(message, optional, tag = "2")]
     pub failfast_timeout: ::core::option::Option<::prost_types::Duration>,
 }
+/// Configures failure accrual policies for circuit breaking.
+/// Setting a numeric policy field to zero disables that policy.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct FailureAccrual {
-    #[prost(oneof = "failure_accrual::Kind", tags = "1")]
-    pub kind: ::core::option::Option<failure_accrual::Kind>,
+    /// Must be set. Set `max_failures` to 0 to disable the consecutive
+    /// failure policy while retaining the shared backoff.
+    #[prost(message, optional, tag = "1")]
+    pub consecutive_failures: ::core::option::Option<
+        failure_accrual::ConsecutiveFailures,
+    >,
+    /// Success rate policy. If set, the circuit trips when the EWMA success
+    /// rate drops below the threshold.
+    #[prost(message, optional, tag = "2")]
+    pub success_rate: ::core::option::Option<failure_accrual::SuccessRate>,
 }
 /// Nested message and enum types in `FailureAccrual`.
 pub mod failure_accrual {
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct ConsecutiveFailures {
+        /// Maximum consecutive failures before the circuit trips.
+        /// Set to 0 to disable (an unset field has the same effect).
         #[prost(uint32, tag = "1")]
         pub max_failures: u32,
+        /// Must be set. Controls the ejection duration before probe requests
+        /// are allowed after any policy (not just CF) trips the circuit.
         #[prost(message, optional, tag = "2")]
         pub backoff: ::core::option::Option<super::ExponentialBackoff>,
     }
-    #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
-    pub enum Kind {
-        #[prost(message, tag = "1")]
-        ConsecutiveFailures(ConsecutiveFailures),
+    #[derive(Clone, Copy, PartialEq, ::prost::Message)]
+    pub struct SuccessRate {
+        /// Success rate threshold in \[0.0, 1.0\]. The circuit trips when the
+        /// EWMA success rate drops below this value. Set to 0.0 to disable.
+        /// Defined as `double` (not `float`) because this value is compared
+        /// against the proxy's f64 EWMA on every request.
+        #[prost(double, tag = "1")]
+        pub threshold: f64,
+        /// EWMA decay window for success rate tracking.
+        #[prost(message, optional, tag = "2")]
+        pub decay: ::core::option::Option<::prost_types::Duration>,
+        /// Minimum requests before the success rate policy can trip (cold-start guard).
+        #[prost(uint32, tag = "3")]
+        pub min_requests: u32,
     }
+}
+/// Configures load biasing for 429-aware load balancing.
+/// When enabled, the load balancer injects artificial penalties on
+/// rate-limited endpoints, causing P2C to prefer other endpoints.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct LoadBiasConfig {
+    /// Whether load biasing is enabled.
+    #[prost(bool, tag = "1")]
+    pub enabled: bool,
+    /// The penalty duration to inject when a 429 response is received.
+    #[prost(message, optional, tag = "2")]
+    pub penalty: ::core::option::Option<::prost_types::Duration>,
+    /// The EWMA decay window for the penalty.
+    #[prost(message, optional, tag = "3")]
+    pub penalty_decay: ::core::option::Option<::prost_types::Duration>,
+}
+/// Configures handling of Retry-After headers from 429 responses.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct RetryAfterConfig {
+    /// Maximum Retry-After duration the proxy will honor. Values exceeding
+    /// this cap are clamped. When absent, the proxy uses
+    /// DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
+    #[prost(message, optional, tag = "1")]
+    pub max_duration: ::core::option::Option<::prost_types::Duration>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct ExponentialBackoff {
@@ -657,6 +723,7 @@ pub struct ExponentialBackoff {
     pub max_backoff: ::core::option::Option<::prost_types::Duration>,
     /// The ratio of the base timeout that may be randomly added to a backoff.
     /// Must be greater than or equal to 0.0.
+    /// `float` is sufficient for a coarse duration multiplier.
     #[prost(float, tag = "3")]
     pub jitter_ratio: f32,
 }
