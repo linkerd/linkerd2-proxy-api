@@ -89,6 +89,9 @@ message ProxyProtocol {
 
     // If set, configures load biasing for 429-aware load balancing.
     LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Http2 {
@@ -99,6 +102,9 @@ message ProxyProtocol {
 
     // If set, configures load biasing for 429-aware load balancing.
     LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Grpc {
@@ -109,6 +115,10 @@ message ProxyProtocol {
 
     // If set, configures load biasing for 429-aware load balancing.
     LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503)
+    // and grpc-retry-pushback-ms trailers (gRPC RESOURCE_EXHAUSTED).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Tls {
@@ -495,6 +505,17 @@ message LoadBiasConfig {
   google.protobuf.Duration penalty = 2;
   // The EWMA decay window for the penalty.
   google.protobuf.Duration penalty_decay = 3;
+}
+
+// Configures handling of rate-limiting hints: Retry-After headers
+// (HTTP 429/503) and grpc-retry-pushback-ms trailers (gRPC
+// RESOURCE_EXHAUSTED). The proxy uses the parsed duration to extend
+// circuit breaker backoff and amplify load biaser penalties.
+message RetryAfterConfig {
+  // Maximum duration the proxy will honor from either hint source.
+  // Values exceeding this cap are clamped. When absent, the proxy
+  // uses DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
+  google.protobuf.Duration max_duration = 1;
 }
 
 message ExponentialBackoff {
