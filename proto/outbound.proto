@@ -86,6 +86,9 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
   }
 
   message Http2 {
@@ -93,6 +96,9 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
   }
 
   message Grpc {
@@ -100,6 +106,9 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
   }
 
   message Tls {
@@ -473,6 +482,19 @@ message FailureAccrual {
   // Success rate policy. If set, the circuit trips when the EWMA success
   // rate drops below the threshold.
   SuccessRate success_rate = 2;
+}
+
+// Configures load biasing for 429-aware load balancing.
+// When enabled, the load balancer injects artificial penalties on
+// rate-limited endpoints, causing P2C to prefer other endpoints.
+message LoadBiasConfig {
+  // Whether load biasing is enabled. When the message is present
+  // but `enabled` is false, biasing is inactive.
+  bool enabled = 1;
+  // The penalty duration to inject when a 429 response is received.
+  google.protobuf.Duration penalty = 2;
+  // The EWMA decay window for the penalty.
+  google.protobuf.Duration penalty_decay = 3;
 }
 
 message ExponentialBackoff {
