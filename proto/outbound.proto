@@ -442,15 +442,37 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
+// Configures failure accrual policies for circuit breaking.
+// Setting a numeric policy field to zero disables that policy.
 message FailureAccrual {
   message ConsecutiveFailures {
+    // Maximum consecutive failures before the circuit trips.
+    // Set to 0 to disable (an unset field has the same effect).
     uint32 max_failures = 1;
+    // Must be set. Controls the ejection duration before probe requests
+    // are allowed after any policy (not just CF) trips the circuit.
     ExponentialBackoff backoff = 2;
   }
 
-  oneof kind {
-    ConsecutiveFailures consecutive_failures = 1;
+  message SuccessRate {
+    // Success rate threshold in [0.0, 1.0]. The circuit trips when the
+    // EWMA success rate drops below this value. Set to 0.0 to disable.
+    // Defined as `double` (not `float`) because this value is compared
+    // against the proxy's f64 EWMA on every request.
+    double threshold = 1;
+    // EWMA decay window for success rate tracking.
+    google.protobuf.Duration decay = 2;
+    // Minimum requests before the success rate policy can trip (cold-start guard).
+    uint32 min_requests = 3;
   }
+
+  // Must be set. Set `max_failures` to 0 to disable the consecutive
+  // failure policy while retaining the shared backoff.
+  ConsecutiveFailures consecutive_failures = 1;
+
+  // Success rate policy. If set, the circuit trips when the EWMA success
+  // rate drops below the threshold.
+  SuccessRate success_rate = 2;
 }
 
 message ExponentialBackoff {
