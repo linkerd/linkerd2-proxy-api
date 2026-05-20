@@ -439,6 +439,10 @@ message Backend {
       PeakEwma peak_ewma = 2;
     }
 
+    // Ejection protection for the pool. When set, prevents circuit
+    // breakers from ejecting endpoints below the configured floor.
+    EjectionConfig ejection = 3;
+
     // Parameters configuring peak EWMA load estimation.
     message PeakEwma {
       // Initial latency value used when no latencies have been
@@ -516,6 +520,16 @@ message RetryAfterConfig {
   // Values exceeding this cap are clamped. When absent, the proxy
   // uses DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
   google.protobuf.Duration max_duration = 1;
+}
+
+// Pool-level ejection protection. Prevents circuit breakers from
+// ejecting all endpoints in a load-balancing pool.
+//
+// Additional ejection parameters may follow in future fields.
+message EjectionConfig {
+  // Minimum number of endpoints that must remain unejected.
+  // When set to 0 (or absent), ejection protection is disabled.
+  uint32 min_ready_endpoints = 1;
 }
 
 message ExponentialBackoff {
