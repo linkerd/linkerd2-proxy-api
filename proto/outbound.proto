@@ -86,6 +86,12 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Http2 {
@@ -93,6 +99,12 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Grpc {
@@ -100,6 +112,13 @@ message ProxyProtocol {
 
     // If empty, circuit breaking is not performed.
     FailureAccrual failure_accrual = 2;
+
+    // If set, configures load biasing for 429-aware load balancing.
+    LoadBiasConfig load_bias = 3;
+
+    // If set, configures handling of Retry-After headers (HTTP 429/503)
+    // and grpc-retry-pushback-ms trailers (gRPC RESOURCE_EXHAUSTED).
+    RetryAfterConfig retry_after = 4;
   }
 
   message Tls {
@@ -420,6 +439,10 @@ message Backend {
       PeakEwma peak_ewma = 2;
     }
 
+    // Ejection protection for the pool. When set, prevents circuit
+    // breakers from ejecting endpoints below the configured floor.
+    EjectionConfig ejection = 3;
+
     // Parameters configuring peak EWMA load estimation.
     message PeakEwma {
       // Initial latency value used when no latencies have been
@@ -442,15 +465,71 @@ message Queue {
   google.protobuf.Duration failfast_timeout = 2;
 }
 
+// Configures failure accrual policies for circuit breaking.
+// Setting a numeric policy field to zero disables that policy.
 message FailureAccrual {
   message ConsecutiveFailures {
+    // Maximum consecutive failures before the circuit trips.
+    // Set to 0 to disable (an unset field has the same effect).
     uint32 max_failures = 1;
+    // Must be set. Controls the ejection duration before probe requests
+    // are allowed after any policy (not just CF) trips the circuit.
     ExponentialBackoff backoff = 2;
   }
 
-  oneof kind {
-    ConsecutiveFailures consecutive_failures = 1;
+  message SuccessRate {
+    // Success rate threshold in [0.0, 1.0]. The circuit trips when the
+    // EWMA success rate drops below this value. Set to 0.0 to disable.
+    // Defined as `double` (not `float`) because this value is compared
+    // against the proxy's f64 EWMA on every request.
+    double threshold = 1;
+    // EWMA decay window for success rate tracking.
+    google.protobuf.Duration decay = 2;
+    // Minimum requests before the success rate policy can trip (cold-start guard).
+    uint32 min_requests = 3;
   }
+
+  // Must be set. Set `max_failures` to 0 to disable the consecutive
+  // failure policy while retaining the shared backoff.
+  ConsecutiveFailures consecutive_failures = 1;
+
+  // Success rate policy. If set, the circuit trips when the EWMA success
+  // rate drops below the threshold.
+  SuccessRate success_rate = 2;
+}
+
+// Configures load biasing for 429-aware load balancing.
+// When enabled, the load balancer injects artificial penalties on
+// rate-limited endpoints, causing P2C to prefer other endpoints.
+message LoadBiasConfig {
+  // Whether load biasing is enabled. When the message is present
+  // but `enabled` is false, biasing is inactive.
+  bool enabled = 1;
+  // The penalty duration to inject when a 429 response is received.
+  google.protobuf.Duration penalty = 2;
+  // The EWMA decay window for the penalty.
+  google.protobuf.Duration penalty_decay = 3;
+}
+
+// Configures handling of rate-limiting hints: Retry-After headers
+// (HTTP 429/503) and grpc-retry-pushback-ms trailers (gRPC
+// RESOURCE_EXHAUSTED). The proxy uses the parsed duration to extend
+// circuit breaker backoff and amplify load biaser penalties.
+message RetryAfterConfig {
+  // Maximum duration the proxy will honor from either hint source.
+  // Values exceeding this cap are clamped. When absent, the proxy
+  // uses DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
+  google.protobuf.Duration max_duration = 1;
+}
+
+// Pool-level ejection protection. Prevents circuit breakers from
+// ejecting all endpoints in a load-balancing pool.
+//
+// Additional ejection parameters may follow in future fields.
+message EjectionConfig {
+  // Minimum number of endpoints that must remain unejected.
+  // When set to 0 (or absent), ejection protection is disabled.
+  uint32 min_ready_endpoints = 1;
 }
 
 message ExponentialBackoff {
