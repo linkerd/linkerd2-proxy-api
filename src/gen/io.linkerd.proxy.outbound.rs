@@ -575,10 +575,14 @@ pub mod backend {
     }
     /// Describes a power-of-two-choices (P2C) load balancer configuration for a
     /// backend.
-    #[derive(Clone, PartialEq, ::prost::Message)]
+    #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
     pub struct BalanceP2c {
         #[prost(message, optional, tag = "1")]
         pub discovery: ::core::option::Option<EndpointDiscovery>,
+        /// Ejection protection for the pool. When set, prevents circuit
+        /// breakers from ejecting endpoints below the configured floor.
+        #[prost(message, optional, tag = "4")]
+        pub ejection: ::core::option::Option<super::EjectionConfig>,
         /// The load estimation strategy used by this load balancer.
         #[prost(oneof = "balance_p2c::Load", tags = "2, 3")]
         pub load: ::core::option::Option<balance_p2c::Load>,
@@ -596,7 +600,7 @@ pub mod backend {
             #[prost(message, optional, tag = "2")]
             pub decay: ::core::option::Option<::prost_types::Duration>,
         }
-        #[derive(Clone, PartialEq, ::prost::Message)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
         pub struct PenaltyPeakEwma {
             /// Initial latency value used when no latencies have been
             /// recorded for an endpoint.
@@ -608,42 +612,15 @@ pub mod backend {
             /// The penalty duration to inject when a matching response is received.
             #[prost(message, optional, tag = "3")]
             pub penalty: ::core::option::Option<::prost_types::Duration>,
-            /// If true, the proxy will use the Retry-After hint (if present on the response)
-            /// as the penalty duration, clamped by the configured max_retry_after.
+            /// The maximum duration to respect for Retry-After hints. Hints that exceed this value will be capped.
             #[prost(message, optional, tag = "4")]
-            pub respect_retry_after_hint: ::core::option::Option<
-                penalty_peak_ewma::RetryAfter,
-            >,
+            pub max_retry_after: ::core::option::Option<::prost_types::Duration>,
             /// The EWMA decay window for the penalty.
             #[prost(message, optional, tag = "5")]
             pub penalty_decay: ::core::option::Option<::prost_types::Duration>,
-            /// HTTP status code ranges that should trigger load biasing penalties.
-            #[prost(message, repeated, tag = "6")]
-            pub http_status_ranges: ::prost::alloc::vec::Vec<
-                penalty_peak_ewma::StatusRange,
-            >,
-            /// gRPC status codes that should trigger load biasing penalties.
-            #[prost(uint32, repeated, tag = "7")]
-            pub grpc_status_codes: ::prost::alloc::vec::Vec<u32>,
-        }
-        /// Nested message and enum types in `PenaltyPeakEwma`.
-        pub mod penalty_peak_ewma {
-            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
-            pub struct StatusRange {
-                #[prost(uint32, tag = "1")]
-                pub start: u32,
-                #[prost(uint32, tag = "2")]
-                pub end: u32,
-            }
-            #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
-            pub struct RetryAfter {
-                /// The maximum duration to respect for Retry-After hints. Hints that exceed this value will be capped.
-                #[prost(message, optional, tag = "1")]
-                pub max_retry_after: ::core::option::Option<::prost_types::Duration>,
-            }
         }
         /// The load estimation strategy used by this load balancer.
-        #[derive(Clone, PartialEq, ::prost::Oneof)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
         pub enum Load {
             /// This load balancer uses peak EWMA (exponentially weighted moving
             /// average) load estimates.
@@ -680,10 +657,6 @@ pub struct Queue {
 /// Setting a numeric policy field to zero disables that policy.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct FailureAccrual {
-    /// Ejection protection for the pool. When set, prevents circuit
-    /// breakers from ejecting endpoints below the configured floor.
-    #[prost(message, optional, tag = "3")]
-    pub ejection: ::core::option::Option<EjectionConfig>,
     #[prost(oneof = "failure_accrual::Kind", tags = "1, 2")]
     pub kind: ::core::option::Option<failure_accrual::Kind>,
 }
