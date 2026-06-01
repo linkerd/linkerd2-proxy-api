@@ -579,10 +579,6 @@ pub mod backend {
     pub struct BalanceP2c {
         #[prost(message, optional, tag = "1")]
         pub discovery: ::core::option::Option<EndpointDiscovery>,
-        /// Ejection protection for the pool. When set, prevents circuit
-        /// breakers from ejecting endpoints below the configured floor.
-        #[prost(message, optional, tag = "4")]
-        pub ejection: ::core::option::Option<super::EjectionConfig>,
         /// The load estimation strategy used by this load balancer.
         #[prost(oneof = "balance_p2c::Load", tags = "2, 3")]
         pub load: ::core::option::Option<balance_p2c::Load>,
@@ -657,6 +653,10 @@ pub struct Queue {
 /// Setting a numeric policy field to zero disables that policy.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct FailureAccrual {
+    /// Ejection protection for the pool. When set, prevents circuit
+    /// breakers from ejecting endpoints below the configured floor.
+    #[prost(message, optional, tag = "3")]
+    pub ejection: ::core::option::Option<EjectionConfig>,
     #[prost(oneof = "failure_accrual::Kind", tags = "1, 2")]
     pub kind: ::core::option::Option<failure_accrual::Kind>,
 }

@@ -423,10 +423,6 @@ message Backend {
       PenaltyPeakEwma penalty_peak_ewma = 3;
     }
 
-    // Ejection protection for the pool. When set, prevents circuit
-    // breakers from ejecting endpoints below the configured floor.
-    EjectionConfig ejection = 4;
-
     // Parameters configuring peak EWMA load estimation.
     message PeakEwma {
       // Initial latency value used when no latencies have been
@@ -501,6 +497,10 @@ message FailureAccrual {
     ConsecutiveFailures consecutive_failures = 1;
     Unified unified = 2;
   }
+
+  // Ejection protection for the pool. When set, prevents circuit
+  // breakers from ejecting endpoints below the configured floor.
+  EjectionConfig ejection = 3;
 }
 
 // Pool-level ejection protection. Prevents circuit breakers from

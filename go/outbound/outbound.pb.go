@@ -738,7 +738,10 @@ type FailureAccrual struct {
 	//
 	//	*FailureAccrual_ConsecutiveFailures_
 	//	*FailureAccrual_Unified_
-	Kind          isFailureAccrual_Kind `protobuf_oneof:"kind"`
+	Kind isFailureAccrual_Kind `protobuf_oneof:"kind"`
+	// Ejection protection for the pool. When set, prevents circuit
+	// breakers from ejecting endpoints below the configured floor.
+	Ejection      *EjectionConfig `protobuf:"bytes,3,opt,name=ejection,proto3" json:"ejection,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -794,6 +797,13 @@ func (x *FailureAccrual) GetUnified() *FailureAccrual_Unified {
 		if x, ok := x.Kind.(*FailureAccrual_Unified_); ok {
 			return x.Unified
 		}
+	}
+	return nil
+}
+
+func (x *FailureAccrual) GetEjection() *EjectionConfig {
+	if x != nil {
+		return x.Ejection
 	}
 	return nil
 }
@@ -3659,10 +3669,7 @@ type Backend_BalanceP2C struct {
 	//
 	//	*Backend_BalanceP2C_PeakEwma_
 	//	*Backend_BalanceP2C_PenaltyPeakEwma_
-	Load isBackend_BalanceP2C_Load `protobuf_oneof:"load"`
-	// Ejection protection for the pool. When set, prevents circuit
-	// breakers from ejecting endpoints below the configured floor.
-	Ejection      *EjectionConfig `protobuf:"bytes,4,opt,name=ejection,proto3" json:"ejection,omitempty"`
+	Load          isBackend_BalanceP2C_Load `protobuf_oneof:"load"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3725,13 +3732,6 @@ func (x *Backend_BalanceP2C) GetPenaltyPeakEwma() *Backend_BalanceP2C_PenaltyPea
 		if x, ok := x.Load.(*Backend_BalanceP2C_PenaltyPeakEwma_); ok {
 			return x.PenaltyPeakEwma
 		}
-	}
-	return nil
-}
-
-func (x *Backend_BalanceP2C) GetEjection() *EjectionConfig {
-	if x != nil {
-		return x.Ejection
 	}
 	return nil
 }
@@ -4274,7 +4274,7 @@ const file_outbound_proto_rawDesc = "" +
 	"\afilters\x18\x03 \x03(\v2*.io.linkerd.proxy.outbound.TlsRoute.FilterR\afiltersJ\x04\b\x02\x10\x03\x1az\n" +
 	"\x14WeightedRouteBackend\x12J\n" +
 	"\abackend\x18\x01 \x01(\v20.io.linkerd.proxy.outbound.TlsRoute.RouteBackendR\abackend\x12\x16\n" +
-	"\x06weight\x18\x02 \x01(\rR\x06weightJ\x04\b\x04\x10\x05\"\xe0\t\n" +
+	"\x06weight\x18\x02 \x01(\rR\x06weightJ\x04\b\x04\x10\x05\"\x99\t\n" +
 	"\aBackend\x12;\n" +
 	"\bmetadata\x18\x01 \x01(\v2\x1f.io.linkerd.proxy.meta.MetadataR\bmetadata\x12F\n" +
 	"\aforward\x18\x02 \x01(\v2*.io.linkerd.proxy.destination.WeightedAddrH\x00R\aforward\x12K\n" +
@@ -4284,13 +4284,12 @@ const file_outbound_proto_rawDesc = "" +
 	"\x03dst\x18\x01 \x01(\v2C.io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGetH\x00R\x03dst\x1a$\n" +
 	"\x0eDestinationGet\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04pathB\x06\n" +
-	"\x04kind\x1a\xa5\x06\n" +
+	"\x04kind\x1a\xde\x05\n" +
 	"\n" +
 	"BalanceP2c\x12R\n" +
 	"\tdiscovery\x18\x01 \x01(\v24.io.linkerd.proxy.outbound.Backend.EndpointDiscoveryR\tdiscovery\x12U\n" +
 	"\tpeak_ewma\x18\x02 \x01(\v26.io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwmaH\x00R\bpeakEwma\x12k\n" +
-	"\x11penalty_peak_ewma\x18\x03 \x01(\v2=.io.linkerd.proxy.outbound.Backend.BalanceP2c.PenaltyPeakEwmaH\x00R\x0fpenaltyPeakEwma\x12E\n" +
-	"\bejection\x18\x04 \x01(\v2).io.linkerd.proxy.outbound.EjectionConfigR\bejection\x1aw\n" +
+	"\x11penalty_peak_ewma\x18\x03 \x01(\v2=.io.linkerd.proxy.outbound.Backend.BalanceP2c.PenaltyPeakEwmaH\x00R\x0fpenaltyPeakEwma\x1aw\n" +
 	"\bPeakEwma\x12:\n" +
 	"\vdefault_rtt\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\n" +
 	"defaultRtt\x12/\n" +
@@ -4306,10 +4305,11 @@ const file_outbound_proto_rawDesc = "" +
 	"\x04kind\"i\n" +
 	"\x05Queue\x12\x1a\n" +
 	"\bcapacity\x18\x01 \x01(\rR\bcapacity\x12D\n" +
-	"\x10failfast_timeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x0ffailfastTimeout\"\xf8\x04\n" +
+	"\x10failfast_timeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x0ffailfastTimeout\"\xbf\x05\n" +
 	"\x0eFailureAccrual\x12r\n" +
 	"\x14consecutive_failures\x18\x01 \x01(\v2=.io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailuresH\x00R\x13consecutiveFailures\x12M\n" +
-	"\aunified\x18\x02 \x01(\v21.io.linkerd.proxy.outbound.FailureAccrual.UnifiedH\x00R\aunified\x1a\x81\x01\n" +
+	"\aunified\x18\x02 \x01(\v21.io.linkerd.proxy.outbound.FailureAccrual.UnifiedH\x00R\aunified\x12E\n" +
+	"\bejection\x18\x03 \x01(\v2).io.linkerd.proxy.outbound.EjectionConfigR\bejection\x1a\x81\x01\n" +
 	"\x13ConsecutiveFailures\x12!\n" +
 	"\fmax_failures\x18\x01 \x01(\rR\vmaxFailures\x12G\n" +
 	"\abackoff\x18\x02 \x01(\v2-.io.linkerd.proxy.outbound.ExponentialBackoffR\abackoff\x1a\x96\x02\n" +
@@ -4454,92 +4454,92 @@ var file_outbound_proto_depIdxs = []int32{
 	67,  // 24: io.linkerd.proxy.outbound.Queue.failfast_timeout:type_name -> google.protobuf.Duration
 	60,  // 25: io.linkerd.proxy.outbound.FailureAccrual.consecutive_failures:type_name -> io.linkerd.proxy.outbound.FailureAccrual.ConsecutiveFailures
 	61,  // 26: io.linkerd.proxy.outbound.FailureAccrual.unified:type_name -> io.linkerd.proxy.outbound.FailureAccrual.Unified
-	67,  // 27: io.linkerd.proxy.outbound.ExponentialBackoff.min_backoff:type_name -> google.protobuf.Duration
-	67,  // 28: io.linkerd.proxy.outbound.ExponentialBackoff.max_backoff:type_name -> google.protobuf.Duration
-	67,  // 29: io.linkerd.proxy.outbound.ProxyProtocol.Detect.timeout:type_name -> google.protobuf.Duration
-	13,  // 30: io.linkerd.proxy.outbound.ProxyProtocol.Detect.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
-	14,  // 31: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
-	15,  // 32: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
-	5,   // 33: io.linkerd.proxy.outbound.ProxyProtocol.Opaque.routes:type_name -> io.linkerd.proxy.outbound.OpaqueRoute
-	3,   // 34: io.linkerd.proxy.outbound.ProxyProtocol.Http1.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
-	9,   // 35: io.linkerd.proxy.outbound.ProxyProtocol.Http1.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	3,   // 36: io.linkerd.proxy.outbound.ProxyProtocol.Http2.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
-	9,   // 37: io.linkerd.proxy.outbound.ProxyProtocol.Http2.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	4,   // 38: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.routes:type_name -> io.linkerd.proxy.outbound.GrpcRoute
-	9,   // 39: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
-	6,   // 40: io.linkerd.proxy.outbound.ProxyProtocol.Tls.routes:type_name -> io.linkerd.proxy.outbound.TlsRoute
-	68,  // 41: io.linkerd.proxy.outbound.HttpRoute.Rule.matches:type_name -> io.linkerd.proxy.http_route.HttpRouteMatch
-	19,  // 42: io.linkerd.proxy.outbound.HttpRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
-	20,  // 43: io.linkerd.proxy.outbound.HttpRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution
-	67,  // 44: io.linkerd.proxy.outbound.HttpRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
-	69,  // 45: io.linkerd.proxy.outbound.HttpRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
-	21,  // 46: io.linkerd.proxy.outbound.HttpRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry
-	70,  // 47: io.linkerd.proxy.outbound.HttpRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.http_route.HttpFailureInjector
-	71,  // 48: io.linkerd.proxy.outbound.HttpRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
-	72,  // 49: io.linkerd.proxy.outbound.HttpRoute.Filter.redirect:type_name -> io.linkerd.proxy.http_route.RequestRedirect
-	73,  // 50: io.linkerd.proxy.outbound.HttpRoute.Filter.response_header_modifier:type_name -> io.linkerd.proxy.http_route.ResponseHeaderModifier
-	24,  // 51: io.linkerd.proxy.outbound.HttpRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
-	25,  // 52: io.linkerd.proxy.outbound.HttpRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
-	26,  // 53: io.linkerd.proxy.outbound.HttpRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
-	27,  // 54: io.linkerd.proxy.outbound.HttpRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
-	67,  // 55: io.linkerd.proxy.outbound.HttpRoute.Retry.timeout:type_name -> google.protobuf.Duration
-	11,  // 56: io.linkerd.proxy.outbound.HttpRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
-	7,   // 57: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	19,  // 58: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
-	67,  // 59: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
-	22,  // 60: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
-	22,  // 61: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
-	23,  // 62: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
-	28,  // 63: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.status_ranges:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
-	74,  // 64: io.linkerd.proxy.outbound.GrpcRoute.Rule.matches:type_name -> io.linkerd.proxy.grpc_route.GrpcRouteMatch
-	30,  // 65: io.linkerd.proxy.outbound.GrpcRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
-	31,  // 66: io.linkerd.proxy.outbound.GrpcRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution
-	67,  // 67: io.linkerd.proxy.outbound.GrpcRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
-	69,  // 68: io.linkerd.proxy.outbound.GrpcRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
-	32,  // 69: io.linkerd.proxy.outbound.GrpcRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry
-	75,  // 70: io.linkerd.proxy.outbound.GrpcRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.grpc_route.GrpcFailureInjector
-	71,  // 71: io.linkerd.proxy.outbound.GrpcRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
-	35,  // 72: io.linkerd.proxy.outbound.GrpcRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
-	36,  // 73: io.linkerd.proxy.outbound.GrpcRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
-	37,  // 74: io.linkerd.proxy.outbound.GrpcRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
-	38,  // 75: io.linkerd.proxy.outbound.GrpcRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
-	67,  // 76: io.linkerd.proxy.outbound.GrpcRoute.Retry.timeout:type_name -> google.protobuf.Duration
-	11,  // 77: io.linkerd.proxy.outbound.GrpcRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
-	7,   // 78: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	30,  // 79: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
-	67,  // 80: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
-	33,  // 81: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
-	33,  // 82: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
-	34,  // 83: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
-	41,  // 84: io.linkerd.proxy.outbound.OpaqueRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution
-	40,  // 85: io.linkerd.proxy.outbound.OpaqueRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Filter
-	76,  // 86: io.linkerd.proxy.outbound.OpaqueRoute.Filter.invalid:type_name -> io.linkerd.proxy.opaque_route.Invalid
-	77,  // 87: io.linkerd.proxy.outbound.OpaqueRoute.Filter.forbidden:type_name -> io.linkerd.proxy.opaque_route.Forbidden
-	44,  // 88: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
-	45,  // 89: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
-	46,  // 90: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
-	7,   // 91: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	40,  // 92: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Filter
-	42,  // 93: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
-	42,  // 94: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
-	43,  // 95: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
-	49,  // 96: io.linkerd.proxy.outbound.TlsRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution
-	48,  // 97: io.linkerd.proxy.outbound.TlsRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.TlsRoute.Filter
-	76,  // 98: io.linkerd.proxy.outbound.TlsRoute.Filter.invalid:type_name -> io.linkerd.proxy.opaque_route.Invalid
-	77,  // 99: io.linkerd.proxy.outbound.TlsRoute.Filter.forbidden:type_name -> io.linkerd.proxy.opaque_route.Forbidden
-	52,  // 100: io.linkerd.proxy.outbound.TlsRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
-	53,  // 101: io.linkerd.proxy.outbound.TlsRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
-	54,  // 102: io.linkerd.proxy.outbound.TlsRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
-	7,   // 103: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
-	48,  // 104: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.TlsRoute.Filter
-	50,  // 105: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
-	50,  // 106: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
-	51,  // 107: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
-	57,  // 108: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.dst:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
-	55,  // 109: io.linkerd.proxy.outbound.Backend.BalanceP2c.discovery:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery
-	58,  // 110: io.linkerd.proxy.outbound.Backend.BalanceP2c.peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
-	59,  // 111: io.linkerd.proxy.outbound.Backend.BalanceP2c.penalty_peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PenaltyPeakEwma
-	10,  // 112: io.linkerd.proxy.outbound.Backend.BalanceP2c.ejection:type_name -> io.linkerd.proxy.outbound.EjectionConfig
+	10,  // 27: io.linkerd.proxy.outbound.FailureAccrual.ejection:type_name -> io.linkerd.proxy.outbound.EjectionConfig
+	67,  // 28: io.linkerd.proxy.outbound.ExponentialBackoff.min_backoff:type_name -> google.protobuf.Duration
+	67,  // 29: io.linkerd.proxy.outbound.ExponentialBackoff.max_backoff:type_name -> google.protobuf.Duration
+	67,  // 30: io.linkerd.proxy.outbound.ProxyProtocol.Detect.timeout:type_name -> google.protobuf.Duration
+	13,  // 31: io.linkerd.proxy.outbound.ProxyProtocol.Detect.opaque:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Opaque
+	14,  // 32: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http1:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http1
+	15,  // 33: io.linkerd.proxy.outbound.ProxyProtocol.Detect.http2:type_name -> io.linkerd.proxy.outbound.ProxyProtocol.Http2
+	5,   // 34: io.linkerd.proxy.outbound.ProxyProtocol.Opaque.routes:type_name -> io.linkerd.proxy.outbound.OpaqueRoute
+	3,   // 35: io.linkerd.proxy.outbound.ProxyProtocol.Http1.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
+	9,   // 36: io.linkerd.proxy.outbound.ProxyProtocol.Http1.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	3,   // 37: io.linkerd.proxy.outbound.ProxyProtocol.Http2.routes:type_name -> io.linkerd.proxy.outbound.HttpRoute
+	9,   // 38: io.linkerd.proxy.outbound.ProxyProtocol.Http2.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	4,   // 39: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.routes:type_name -> io.linkerd.proxy.outbound.GrpcRoute
+	9,   // 40: io.linkerd.proxy.outbound.ProxyProtocol.Grpc.failure_accrual:type_name -> io.linkerd.proxy.outbound.FailureAccrual
+	6,   // 41: io.linkerd.proxy.outbound.ProxyProtocol.Tls.routes:type_name -> io.linkerd.proxy.outbound.TlsRoute
+	68,  // 42: io.linkerd.proxy.outbound.HttpRoute.Rule.matches:type_name -> io.linkerd.proxy.http_route.HttpRouteMatch
+	19,  // 43: io.linkerd.proxy.outbound.HttpRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
+	20,  // 44: io.linkerd.proxy.outbound.HttpRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution
+	67,  // 45: io.linkerd.proxy.outbound.HttpRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
+	69,  // 46: io.linkerd.proxy.outbound.HttpRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
+	21,  // 47: io.linkerd.proxy.outbound.HttpRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry
+	70,  // 48: io.linkerd.proxy.outbound.HttpRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.http_route.HttpFailureInjector
+	71,  // 49: io.linkerd.proxy.outbound.HttpRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
+	72,  // 50: io.linkerd.proxy.outbound.HttpRoute.Filter.redirect:type_name -> io.linkerd.proxy.http_route.RequestRedirect
+	73,  // 51: io.linkerd.proxy.outbound.HttpRoute.Filter.response_header_modifier:type_name -> io.linkerd.proxy.http_route.ResponseHeaderModifier
+	24,  // 52: io.linkerd.proxy.outbound.HttpRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.Empty
+	25,  // 53: io.linkerd.proxy.outbound.HttpRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable
+	26,  // 54: io.linkerd.proxy.outbound.HttpRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable
+	27,  // 55: io.linkerd.proxy.outbound.HttpRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions
+	67,  // 56: io.linkerd.proxy.outbound.HttpRoute.Retry.timeout:type_name -> google.protobuf.Duration
+	11,  // 57: io.linkerd.proxy.outbound.HttpRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
+	7,   // 58: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	19,  // 59: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.HttpRoute.Filter
+	67,  // 60: io.linkerd.proxy.outbound.HttpRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
+	22,  // 61: io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
+	22,  // 62: io.linkerd.proxy.outbound.HttpRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.RouteBackend
+	23,  // 63: io.linkerd.proxy.outbound.HttpRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.HttpRoute.WeightedRouteBackend
+	28,  // 64: io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.status_ranges:type_name -> io.linkerd.proxy.outbound.HttpRoute.Retry.Conditions.StatusRange
+	74,  // 65: io.linkerd.proxy.outbound.GrpcRoute.Rule.matches:type_name -> io.linkerd.proxy.grpc_route.GrpcRouteMatch
+	30,  // 66: io.linkerd.proxy.outbound.GrpcRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
+	31,  // 67: io.linkerd.proxy.outbound.GrpcRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution
+	67,  // 68: io.linkerd.proxy.outbound.GrpcRoute.Rule.requestTimeout:type_name -> google.protobuf.Duration
+	69,  // 69: io.linkerd.proxy.outbound.GrpcRoute.Rule.timeouts:type_name -> io.linkerd.proxy.http_route.Timeouts
+	32,  // 70: io.linkerd.proxy.outbound.GrpcRoute.Rule.retry:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry
+	75,  // 71: io.linkerd.proxy.outbound.GrpcRoute.Filter.failure_injector:type_name -> io.linkerd.proxy.grpc_route.GrpcFailureInjector
+	71,  // 72: io.linkerd.proxy.outbound.GrpcRoute.Filter.request_header_modifier:type_name -> io.linkerd.proxy.http_route.RequestHeaderModifier
+	35,  // 73: io.linkerd.proxy.outbound.GrpcRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.Empty
+	36,  // 74: io.linkerd.proxy.outbound.GrpcRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable
+	37,  // 75: io.linkerd.proxy.outbound.GrpcRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable
+	38,  // 76: io.linkerd.proxy.outbound.GrpcRoute.Retry.conditions:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Retry.Conditions
+	67,  // 77: io.linkerd.proxy.outbound.GrpcRoute.Retry.timeout:type_name -> google.protobuf.Duration
+	11,  // 78: io.linkerd.proxy.outbound.GrpcRoute.Retry.backoff:type_name -> io.linkerd.proxy.outbound.ExponentialBackoff
+	7,   // 79: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	30,  // 80: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.GrpcRoute.Filter
+	67,  // 81: io.linkerd.proxy.outbound.GrpcRoute.RouteBackend.requestTimeout:type_name -> google.protobuf.Duration
+	33,  // 82: io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
+	33,  // 83: io.linkerd.proxy.outbound.GrpcRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.RouteBackend
+	34,  // 84: io.linkerd.proxy.outbound.GrpcRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.GrpcRoute.WeightedRouteBackend
+	41,  // 85: io.linkerd.proxy.outbound.OpaqueRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution
+	40,  // 86: io.linkerd.proxy.outbound.OpaqueRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Filter
+	76,  // 87: io.linkerd.proxy.outbound.OpaqueRoute.Filter.invalid:type_name -> io.linkerd.proxy.opaque_route.Invalid
+	77,  // 88: io.linkerd.proxy.outbound.OpaqueRoute.Filter.forbidden:type_name -> io.linkerd.proxy.opaque_route.Forbidden
+	44,  // 89: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.Empty
+	45,  // 90: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable
+	46,  // 91: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable
+	7,   // 92: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	40,  // 93: io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.Filter
+	42,  // 94: io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
+	42,  // 95: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.RouteBackend
+	43,  // 96: io.linkerd.proxy.outbound.OpaqueRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.OpaqueRoute.WeightedRouteBackend
+	49,  // 97: io.linkerd.proxy.outbound.TlsRoute.Rule.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution
+	48,  // 98: io.linkerd.proxy.outbound.TlsRoute.Rule.filters:type_name -> io.linkerd.proxy.outbound.TlsRoute.Filter
+	76,  // 99: io.linkerd.proxy.outbound.TlsRoute.Filter.invalid:type_name -> io.linkerd.proxy.opaque_route.Invalid
+	77,  // 100: io.linkerd.proxy.outbound.TlsRoute.Filter.forbidden:type_name -> io.linkerd.proxy.opaque_route.Forbidden
+	52,  // 101: io.linkerd.proxy.outbound.TlsRoute.Distribution.empty:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.Empty
+	53,  // 102: io.linkerd.proxy.outbound.TlsRoute.Distribution.first_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable
+	54,  // 103: io.linkerd.proxy.outbound.TlsRoute.Distribution.random_available:type_name -> io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable
+	7,   // 104: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.backend:type_name -> io.linkerd.proxy.outbound.Backend
+	48,  // 105: io.linkerd.proxy.outbound.TlsRoute.RouteBackend.filters:type_name -> io.linkerd.proxy.outbound.TlsRoute.Filter
+	50,  // 106: io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend.backend:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
+	50,  // 107: io.linkerd.proxy.outbound.TlsRoute.Distribution.FirstAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.RouteBackend
+	51,  // 108: io.linkerd.proxy.outbound.TlsRoute.Distribution.RandomAvailable.backends:type_name -> io.linkerd.proxy.outbound.TlsRoute.WeightedRouteBackend
+	57,  // 109: io.linkerd.proxy.outbound.Backend.EndpointDiscovery.dst:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery.DestinationGet
+	55,  // 110: io.linkerd.proxy.outbound.Backend.BalanceP2c.discovery:type_name -> io.linkerd.proxy.outbound.Backend.EndpointDiscovery
+	58,  // 111: io.linkerd.proxy.outbound.Backend.BalanceP2c.peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma
+	59,  // 112: io.linkerd.proxy.outbound.Backend.BalanceP2c.penalty_peak_ewma:type_name -> io.linkerd.proxy.outbound.Backend.BalanceP2c.PenaltyPeakEwma
 	67,  // 113: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.default_rtt:type_name -> google.protobuf.Duration
 	67,  // 114: io.linkerd.proxy.outbound.Backend.BalanceP2c.PeakEwma.decay:type_name -> google.protobuf.Duration
 	67,  // 115: io.linkerd.proxy.outbound.Backend.BalanceP2c.PenaltyPeakEwma.default_rtt:type_name -> google.protobuf.Duration
