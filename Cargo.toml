@@ -9,7 +9,7 @@ homepage = "https://linkerd.io"
 repository = "https://github.com/linkerd/linkerd2-proxy-api"
 documentation = "https://docs.rs/linkerd2-proxy-api"
 keywords = ["linkerd", "grpc", "servicemesh"]
-rust-version = "1.59"
+rust-version = "1.90"
 
 [features]
 default = []
