@@ -67,12 +67,6 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
-        /// If set, configures load biasing for 429-aware load balancing.
-        #[prost(message, optional, tag = "3")]
-        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
-        /// If set, configures handling of Retry-After headers (HTTP 429/503).
-        #[prost(message, optional, tag = "4")]
-        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Http2 {
@@ -81,12 +75,6 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
-        /// If set, configures load biasing for 429-aware load balancing.
-        #[prost(message, optional, tag = "3")]
-        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
-        /// If set, configures handling of Retry-After headers (HTTP 429/503).
-        #[prost(message, optional, tag = "4")]
-        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Grpc {
@@ -95,13 +83,6 @@ pub mod proxy_protocol {
         /// If empty, circuit breaking is not performed.
         #[prost(message, optional, tag = "2")]
         pub failure_accrual: ::core::option::Option<super::FailureAccrual>,
-        /// If set, configures load biasing for 429-aware load balancing.
-        #[prost(message, optional, tag = "3")]
-        pub load_bias: ::core::option::Option<super::LoadBiasConfig>,
-        /// If set, configures handling of Retry-After headers (HTTP 429/503)
-        /// and grpc-retry-pushback-ms trailers (gRPC RESOURCE_EXHAUSTED).
-        #[prost(message, optional, tag = "4")]
-        pub retry_after: ::core::option::Option<super::RetryAfterConfig>,
     }
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Tls {
@@ -598,12 +579,8 @@ pub mod backend {
     pub struct BalanceP2c {
         #[prost(message, optional, tag = "1")]
         pub discovery: ::core::option::Option<EndpointDiscovery>,
-        /// Ejection protection for the pool. When set, prevents circuit
-        /// breakers from ejecting endpoints below the configured floor.
-        #[prost(message, optional, tag = "3")]
-        pub ejection: ::core::option::Option<super::EjectionConfig>,
         /// The load estimation strategy used by this load balancer.
-        #[prost(oneof = "balance_p2c::Load", tags = "2")]
+        #[prost(oneof = "balance_p2c::Load", tags = "2, 3")]
         pub load: ::core::option::Option<balance_p2c::Load>,
     }
     /// Nested message and enum types in `BalanceP2c`.
@@ -619,6 +596,25 @@ pub mod backend {
             #[prost(message, optional, tag = "2")]
             pub decay: ::core::option::Option<::prost_types::Duration>,
         }
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+        pub struct PenaltyPeakEwma {
+            /// Initial latency value used when no latencies have been
+            /// recorded for an endpoint.
+            #[prost(message, optional, tag = "1")]
+            pub default_rtt: ::core::option::Option<::prost_types::Duration>,
+            /// The duration of the moving window over which latency is observed.
+            #[prost(message, optional, tag = "2")]
+            pub decay: ::core::option::Option<::prost_types::Duration>,
+            /// The penalty duration to inject when a matching response is received.
+            #[prost(message, optional, tag = "3")]
+            pub penalty: ::core::option::Option<::prost_types::Duration>,
+            /// The maximum duration to respect for Retry-After hints. Hints that exceed this value will be capped.
+            #[prost(message, optional, tag = "4")]
+            pub max_retry_after: ::core::option::Option<::prost_types::Duration>,
+            /// The EWMA decay window for the penalty.
+            #[prost(message, optional, tag = "5")]
+            pub penalty_decay: ::core::option::Option<::prost_types::Duration>,
+        }
         /// The load estimation strategy used by this load balancer.
         #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Oneof)]
         pub enum Load {
@@ -626,6 +622,10 @@ pub mod backend {
             /// average) load estimates.
             #[prost(message, tag = "2")]
             PeakEwma(PeakEwma),
+            /// A variant of peak EWMA that injects artificial penalties based on response
+            /// codes, enabling 429-aware load balancing.
+            #[prost(message, tag = "3")]
+            PenaltyPeakEwma(PenaltyPeakEwma),
         }
     }
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -653,16 +653,12 @@ pub struct Queue {
 /// Setting a numeric policy field to zero disables that policy.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct FailureAccrual {
-    /// Must be set. Set `max_failures` to 0 to disable the consecutive
-    /// failure policy while retaining the shared backoff.
-    #[prost(message, optional, tag = "1")]
-    pub consecutive_failures: ::core::option::Option<
-        failure_accrual::ConsecutiveFailures,
-    >,
-    /// Success rate policy. If set, the circuit trips when the EWMA success
-    /// rate drops below the threshold.
-    #[prost(message, optional, tag = "2")]
-    pub success_rate: ::core::option::Option<failure_accrual::SuccessRate>,
+    /// Ejection protection for the pool. When set, prevents circuit
+    /// breakers from ejecting endpoints below the configured floor.
+    #[prost(message, optional, tag = "3")]
+    pub ejection: ::core::option::Option<EjectionConfig>,
+    #[prost(oneof = "failure_accrual::Kind", tags = "1, 2")]
+    pub kind: ::core::option::Option<failure_accrual::Kind>,
 }
 /// Nested message and enum types in `FailureAccrual`.
 pub mod failure_accrual {
@@ -673,53 +669,40 @@ pub mod failure_accrual {
         #[prost(uint32, tag = "1")]
         pub max_failures: u32,
         /// Must be set. Controls the ejection duration before probe requests
-        /// are allowed after any policy (not just CF) trips the circuit.
+        /// are allowed after this policy trips the circuit.
         #[prost(message, optional, tag = "2")]
         pub backoff: ::core::option::Option<super::ExponentialBackoff>,
     }
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
-    pub struct SuccessRate {
+    pub struct Unified {
         /// Success rate threshold in \[0.0, 1.0\]. The circuit trips when the
         /// EWMA success rate drops below this value. Set to 0.0 to disable.
         /// Defined as `double` (not `float`) because this value is compared
         /// against the proxy's f64 EWMA on every request.
         #[prost(double, tag = "1")]
-        pub threshold: f64,
+        pub success_rate_threshold: f64,
         /// EWMA decay window for success rate tracking.
         #[prost(message, optional, tag = "2")]
         pub decay: ::core::option::Option<::prost_types::Duration>,
         /// Minimum requests before the success rate policy can trip (cold-start guard).
         #[prost(uint32, tag = "3")]
         pub min_requests: u32,
+        /// Maximum consecutive failures before the circuit trips.
+        /// Set to 0 to disable (an unset field has the same effect).
+        #[prost(uint32, tag = "4")]
+        pub max_consecutive_failures: u32,
+        /// Must be set. Controls the ejection duration before probe requests
+        /// are allowed after this policy trips the circuit.
+        #[prost(message, optional, tag = "5")]
+        pub backoff: ::core::option::Option<super::ExponentialBackoff>,
     }
-}
-/// Configures load biasing for 429-aware load balancing.
-/// When enabled, the load balancer injects artificial penalties on
-/// rate-limited endpoints, causing P2C to prefer other endpoints.
-#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
-pub struct LoadBiasConfig {
-    /// Whether load biasing is enabled. When the message is present
-    /// but `enabled` is false, biasing is inactive.
-    #[prost(bool, tag = "1")]
-    pub enabled: bool,
-    /// The penalty duration to inject when a 429 response is received.
-    #[prost(message, optional, tag = "2")]
-    pub penalty: ::core::option::Option<::prost_types::Duration>,
-    /// The EWMA decay window for the penalty.
-    #[prost(message, optional, tag = "3")]
-    pub penalty_decay: ::core::option::Option<::prost_types::Duration>,
-}
-/// Configures handling of rate-limiting hints: Retry-After headers
-/// (HTTP 429/503) and grpc-retry-pushback-ms trailers (gRPC
-/// RESOURCE_EXHAUSTED). The proxy uses the parsed duration to extend
-/// circuit breaker backoff and amplify load biaser penalties.
-#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
-pub struct RetryAfterConfig {
-    /// Maximum duration the proxy will honor from either hint source.
-    /// Values exceeding this cap are clamped. When absent, the proxy
-    /// uses DEFAULT_RETRY_AFTER_MAX_DURATION as the cap.
-    #[prost(message, optional, tag = "1")]
-    pub max_duration: ::core::option::Option<::prost_types::Duration>,
+    #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
+    pub enum Kind {
+        #[prost(message, tag = "1")]
+        ConsecutiveFailures(ConsecutiveFailures),
+        #[prost(message, tag = "2")]
+        Unified(Unified),
+    }
 }
 /// Pool-level ejection protection. Prevents circuit breakers from
 /// ejecting all endpoints in a load-balancing pool.
@@ -745,6 +728,10 @@ pub struct ExponentialBackoff {
     /// Must be greater than or equal to 0.0.
     #[prost(float, tag = "3")]
     pub jitter_ratio: f32,
+    /// If true, the proxy will use the Retry-After hint (if present on the response)
+    /// as the initial backoff duration, clamped by min_backoff and max_backoff.
+    #[prost(bool, tag = "4")]
+    pub respect_retry_after_hint: bool,
 }
 /// Generated client implementations.
 pub mod outbound_policies_client {
