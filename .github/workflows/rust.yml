@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v48-rust
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - run: just rs-fetch
       - run: just rs-gen-check
 
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v48-rust
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - run: just rs-fetch
       - run: just rs-clippy
 
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v48-rust
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - run: just rs-fetch
       - run: just rs-docs
 
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/linkerd/dev:v48-rust
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - run: just rs-fetch
       - run: just rs-test-build
       # No tests to run in this repo.
@@ -68,7 +68,7 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing Ci.
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - uses: EmbarkStudios/cargo-deny-action@bb137d7af7e4fb67e5f82a49c4fce4fad40782fe
         with:
           command: check ${{ matrix.checks }}
