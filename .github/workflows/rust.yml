@@ -22,7 +22,7 @@ jobs:
   gen-check:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v50-rust
+    container: docker://ghcr.io/linkerd/dev:v53-rust
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: just rs-fetch
@@ -31,7 +31,7 @@ jobs:
   rust-clippy:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v50-rust
+    container: docker://ghcr.io/linkerd/dev:v53-rust
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: just rs-fetch
@@ -40,7 +40,7 @@ jobs:
   rust-docs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v50-rust
+    container: docker://ghcr.io/linkerd/dev:v53-rust
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: just rs-fetch
@@ -49,7 +49,7 @@ jobs:
   rust-test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: docker://ghcr.io/linkerd/dev:v50-rust
+    container: docker://ghcr.io/linkerd/dev:v53-rust
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - run: just rs-fetch
