@@ -175,8 +175,8 @@ mod arbitary {
 
     impl Arbitrary for http_method::Type {
         fn arbitrary(g: &mut Gen) -> Self {
-            match u16::arbitrary(g) % 9 {
-                8 => http_method::Type::Unregistered(String::arbitrary(g)),
+            match u16::arbitrary(g) % 10 {
+                9 => http_method::Type::Unregistered(String::arbitrary(g)),
                 n => http_method::Type::Registered(n.into()),
             }
         }
@@ -193,9 +193,49 @@ mod arbitary {
     impl Arbitrary for scheme::Type {
         fn arbitrary(g: &mut Gen) -> Self {
             match u16::arbitrary(g) % 3 {
-                3 => scheme::Type::Unregistered(String::arbitrary(g)),
+                2 => scheme::Type::Unregistered(String::arbitrary(g)),
                 n => scheme::Type::Registered(n.into()),
             }
         }
+    }
+
+    #[test]
+    fn arbitrary_http_method_covers_all_types() {
+        use http_method::*;
+
+        let mut g = Gen::new(100);
+        let mut registered = [false; 9];
+        let mut unregistered = false;
+        for _ in 0..10_000 {
+            match http_method::Type::arbitrary(&mut g) {
+                Type::Registered(m) => {
+                    assert!(Registered::try_from(m).is_ok(), "invalid method: {m}");
+                    registered[m as usize] = true;
+                }
+                Type::Unregistered(_) => unregistered = true,
+            }
+        }
+        assert!(registered.iter().all(|r| *r), "{registered:?}");
+        assert!(unregistered);
+    }
+
+    #[test]
+    fn arbitrary_scheme_covers_all_types() {
+        use scheme::*;
+
+        let mut g = Gen::new(100);
+        let mut registered = [false; 2];
+        let mut unregistered = false;
+        for _ in 0..10_000 {
+            match scheme::Type::arbitrary(&mut g) {
+                Type::Registered(s) => {
+                    assert!(Registered::try_from(s).is_ok(), "invalid scheme: {s}");
+                    registered[s as usize] = true;
+                }
+                Type::Unregistered(_) => unregistered = true,
+            }
+        }
+        assert!(registered.iter().all(|r| *r), "{registered:?}");
+        assert!(unregistered);
     }
 }
